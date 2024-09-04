@@ -38,6 +38,7 @@ void MyGame::Update(){
 	///ゲーム固有処理
 
 	
+
 	
 	///
 
