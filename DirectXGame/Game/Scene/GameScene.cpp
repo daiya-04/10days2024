@@ -30,8 +30,6 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
-	
-
 }
 
 void GameScene::Update() {
