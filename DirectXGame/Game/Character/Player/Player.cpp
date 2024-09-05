@@ -58,6 +58,12 @@ void Player::Update(){
 		break;
 
 	}
+	auto front = frontVec_.Normalize();
+	auto posture = postureVec_.Normalize();
+
+	if (front == -posture) {
+		frontVec_ = postureVec_;
+	}
 
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
@@ -83,7 +89,7 @@ void Player::Imgui(){
 }
 
 void Player::BehaviorRootInitialize(){
-	move_ = { 0.0f,0.0f,0.0f };
+	isDive_ = false;
 }
 
 void Player::BehaviorRootUpdate(){
@@ -129,12 +135,17 @@ void Player::BehaviorRootUpdate(){
 	
 	PLTransform_.translation_ += move_;
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_A) && !isDown_) {
+	if (input_->TriggerButton(XINPUT_GAMEPAD_A) and !isDown_) {
 		downVector_.y += jumpPower_;
 		isDown_ = true;
 	}
 
 	Gravity();
+
+	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_){
+		behaviorRequest_ = Behavior::kDive;
+
+	}
 
 }
 
@@ -155,11 +166,80 @@ void Player::BehaviorDashUpdate(){
 }
 
 void Player::BehaviorDiveInitialize(){
-
+	isDive_ = true;
 }
 
 void Player::BehaviorDiveUpdate(){
 
+	//前フレームの向きベクトルを記録
+	frontVec_ = postureVec_;
+
+	//入力を受け取って移動
+	if (input_->GetMoveXZ().z != 0 and !isDown_) {
+		move_.z = (input_->GetMoveXZ().z / 32767.0f) * moveSpeed_;
+	}
+	else {
+		if (isDive_){
+			move_.z = 0.0f;
+		}		
+	}
+
+	//入力を受け取って移動
+	if (input_->GetMoveXZ().x != 0 and !isDown_) {
+		move_.x = (input_->GetMoveXZ().x / 32767.0f) * moveSpeed_;
+	}
+	else {
+		
+		if (isDive_) {
+			move_.x = 0.0f;
+		}
+	}
+
+
+	//カメラの向きによって移動ベクトルに補正を掛ける
+	/*Matrix4x4 newRotateMatrix = Matrix::GetInstance()->MakeRotateMatrix(viewProjection_->rotation_);
+	move_ = Matrix::GetInstance()->TransformNormal(move_, newRotateMatrix);
+	move_.y = 0.0f;
+	move_ = Vector3::Mutiply(Vector3::Normalize(move_), moveSpeed_ * 3.0f);
+	move_.y = 0.0f;*/
+	if (isDive_) {
+		move_.Normalize();
+		move_ *= (moveSpeed_ * 3.0f);
+		move_.y = 0.0f;
+	}
+	if (move_.x != 0.0f or move_.z != 0.0f) {
+		postureVec_ = move_;
+
+		Matrix4x4 directionTodirection;
+		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
+
+		playerRotateMat_ = playerRotateMat_ * directionTodirection;
+
+	}
+
+	PLTransform_.translation_ += (move_ / 2.0f);
+
+	if (input_->TriggerButton(XINPUT_GAMEPAD_A) && !isDown_) {
+		downVector_.y += (jumpPower_ * 2.0f);
+		isDive_ = false;
+		isDown_ = true;
+	}
+	
+	if (isDown_) {
+		downVector_.y += gravityPower_;
+	}
+	else {
+		PLTransform_.translation_.y = -2.1f;
+	}
+	PLTransform_.translation_.y += downVector_.y;
+	if (isDown_ and downVector_.y <= 0.0f) {
+		behaviorRequest_ = Behavior::kRoot;
+
+	}
+
+	if (input_->ReleaseButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
 }
 
 void Player::Respawn(){

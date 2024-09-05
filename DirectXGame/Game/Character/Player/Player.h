@@ -96,5 +96,7 @@ private:
 	//移動速度
 	float moveSpeed_ = 0.3f;
 
+	bool isDive_ = false;
+
 };
 
