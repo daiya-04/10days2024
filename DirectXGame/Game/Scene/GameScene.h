@@ -19,6 +19,7 @@
 #include "OutLine.h"
 #include "HSVFilter.h"
 #include "SkyBox.h"
+#include "Player.h"
 
 
 class GameScene : public IScene {
@@ -56,8 +57,8 @@ private:
 	SpotLight spotLight_;
 
 private:
-
-
+	
+	std::unique_ptr<Player> player_;
 
 };
 

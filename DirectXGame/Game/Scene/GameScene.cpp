@@ -30,6 +30,9 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+
 }
 
 void GameScene::Update() {
@@ -46,6 +49,7 @@ void GameScene::Update() {
 
 #endif // _DEBUG
 
+	player_->Update();
 	
 	camera_.UpdateCameraPos();
 	pointLight_.Update();
@@ -60,7 +64,7 @@ void GameScene::DrawBackGround(){
 
 void GameScene::DrawModel(){
 
-	
+	player_->Draw(camera_);
 
 }
 
@@ -96,7 +100,7 @@ void GameScene::DrawRenderTexture() {
 void GameScene::DebugGUI(){
 #ifdef _DEBUG
   
-	
+	player_->Imgui();
 
 	ImGui::Begin("Light");
 

@@ -10,11 +10,13 @@ public:
 	//更新処理
 	void Update();
 	//描画処理
-	void Draw();
+	void Draw(const Camera& camera);
 	//デバック用GUIの表示
 	void Imgui();
 
 private:
+
+	ModelManager* modelManager_;
 
 	std::unique_ptr<Object3d> bodyObj_;
 
