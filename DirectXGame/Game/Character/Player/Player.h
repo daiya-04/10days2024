@@ -3,6 +3,8 @@
 #include"Model/ModelManager.h"
 #include"Hit.h"
 #include"imgui.h"
+#include"Particle/Particle.h"
+#include"AnimationManager.h"
 #include"Input.h"
 
 class Player{
@@ -13,6 +15,9 @@ public:
 	void Update();
 	//描画処理
 	void Draw(const Camera& camera);
+
+	//描画処理
+	void ParticleDraw(const Camera& camera);
 	//デバック用GUIの表示
 	void Imgui();
 
@@ -63,8 +68,15 @@ private:
 	ModelManager* modelManager_;
 	//体のモデル
 	std::unique_ptr<Object3d> bodyObj_;
+
+	//場所表示のモデル
+	std::unique_ptr<Object3d> lockOnObj_;
 	//キー入力
 	Input* input_;
+
+	std::unique_ptr<Particle> diveParticle_;
+
+	Animation anim_;
 	
 private:
 	/*重力関係*/

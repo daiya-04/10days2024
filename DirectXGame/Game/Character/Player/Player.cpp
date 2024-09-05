@@ -16,6 +16,13 @@ void Player::Initialize(){
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
 
+	anim_ = AnimationManager::Load("LockOn");
+	anim_.SetAnimationSpeed(1.0f / 90.0f);
+
+	lockOnObj_ = std::make_unique<Object3d>();
+
+	lockOnObj_->Initialize(modelManager_->LoadGLTF("LockOn"));
+
 }
 
 void Player::Update(){
@@ -65,14 +72,29 @@ void Player::Update(){
 		frontVec_ = postureVec_;
 	}
 
+
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
+	if (isDive_) {
+		anim_.Play(lockOnObj_->GetModel()->rootNode_, true);
+		lockOnObj_->worldTransform_.translation_ = PLTransform_.translation_;
+		lockOnObj_->worldTransform_.translation_.y = 2.0f;
+		lockOnObj_->worldTransform_.UpdateMatrix();
 
+		lockOnObj_->worldTransform_.matWorld_ = anim_.GetLocalMatrix() * lockOnObj_->worldTransform_.matWorld_;
+	}
 }
 
-void Player::Draw(const Camera& camera){
-	
+void Player::Draw(const Camera& camera) {
+
 	bodyObj_->Draw(camera);
+	if (isDive_) {
+		lockOnObj_->Draw(camera);
+	}
+}
+
+void Player::ParticleDraw(const Camera& camera){
+
 }
 
 void Player::Imgui(){
