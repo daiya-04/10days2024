@@ -30,6 +30,12 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+
+	levelData_ = std::make_shared<LevelData>(LevelLoader::LoadFile("stageimage"));
+
+	stage_ = std::make_unique<Stage>();
+	//stage_->Initialize(levelData_.get());
+
 }
 
 void GameScene::Update() {

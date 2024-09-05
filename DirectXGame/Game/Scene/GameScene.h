@@ -20,6 +20,7 @@
 #include "HSVFilter.h"
 #include "SkyBox.h"
 
+#include "Stage/Stage.h"
 
 class GameScene : public IScene {
 public:
@@ -54,6 +55,9 @@ private:
 
 	PointLight pointLight_;
 	SpotLight spotLight_;
+
+	std::shared_ptr<LevelData> levelData_;
+	std::unique_ptr<Stage> stage_;
 
 private:
 

@@ -68,6 +68,9 @@
     <Filter Include="Engine\3d\Model">
       <UniqueIdentifier>{09a5243c-6ffc-4d31-9229-9c39d87bd460}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Stage">
+      <UniqueIdentifier>{982853d9-2748-40df-bedb-0bc727c759cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -190,6 +193,15 @@
     </ClCompile>
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp">
       <Filter>Engine\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\GroundPiece.cpp">
+      <Filter>Game\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\Ground.cpp">
+      <Filter>Game\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\Stage.cpp">
+      <Filter>Game\Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +351,15 @@
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\HSVFilter.h">
       <Filter>Engine\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\GroundPiece.h">
+      <Filter>Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\Ground.h">
+      <Filter>Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\Stage.h">
+      <Filter>Game\Stage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
