@@ -20,6 +20,9 @@
 #include "HSVFilter.h"
 #include "SkyBox.h"
 
+#include "Boss.h"
+#include "MeteorManager.h"
+
 
 class GameScene : public IScene {
 public:
@@ -57,7 +60,9 @@ private:
 
 private:
 
+	std::unique_ptr<Boss> boss_;
 
+	MeteorManager* meteor_ = nullptr;
 
 };
 

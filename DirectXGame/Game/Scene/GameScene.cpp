@@ -30,6 +30,19 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+
+	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
+	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
+
+
+	boss_ = std::make_unique<Boss>();
+	boss_->Init(bossModel);
+
+	meteor_ = MeteorManager::GetInstance();
+	meteor_->Init(meteorModel);
+
+	camera_.translation_ = { 0.0f,5.0f,-20.0f };
+
 }
 
 void GameScene::Update() {
@@ -46,8 +59,11 @@ void GameScene::Update() {
 
 #endif // _DEBUG
 
+	boss_->Update();
+	meteor_->Update();
 	
 	camera_.UpdateCameraPos();
+	camera_.UpdateMatrix();
 	pointLight_.Update();
 	spotLight_.Update();
 }
@@ -60,7 +76,8 @@ void GameScene::DrawBackGround(){
 
 void GameScene::DrawModel(){
 
-	
+	boss_->Draw(camera_);
+	meteor_->Draw(camera_);
 
 }
 
@@ -96,7 +113,12 @@ void GameScene::DrawRenderTexture() {
 void GameScene::DebugGUI(){
 #ifdef _DEBUG
   
-	
+	ImGui::Begin("camera");
+
+	ImGui::DragFloat3("pos", &camera_.translation_.x, 0.01f);
+	ImGui::DragFloat3("rotate", &camera_.rotation_.x, 0.01f);
+
+	ImGui::End();
 
 	ImGui::Begin("Light");
 

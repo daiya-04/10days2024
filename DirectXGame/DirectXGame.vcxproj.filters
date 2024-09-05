@@ -191,6 +191,9 @@
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp">
       <Filter>Engine\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="Meteor.cpp" />
+    <ClCompile Include="MeteorManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -340,5 +343,8 @@
     <ClInclude Include="Engine\PostEffect\HSVFilter.h">
       <Filter>Engine\PostEffect</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="Meteor.h" />
+    <ClInclude Include="MeteorManager.h" />
   </ItemGroup>
 </Project>

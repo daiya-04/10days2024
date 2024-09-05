@@ -109,6 +109,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Engine\3d\AnimationManager.cpp" />
     <ClCompile Include="Engine\PostEffect\Dissolve.cpp" />
     <ClCompile Include="Game\Scene\DebugTestScene.cpp" />
@@ -150,8 +151,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\Mesh.cpp" />
     <ClCompile Include="Engine\PostEffect\OutLine.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Meteor.cpp" />
+    <ClCompile Include="MeteorManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Engine\3d\AnimationManager.h" />
     <ClInclude Include="Engine\PostEffect\Dissolve.h" />
     <ClInclude Include="Game\Scene\DebugTestScene.h" />
@@ -201,6 +205,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\PostEffect\OutLine.h" />
     <ClInclude Include="Engine\PostEffect\HSVFilter.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Meteor.h" />
+    <ClInclude Include="MeteorManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
