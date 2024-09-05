@@ -129,6 +129,13 @@ void Player::BehaviorRootUpdate(){
 	
 	PLTransform_.translation_ += move_;
 
+	if (input_->TriggerButton(XINPUT_GAMEPAD_A) && !isDown_) {
+		downVector_.y += jumpPower_;
+		isDown_ = true;
+	}
+
+	Gravity();
+
 }
 
 void Player::BehaviorAttackInitialize(){
@@ -156,9 +163,27 @@ void Player::BehaviorDiveUpdate(){
 }
 
 void Player::Respawn(){
-
+	PLTransform_.translation_.y = 0.0f;
+	downVector_ = { 0.0f,0.0f,0.0f };
+	postureVec_ = { 0.0f,0.0f,1.0f };
+	frontVec_ = { 0.0f,0.0f,1.0f };
 }
 
 void Player::Gravity(){
+	
 
+	if (isDown_){
+		downVector_.y += gravityPower_;
+	}
+	PLTransform_.translation_.y += downVector_.y;
+
+	if (PLTransform_.translation_.y <= 0.0f){
+		OnFloorCollision();
+	}
+}
+
+void Player::OnFloorCollision(){
+	PLTransform_.translation_.y = 0.0f;
+	downVector_ = { 0.0f,0.0f,0.0f };
+	isDown_ = false;
 }

@@ -54,6 +54,8 @@ private:
 	void Respawn();
 	//重力関係の処理
 	void Gravity();
+	//床に当たったときの反応処理
+	void OnFloorCollision();
 
 private:
 	/*ベースとなるモデルやトランスフォームなど*/
@@ -64,6 +66,19 @@ private:
 	//キー入力
 	Input* input_;
 	
+private:
+	/*重力関係*/
+
+	//重力の強さ
+	float gravityPower_ = -0.01f;
+	//落下のベクトル
+	Vector3 downVector_ = {};
+	//ジャンプの強さ
+	float jumpPower_ = 0.25f;
+
+	//落下するかどうか
+	bool isDown_ = false;
+
 private:
 	/*行動関連の変数*/
 	//Behaviorで操作するトランスフォーム
