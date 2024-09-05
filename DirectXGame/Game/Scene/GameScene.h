@@ -57,7 +57,11 @@ private:
 	SpotLight spotLight_;
 
 private:
-	
+	//モデルマネージャー
+	ModelManager* modelManager_;
+	//体のモデル
+	std::unique_ptr<Object3d> floor_;
+	//プレイヤー
 	std::unique_ptr<Player> player_;
 
 };

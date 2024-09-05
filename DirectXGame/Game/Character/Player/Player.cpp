@@ -65,6 +65,7 @@ void Player::Update(){
 }
 
 void Player::Draw(const Camera& camera){
+	
 	bodyObj_->Draw(camera);
 }
 
