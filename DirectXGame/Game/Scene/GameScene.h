@@ -56,7 +56,7 @@ private:
 	PointLight pointLight_;
 	SpotLight spotLight_;
 
-	std::shared_ptr<LevelData> levelData_;
+	LevelData* levelData_;
 	std::unique_ptr<Stage> stage_;
 
 private:
