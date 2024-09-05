@@ -22,6 +22,10 @@ GameScene::~GameScene() {
 void GameScene::Init(){
   
 	camera_.Init();
+	camera_.translation_.y = 3.5f;
+	camera_.translation_.z = -10.0f;
+	camera_.rotation_.x = 0.15f;
+
 	pointLight_.Init();
 	pointLight_.intensity_ = 0.0f;
 	spotLight_.Init();
@@ -52,6 +56,7 @@ void GameScene::Update() {
 	player_->Update();
 	
 	camera_.UpdateCameraPos();
+	camera_.UpdateMatrix();
 	pointLight_.Update();
 	spotLight_.Update();
 }
@@ -102,6 +107,12 @@ void GameScene::DebugGUI(){
   
 	player_->Imgui();
 
+	ImGui::Begin("camera");
+
+	ImGui::DragFloat3("trans", &camera_.translation_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &camera_.rotation_.x, 0.1f);
+
+	ImGui::End();
 	ImGui::Begin("Light");
 
 	if (ImGui::TreeNode("PointLight")) {
