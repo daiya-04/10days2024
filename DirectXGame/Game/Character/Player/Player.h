@@ -27,7 +27,8 @@ private:
 		kRoot,			//通常状態
 		kAttack,		//攻撃
 		kAvoid,			//加速しながら回避
-		kDash			//ダッシュ中
+		kDash,			//ダッシュ中
+		kFallingAttack	//落下攻撃
 	};
 	//現在の状態
 	Behavior behavior_ = Behavior::kRoot;
@@ -53,6 +54,10 @@ private:
 	void BehaviorDashInitialize();
 	//ダッシュ行動更新
 	void BehaviorDashUpdate();
+	//ダッシュ行動初期化
+	void BehaviorFallingAttackInitialize();
+	//ダッシュ行動更新
+	void BehaviorFallingAttackUpdate();
 
 
 private:
@@ -91,6 +96,10 @@ private:
 
 	//落下するかどうか
 	bool isDown_ = false;
+	//ジャンプ攻撃時の重力
+	float gravityPowerAttack_ = -0.08f;
+	//ジャンプ攻撃時のジャンプの強さ
+	float jumpPowerAttack_ = 0.9f;
 
 private:
 	/*行動関連の変数*/

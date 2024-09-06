@@ -43,6 +43,9 @@ void Player::Update(){
 		case Behavior::kAvoid:
 			BehaviorAvoidInitialize();
 			break;
+		case Behavior::kFallingAttack:
+			BehaviorFallingAttackInitialize();
+			break;
 		}
 
 	}
@@ -62,6 +65,9 @@ void Player::Update(){
 		break;
 	case Behavior::kAvoid:
 		BehaviorAvoidUpdate();
+		break;
+	case Behavior::kFallingAttack:
+		BehaviorFallingAttackUpdate();
 		break;
 
 	}
@@ -102,11 +108,16 @@ void Player::Imgui(){
 
 	ImGui::Begin("プレイヤー");
 	
-	ImGui::DragFloat3("move", &move_.x, 0.1f);
+	ImGui::DragFloat3("move", &move_.x, 0.1f); 
+	ImGui::DragFloat3("downvector", &downVector_.x, 0.1f);
 	ImGui::DragFloat3("input", &inputVector.x, 0.1f);
 
 	ImGui::DragFloat3("postire", &postureVec_.x, 0.1f);
 	ImGui::DragFloat3("front", &frontVec_.x, 0.1f);
+
+	ImGui::DragFloat("gravityAttack", &gravityPowerAttack_, 0.01f);
+	ImGui::DragFloat("jumpPowerAttack", &jumpPowerAttack_, 0.01f);
+
 	ImGui::End();
 }
 
@@ -318,6 +329,21 @@ void Player::BehaviorDashUpdate(){
 	}
 }
 
+void Player::BehaviorFallingAttackInitialize(){
+	downVector_ = { 0.0f,jumpPowerAttack_,0.0f };
+}
+
+void Player::BehaviorFallingAttackUpdate(){
+	downVector_.y += gravityPowerAttack_;
+
+	PLTransform_.translation_.y += downVector_.y;
+
+	if (PLTransform_.translation_.y <= 0.0f) {
+		OnFloorCollision();
+		behaviorRequest_ = Behavior::kRoot;
+	}
+}
+
 
 void Player::Respawn(){
 	PLTransform_.translation_.y = 0.0f;
@@ -332,6 +358,12 @@ void Player::Gravity(){
 	if (isDown_){
 		downVector_.y += gravityPower_;
 	}
+
+	if (fabsf(downVector_.y) < 0.3f and input_->TriggerButton(XINPUT_GAMEPAD_X)){
+		behaviorRequest_ = Behavior::kFallingAttack;
+	}
+
+
 	PLTransform_.translation_.y += downVector_.y;
 
 	if (PLTransform_.translation_.y <= 0.0f){
