@@ -68,6 +68,9 @@
     <Filter Include="Engine\3d\Model">
       <UniqueIdentifier>{09a5243c-6ffc-4d31-9229-9c39d87bd460}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Character">
+      <UniqueIdentifier>{56b6f835-8f28-45a3-9c83-90cfefe54a2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp">
       <Filter>Engine\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Character\Player\Player.cpp">
+      <Filter>Game\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +345,9 @@
     </ClInclude>
     <ClInclude Include="Engine\PostEffect\HSVFilter.h">
       <Filter>Engine\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Character\Player\Player.h">
+      <Filter>Game\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
