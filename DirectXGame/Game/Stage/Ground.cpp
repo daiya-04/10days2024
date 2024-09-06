@@ -1,13 +1,13 @@
 #include "Ground.h"
 #include "Hit.h"
 
-void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models) {
-
+void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform) {
+	transform_ = transform;
 	for (auto& objectdata : data->objectDatas_) {
 		//uint32_t index = 1u;
 		if (objectdata.objectName.find("Ground") != std::string::npos) {
 			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>());
-			piece->Initialize(objectdata, models);
+			piece->Initialize(objectdata, models, &transform_);
 		}
 	}
 	

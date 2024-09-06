@@ -14,7 +14,7 @@ public:
 	GroundPiece() = default;
 	~GroundPiece() = default;
 
-	void Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models);
+	void Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models, const WorldTransform* parent = nullptr);
 
 	void Update();
 
