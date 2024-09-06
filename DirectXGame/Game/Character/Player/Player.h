@@ -83,11 +83,11 @@ private:
 	/*重力関係*/
 
 	//重力の強さ
-	float gravityPower_ = -0.02f;
+	float gravityPower_ = -0.04f;
 	//落下のベクトル
 	Vector3 downVector_ = {};
 	//ジャンプの強さ
-	float jumpPower_ = 0.35f;
+	float jumpPower_ = 0.9f;
 
 	//落下するかどうか
 	bool isDown_ = false;
