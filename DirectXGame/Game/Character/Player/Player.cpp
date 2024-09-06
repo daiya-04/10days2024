@@ -175,14 +175,14 @@ void Player::BehaviorRootUpdate(){
 	
 	PLTransform_.translation_ += move_;
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_A) and !isDown_) {
+	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
 		isDown_ = true;
 	}
 
 	Gravity();
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_){
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_){
 		behaviorRequest_ = Behavior::kAvoid;
 
 	}
@@ -222,7 +222,7 @@ void Player::BehaviorAvoidUpdate(){
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
-		if (input_->PushButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)){
+		if (input_->PushButton(Input::Button::RIGHT_SHOULDER)){
 			behaviorRequest_ = Behavior::kDash;
 		}
 		else {
@@ -305,14 +305,14 @@ void Player::BehaviorDashUpdate(){
 
 	PLTransform_.translation_ += move_;
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_A) and !isDown_) {
+	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
 		isDown_ = true;
 	}
 
 	Gravity();
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_) {
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_) {
 		behaviorRequest_ = Behavior::kAvoid;
 
 	}
