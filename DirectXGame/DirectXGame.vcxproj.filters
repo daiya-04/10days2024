@@ -71,6 +71,9 @@
     <Filter Include="Game\Stage">
       <UniqueIdentifier>{982853d9-2748-40df-bedb-0bc727c759cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Camera">
+      <UniqueIdentifier>{c94986aa-751e-4664-8eab-6cb797677a22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -202,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="Game\Stage\Stage.cpp">
       <Filter>Game\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\DebugCamera.cpp">
+      <Filter>Game\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="Game\Stage\Stage.h">
       <Filter>Game\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\DebugCamera.h">
+      <Filter>Game\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

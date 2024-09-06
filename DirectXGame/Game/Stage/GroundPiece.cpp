@@ -1,9 +1,10 @@
 #include "GroundPiece.h"
 
 void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models) {
-	models_.resize(models.size());
-	for (uint8_t index = 0u; index < models_.size(); index++) {
-		models_.at(index)->Initialize(models.at(index));
+	for (uint8_t index = 0u; index < models.size(); index++) {
+		models_.push_back(std::make_shared<Object3d>());
+		auto& a = models.at(index);
+		models_.at(index)->Initialize(a);
 	}
 	isAlive_ = true;
 	for (auto& model : models_) {

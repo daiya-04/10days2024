@@ -28,4 +28,6 @@ private:
 	std::vector<std::shared_ptr<Object3d>> models_;
 	bool isAlive_ = true; // 生存フラグ
 
+	Shapes::OBB collider_;
+
 };

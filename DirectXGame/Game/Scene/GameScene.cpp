@@ -31,7 +31,7 @@ void GameScene::Init(){
 	Object3d::SetSpotLight(&spotLight_);
 
 
-	levelData_ = LevelLoader::LoadFile("stageimage");
+	levelData_ = LevelLoader::LoadFile("stageTest");
 
 	stage_ = std::make_unique<Stage>();
 	stage_->Initialize(levelData_);
@@ -66,7 +66,7 @@ void GameScene::DrawBackGround(){
 
 void GameScene::DrawModel(){
 
-	
+	stage_->Draw(camera_);
 
 }
 
