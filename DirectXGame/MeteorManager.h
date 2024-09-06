@@ -2,8 +2,7 @@
 #include "Meteor.h"
 #include "Camera.h"
 #include "ModelManager.h"
-
-
+#include "GPUParticle.h"
 
 
 class MeteorManager {
@@ -25,6 +24,7 @@ public:
 private:
 
 	std::array<std::unique_ptr<Meteor>, 8> meteors_;
+	std::unique_ptr<GPUParticle> hitEff_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;

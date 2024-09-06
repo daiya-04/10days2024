@@ -89,6 +89,9 @@ void GameScene::DrawParticleModel(){
 
 void GameScene::DrawParticle(){
 
+	GPUParticle::preDraw();
+	meteor_->DrawParticle(camera_);
+
 }
 
 void GameScene::DrawUI(){

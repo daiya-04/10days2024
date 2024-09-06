@@ -22,6 +22,22 @@ void DebugTestScene::Init() {
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+	particle_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 10000));
+
+	particle_->isLoop_ = true;
+
+	particle_->emitter_.count = 1000;
+	particle_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);
+	particle_->emitter_.angle = 180.0f;
+	particle_->emitter_.color = Vector4(0.89f, 0.27f, 0.03f, 1.0f);
+	particle_->emitter_.emit = 0;
+	particle_->emitter_.lifeTime = 2.0f;
+	particle_->emitter_.speed = 1.0f;
+	particle_->emitter_.scale = 0.1f;
+	particle_->emitter_.size = { 0.01f,0.01f,0.01f };
+	particle_->emitter_.translate = {};
+	particle_->emitter_.frequency = 1.0f / 60.0f;
+
 	
 }
 
@@ -39,9 +55,10 @@ void DebugTestScene::Update() {
 	
 #endif // _DEBUG
 	
-	
+	particle_->Update();
 
 	camera_.UpdateViewMatrix();
+	camera_.UpdateMatrix();
 	pointLight_.Update();
 	spotLight_.Update();
 }
@@ -66,7 +83,8 @@ void DebugTestScene::DrawParticleModel() {
 
 void DebugTestScene::DrawParticle() {
 
-	
+	GPUParticle::preDraw();
+	particle_->Draw(camera_);
 
 }
 

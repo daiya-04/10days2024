@@ -51,10 +51,14 @@ public:
 	void AttackStart(const Vector3& startPos);
 
 	bool IsLife() const { return isLife_; }
+	bool HitFlag() const { return !isLife_ && preIsLife_; }
+
+	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
+	std::unique_ptr<GPUParticle> fireTrail_;
 
 	Shapes::Sphere collider_;
 
