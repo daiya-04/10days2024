@@ -30,6 +30,10 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+#ifdef _DEBUG
+	debugCamera_ = std::make_unique<DebugCamera>();
+#endif // _DEBUG
+
 
 	levelData_ = LevelLoader::LoadFile("stageTest");
 
@@ -50,9 +54,16 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
 
+	// debugCamera
+	if (debugCamera_->Update()) {
+		camera_.translation_ = debugCamera_->GetCameraTranslate();
+		camera_.rotation_ = debugCamera_->GetCameraRotate();
+	}
+
 #endif // _DEBUG
 
 	
+	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
 	pointLight_.Update();
 	spotLight_.Update();

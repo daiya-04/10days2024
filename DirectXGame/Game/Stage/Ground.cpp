@@ -4,7 +4,7 @@
 void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models) {
 
 	for (auto& objectdata : data->objectDatas_) {
-		uint32_t index = 1u;
+		//uint32_t index = 1u;
 		if (objectdata.objectName.find("Ground") != std::string::npos) {
 			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>());
 			piece->Initialize(objectdata, models);
