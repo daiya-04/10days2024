@@ -21,6 +21,8 @@
 #include "SkyBox.h"
 #include "Player.h"
 
+#include "Boss.h"
+#include "MeteorManager.h"
 #include "Stage/Stage.h"
 #include "Camera/DebugCamera.h"
 
@@ -57,6 +59,12 @@ private:
 
 	PointLight pointLight_;
 	SpotLight spotLight_;
+
+private:
+
+	std::unique_ptr<Boss> boss_;
+
+	MeteorManager* meteor_ = nullptr;
 
 	LevelData* levelData_;
 	std::unique_ptr<Stage> stage_;

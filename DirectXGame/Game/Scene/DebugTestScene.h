@@ -48,5 +48,8 @@ private:
 	PointLight pointLight_;
 	SpotLight spotLight_;
 
+
+	std::unique_ptr<GPUParticle> particle_;
+
 };
 

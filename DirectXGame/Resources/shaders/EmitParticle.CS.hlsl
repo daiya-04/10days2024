@@ -110,14 +110,18 @@ float32_t3 ShotDirection(RandomGenerator generator) {
 
     float32_t4x4 rotateMat = mul(mul(MakeRotateXMat(radians(angleX)),MakeRotateYMat(radians(angleY))), MakeRotateZMat(radians(angleZ)));
 
-    return mul(float32_t4(gEmitter.direction, 1.0f), rotateMat).xyz;
+    return normalize(mul(float32_t4(gEmitter.direction, 1.0f), rotateMat).xyz);
 
     //Vector3 a = { std::cosf(lat) * std::cosf(lon),std::sinf(lat),std::cosf(lat) * std::sinf(lon) };
     //lon = theta;
     //lat = phi;
 
-    //float32_t theta = 
+    /*float32_t theta = generator.Generate1d() * radians(gEmitter.angle);
+    float32_t phi = generator.Generate1d() * (2.0f * 3.14159265f);
 
+    Vector3 dict = { std::cosf(phi) * std::cosf(theta),std::sinf(phi),std::cosf(phi) * std::sinf(theta) };
+
+    return normalize(dict);*/
 }
 
 [numthreads(1, 1, 1)]
@@ -133,7 +137,7 @@ void main(uint32_t3 DTid : SV_DispatchThreadID) {
 
             if((0 <= freeListIndex) && (freeListIndex < gMaxParticles.maxNum)) {
                 uint32_t particleIndex = gFreeList[freeListIndex];
-                gParticles[particleIndex].translate = gEmitter.translate + (generator.Generate3d() - 0.5f) * gEmitter.size;
+                gParticles[particleIndex].translate = gEmitter.translate + normalize((generator.Generate3d() - 0.5f) * (gEmitter.size)) * (generator.Generate1d() * gEmitter.size.x);
                 gParticles[particleIndex].scale = float32_t3(gEmitter.scale, gEmitter.scale, gEmitter.scale);
                 gParticles[particleIndex].color = gEmitter.color;
                 gParticles[particleIndex].velocity = ShotDirection(generator) * (generator.Generate1d() * gEmitter.speed);

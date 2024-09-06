@@ -34,6 +34,18 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
+	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
+
+
+	boss_ = std::make_unique<Boss>();
+	boss_->Init(bossModel);
+
+	meteor_ = MeteorManager::GetInstance();
+	meteor_->Init(meteorModel);
+
+	camera_.translation_ = { 0.0f,5.0f,-20.0f };
+
 #ifdef _DEBUG
 	debugCamera_ = std::make_unique<DebugCamera>();
 #endif // _DEBUG
@@ -54,6 +66,7 @@ void GameScene::Init(){
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
 	floor_->worldTransform_.scale_ = { 100.0f,1.0f,100.0f };
+
 }
 
 void GameScene::Update() {
@@ -77,6 +90,8 @@ void GameScene::Update() {
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
 
+	boss_->Update();
+	meteor_->Update();
 
 	player_->Update();
 	
@@ -95,6 +110,10 @@ void GameScene::DrawBackGround(){
 
 void GameScene::DrawModel(){
 
+
+	boss_->Draw(camera_);
+	meteor_->Draw(camera_);
+
 	stage_->Draw(camera_);
 	floor_->Draw(camera_);
 	player_->Draw(camera_);
@@ -108,6 +127,9 @@ void GameScene::DrawParticleModel(){
 }
 
 void GameScene::DrawParticle(){
+
+	GPUParticle::preDraw();
+	meteor_->DrawParticle(camera_);
 
 }
 

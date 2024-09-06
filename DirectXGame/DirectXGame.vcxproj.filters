@@ -200,6 +200,9 @@
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp">
       <Filter>Engine\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="Meteor.cpp" />
+    <ClCompile Include="MeteorManager.cpp" />
     <ClCompile Include="Game\Character\Player\Player.cpp">
       <Filter>Game\Character</Filter>
     </ClCompile>
@@ -364,6 +367,9 @@
     <ClInclude Include="Engine\PostEffect\HSVFilter.h">
       <Filter>Engine\PostEffect</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="Meteor.h" />
+    <ClInclude Include="MeteorManager.h" />
     <ClInclude Include="Game\Character\Player\Player.h">
       <Filter>Game\Character</Filter>
     </ClInclude>
