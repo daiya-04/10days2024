@@ -21,6 +21,8 @@
 #include "SkyBox.h"
 #include "Player.h"
 
+#include "Stage/Stage.h"
+#include "Camera/DebugCamera.h"
 
 class GameScene : public IScene {
 public:
@@ -55,6 +57,10 @@ private:
 
 	PointLight pointLight_;
 	SpotLight spotLight_;
+
+	LevelData* levelData_;
+	std::unique_ptr<Stage> stage_;
+	std::unique_ptr<DebugCamera> debugCamera_;
 
 private:
 	//モデルマネージャー

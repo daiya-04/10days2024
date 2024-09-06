@@ -34,6 +34,16 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
+#ifdef _DEBUG
+	debugCamera_ = std::make_unique<DebugCamera>();
+#endif // _DEBUG
+
+
+	levelData_ = LevelLoader::LoadFile("stageTest");
+
+	stage_ = std::make_unique<Stage>();
+	stage_->Initialize(levelData_);
+
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
@@ -58,12 +68,19 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
 
+	// debugCamera
+	if (debugCamera_->Update()) {
+		camera_.translation_ = debugCamera_->GetCameraTranslate();
+		camera_.rotation_ = debugCamera_->GetCameraRotate();
+	}
+
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
 
 
 	player_->Update();
 	
+	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
 	camera_.UpdateMatrix();
 	pointLight_.Update();
@@ -77,6 +94,8 @@ void GameScene::DrawBackGround(){
 }
 
 void GameScene::DrawModel(){
+
+	stage_->Draw(camera_);
 	floor_->Draw(camera_);
 	player_->Draw(camera_);
 
