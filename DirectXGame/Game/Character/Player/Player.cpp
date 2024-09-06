@@ -40,8 +40,8 @@ void Player::Update(){
 		case Behavior::kDash:
 			BehaviorDashInitialize();
 			break;
-		case Behavior::kDive:
-			BehaviorDiveInitialize();
+		case Behavior::kAvoid:
+			BehaviorAvoidInitialize();
 			break;
 		}
 
@@ -60,8 +60,8 @@ void Player::Update(){
 	case Behavior::kDash:
 		BehaviorDashUpdate();
 		break;
-	case Behavior::kDive:
-		BehaviorDiveUpdate();
+	case Behavior::kAvoid:
+		BehaviorAvoidUpdate();
 		break;
 
 	}
@@ -123,7 +123,16 @@ void Player::BehaviorRootUpdate(){
 		move_.z = (input_->GetMoveXZ().z / 32767.0f) * moveSpeed_;
 	}
 	else {
-		move_.z = 0.0f;
+
+		if (move_.z > 0.0f) {
+			move_.z -= 0.01f;
+		}
+		else if (move_.z < 0.0f) {
+			move_.z += 0.01f;
+		}
+		if (fabsf(move_.z) <= 0.01f) {
+			move_.z = 0.0f;
+		}
 	}
 
 	//入力を受け取って移動
@@ -131,7 +140,16 @@ void Player::BehaviorRootUpdate(){
 		move_.x = (input_->GetMoveXZ().x / 32767.0f) * moveSpeed_;
 	}
 	else {
-		move_.x = 0.0f;
+		if (move_.x > 0.0f) {
+			move_.x -= 0.01f;
+		}
+		else if (move_.x < 0.0f) {
+			move_.x += 0.01f;
+		}
+
+		if (fabsf(move_.x) <= 0.01f) {
+			move_.x = 0.0f;
+		}
 	}
 
 
@@ -142,10 +160,10 @@ void Player::BehaviorRootUpdate(){
 	move_ = Vector3::Mutiply(Vector3::Normalize(move_), moveSpeed_ * 3.0f);
 	move_.y = 0.0f;*/
 	move_.Normalize();
-	move_ *= (moveSpeed_ * 3.0f);
+	move_ *= moveSpeed_;
 	move_.y = 0.0f; 
 
-	if (move_.x != 0.0f or move_.z != 0.0f){
+	if (input_->GetJoystickLState()){
 		postureVec_ = move_;
 
 		Matrix4x4 directionTodirection;
@@ -165,7 +183,7 @@ void Player::BehaviorRootUpdate(){
 	Gravity();
 
 	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_){
-		behaviorRequest_ = Behavior::kDive;
+		behaviorRequest_ = Behavior::kAvoid;
 
 	}
 
@@ -179,40 +197,81 @@ void Player::BehaviorAttackUpdate(){
 
 }
 
+void Player::BehaviorAvoidInitialize(){
+	avoidTime_ = 0;
+}
+
+void Player::BehaviorAvoidUpdate(){
+	Matrix4x4 newRotateMatrix_ = playerRotateMat_;
+	move_ = { 0, 0, dashSpeed_ };
+
+	move_ = TransformNormal(move_, newRotateMatrix_);
+
+	//ダッシュの時間<frame>
+	const uint32_t behaviorDashTime = 15;
+
+	Vector3 NextPos = PLTransform_.translation_ + move_;
+
+	/*if (NextPos.x >= 97.0f or NextPos.x <= -97.0f) {
+		move_.x = 0;
+	}
+	if (NextPos.z >= 97.0f or NextPos.z <= -97.0f) {
+		move_.z = 0;
+	}*/
+	PLTransform_.translation_ += move_;
+
+	//既定の時間経過で通常状態に戻る
+	if (++avoidTime_ >= behaviorDashTime) {
+		if (input_->PushButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)){
+			behaviorRequest_ = Behavior::kDash;
+		}
+		else {
+
+			/*dashCoolTime = kDashCoolTime;
+			isDash_ = false;*/
+			behaviorRequest_ = Behavior::kRoot;
+		}
+	}
+}
+
 void Player::BehaviorDashInitialize(){
 
 }
 
 void Player::BehaviorDashUpdate(){
-
-}
-
-void Player::BehaviorDiveInitialize(){
-	isDive_ = true;
-}
-
-void Player::BehaviorDiveUpdate(){
-
 	//前フレームの向きベクトルを記録
 	frontVec_ = postureVec_;
 
 	//入力を受け取って移動
-	if (input_->GetMoveXZ().z != 0 and !isDown_) {
-		move_.z = (input_->GetMoveXZ().z / 32767.0f) * moveSpeed_;
+	if (input_->GetMoveXZ().z != 0) {
+		move_.z = (input_->GetMoveXZ().z / 32767.0f) * dashSpeed_;
 	}
 	else {
-		if (isDive_){
+
+		if (move_.z > 0.0f) {
+			move_.z -= 0.01f;
+		}
+		else if (move_.z < 0.0f) {
+			move_.z += 0.01f;
+		}
+		if (fabsf(move_.z) <= 0.01f) {
 			move_.z = 0.0f;
-		}		
+		}
 	}
 
 	//入力を受け取って移動
-	if (input_->GetMoveXZ().x != 0 and !isDown_) {
-		move_.x = (input_->GetMoveXZ().x / 32767.0f) * moveSpeed_;
+	if (input_->GetMoveXZ().x != 0) {
+		move_.x = (input_->GetMoveXZ().x / 32767.0f) * dashSpeed_;
 	}
 	else {
-		
-		if (isDive_) {
+		if (move_.x > 0.0f) {
+			move_.x -= 0.01f;
+		}
+		else if (move_.x < 0.0f) {
+			move_.x += 0.01f;
+		}
+
+		if (fabsf(move_.x) <= 0.01f) {
 			move_.x = 0.0f;
 		}
 	}
@@ -224,12 +283,11 @@ void Player::BehaviorDiveUpdate(){
 	move_.y = 0.0f;
 	move_ = Vector3::Mutiply(Vector3::Normalize(move_), moveSpeed_ * 3.0f);
 	move_.y = 0.0f;*/
-	if (isDive_) {
-		move_.Normalize();
-		move_ *= (moveSpeed_ * 3.0f);
-		move_.y = 0.0f;
-	}
-	if (move_.x != 0.0f or move_.z != 0.0f) {
+	move_.Normalize();
+	move_ *= (dashSpeed_);
+	move_.y = 0.0f;
+
+	if (input_->GetJoystickLState()) {
 		postureVec_ = move_;
 
 		Matrix4x4 directionTodirection;
@@ -238,31 +296,28 @@ void Player::BehaviorDiveUpdate(){
 		playerRotateMat_ = playerRotateMat_ * directionTodirection;
 
 	}
+	else {
+		if (!isDown_){
+			behaviorRequest_ = Behavior::kRoot;
+		}
+		
+	}
 
-	PLTransform_.translation_ += (move_ / 2.0f);
+	PLTransform_.translation_ += move_;
 
-	if (input_->TriggerButton(XINPUT_GAMEPAD_A) && !isDown_) {
-		downVector_.y += (jumpPower_ * 2.0f);
-		isDive_ = false;
+	if (input_->TriggerButton(XINPUT_GAMEPAD_A) and !isDown_) {
+		downVector_.y += jumpPower_;
 		isDown_ = true;
 	}
-	
-	if (isDown_) {
-		downVector_.y += gravityPower_;
-	}
-	else {
-		PLTransform_.translation_.y = -2.1f;
-	}
-	PLTransform_.translation_.y += downVector_.y;
-	if (isDown_ and downVector_.y <= 0.0f) {
-		behaviorRequest_ = Behavior::kRoot;
 
-	}
+	Gravity();
 
-	if (input_->ReleaseButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_) {
-		behaviorRequest_ = Behavior::kRoot;
+	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_) {
+		behaviorRequest_ = Behavior::kAvoid;
+
 	}
 }
+
 
 void Player::Respawn(){
 	PLTransform_.translation_.y = 0.0f;

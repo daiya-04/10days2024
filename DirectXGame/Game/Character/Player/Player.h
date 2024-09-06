@@ -7,7 +7,7 @@
 #include"AnimationManager.h"
 #include"Input.h"
 
-class Player{
+class Player {
 public:
 	//初期化処理
 	void Initialize();
@@ -26,8 +26,8 @@ private:
 	enum class Behavior {
 		kRoot,			//通常状態
 		kAttack,		//攻撃
-		kDash,			//ダッシュ中
-		kDive			//潜行状態
+		kAvoid,			//加速しながら回避
+		kDash			//ダッシュ中
 	};
 	//現在の状態
 	Behavior behavior_ = Behavior::kRoot;
@@ -45,14 +45,15 @@ private:
 	void BehaviorAttackInitialize();
 	//攻撃行動更新
 	void BehaviorAttackUpdate();
+	//回避行動初期化
+	void BehaviorAvoidInitialize();
+	//回避行動更新
+	void BehaviorAvoidUpdate();
 	//ダッシュ行動初期化
 	void BehaviorDashInitialize();
 	//ダッシュ行動更新
 	void BehaviorDashUpdate();
-	//潜行行動初期化
-	void BehaviorDiveInitialize();
-	//潜行行動更新
-	void BehaviorDiveUpdate();
+
 
 private:
 	//落下復帰処理
@@ -77,16 +78,16 @@ private:
 	std::unique_ptr<Particle> diveParticle_;
 
 	Animation anim_;
-	
+
 private:
 	/*重力関係*/
 
 	//重力の強さ
-	float gravityPower_ = -0.01f;
+	float gravityPower_ = -0.02f;
 	//落下のベクトル
 	Vector3 downVector_ = {};
 	//ジャンプの強さ
-	float jumpPower_ = 0.25f;
+	float jumpPower_ = 0.35f;
 
 	//落下するかどうか
 	bool isDown_ = false;
@@ -106,9 +107,16 @@ private:
 	//現在の向きベクトル
 	Vector3 postureVec_;
 	//移動速度
-	float moveSpeed_ = 0.3f;
+	float moveSpeed_ = 0.6f;
+	//ダッシュ時の移動速度
+	float dashSpeed_ = 0.8f;
+	//回避時の移動速度
+	float avoidSpeed_ = 1.0f;
+	//回避の継続時間
+	uint32_t avoidTime_ = 0;
 
 	bool isDive_ = false;
 
 };
+
 

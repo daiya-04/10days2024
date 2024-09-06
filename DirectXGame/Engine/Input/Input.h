@@ -40,12 +40,21 @@ public:
 
 	bool GetJoystickState();
 
+	bool GetJoystickLState();
+
 	Vector3 GetMoveXZ() {
 		return { (float)joyState.Gamepad.sThumbLX, 0.0f, (float)joyState.Gamepad.sThumbLY };
 	}
 
 	Vector3 GetCameraRotate() {
 		return { (float)joyState.Gamepad.sThumbRY / SHRT_MAX,(float)joyState.Gamepad.sThumbRX / SHRT_MAX,0.0f };
+	}
+
+	bool PushButton(int button) const {
+		if ((joyState.Gamepad.wButtons & button)) {
+			return true;
+		}
+		return false;
 	}
 
 	bool TriggerButton(int button) const {
