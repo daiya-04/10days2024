@@ -22,6 +22,10 @@ GameScene::~GameScene() {
 void GameScene::Init(){
   
 	camera_.Init();
+	camera_.translation_.y = 3.5f;
+	camera_.translation_.z = -10.0f;
+	camera_.rotation_.x = 0.15f;
+
 	pointLight_.Init();
 	pointLight_.intensity_ = 0.0f;
 	spotLight_.Init();
@@ -29,7 +33,6 @@ void GameScene::Init(){
 
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
-
 
 	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
 	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
@@ -42,6 +45,27 @@ void GameScene::Init(){
 	meteor_->Init(meteorModel);
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
+
+#ifdef _DEBUG
+	debugCamera_ = std::make_unique<DebugCamera>();
+#endif // _DEBUG
+
+
+	levelData_ = LevelLoader::LoadFile("stageTest");
+
+	stage_ = std::make_unique<Stage>();
+	stage_->Initialize(levelData_);
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize();
+
+	modelManager_ = ModelManager::GetInstance();
+
+	floor_ = std::make_unique<Object3d>();
+
+	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
+	floor_->worldTransform_.translation_.y = -2.0f;
+	floor_->worldTransform_.scale_ = { 100.0f,1.0f,100.0f };
 
 }
 
@@ -57,11 +81,21 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
 
+	// debugCamera
+	if (debugCamera_->Update()) {
+		camera_.translation_ = debugCamera_->GetCameraTranslate();
+		camera_.rotation_ = debugCamera_->GetCameraRotate();
+	}
+
 #endif // _DEBUG
+	floor_->worldTransform_.UpdateMatrix();
 
 	boss_->Update();
 	meteor_->Update();
+
+	player_->Update();
 	
+	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
 	camera_.UpdateMatrix();
 	pointLight_.Update();
@@ -76,8 +110,13 @@ void GameScene::DrawBackGround(){
 
 void GameScene::DrawModel(){
 
+
 	boss_->Draw(camera_);
 	meteor_->Draw(camera_);
+
+	stage_->Draw(camera_);
+	floor_->Draw(camera_);
+	player_->Draw(camera_);
 
 }
 
@@ -116,13 +155,14 @@ void GameScene::DrawRenderTexture() {
 void GameScene::DebugGUI(){
 #ifdef _DEBUG
   
+	player_->Imgui();
+
 	ImGui::Begin("camera");
 
-	ImGui::DragFloat3("pos", &camera_.translation_.x, 0.01f);
-	ImGui::DragFloat3("rotate", &camera_.rotation_.x, 0.01f);
+	ImGui::DragFloat3("trans", &camera_.translation_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &camera_.rotation_.x, 0.1f);
 
 	ImGui::End();
-
 	ImGui::Begin("Light");
 
 	if (ImGui::TreeNode("PointLight")) {

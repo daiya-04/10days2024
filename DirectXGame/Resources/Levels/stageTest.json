@@ -1,0 +1,357 @@
+{
+    "name": "scene",
+    "objects": [
+        {
+            "type": "MESH",
+            "name": "Ground右上1",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground1"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右上2",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -22.484981536865234
+                ],
+                "scaling": [
+                    15.000000953674316,
+                    15.000000953674316,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground2"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右上3",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -45.0
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground3"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右上4",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -67.50000762939453
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground4"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右下1",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    -89.99999237060547
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground5"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右下2",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    -112.50001525878906
+                ],
+                "scaling": [
+                    15.000000953674316,
+                    15.000000953674316,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground6"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右下3",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    -135.0
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground7"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground右下4",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    -157.5
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground8"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左上1",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    22.5000057220459
+                ],
+                "scaling": [
+                    15.000000953674316,
+                    15.000000953674316,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground9"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左上2",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    45.0
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground10"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左上3",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    67.50000762939453
+                ],
+                "scaling": [
+                    14.999999046325684,
+                    14.999999046325684,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground11"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左上4",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    90.00000762939453
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground12"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左下1",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    112.50001525878906
+                ],
+                "scaling": [
+                    15.000000953674316,
+                    15.000000953674316,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground13"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左下2",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    135.0
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground14"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左下3",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    157.5
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground15"
+        },
+        {
+            "type": "MESH",
+            "name": "Ground左下4",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    -179.99998474121094
+                ],
+                "scaling": [
+                    15.0,
+                    15.0,
+                    7.74388313293457
+                ]
+            },
+            "object_name": "Ground16"
+        }
+    ]
+}

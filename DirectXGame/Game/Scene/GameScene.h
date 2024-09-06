@@ -19,10 +19,12 @@
 #include "OutLine.h"
 #include "HSVFilter.h"
 #include "SkyBox.h"
+#include "Player.h"
 
 #include "Boss.h"
 #include "MeteorManager.h"
-
+#include "Stage/Stage.h"
+#include "Camera/DebugCamera.h"
 
 class GameScene : public IScene {
 public:
@@ -63,6 +65,18 @@ private:
 	std::unique_ptr<Boss> boss_;
 
 	MeteorManager* meteor_ = nullptr;
+
+	LevelData* levelData_;
+	std::unique_ptr<Stage> stage_;
+	std::unique_ptr<DebugCamera> debugCamera_;
+
+private:
+	//モデルマネージャー
+	ModelManager* modelManager_;
+	//体のモデル
+	std::unique_ptr<Object3d> floor_;
+	//プレイヤー
+	std::unique_ptr<Player> player_;
 
 };
 
