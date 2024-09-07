@@ -7,11 +7,32 @@ void Player::Initialize(){
 
 	bodyObj_->Initialize(modelManager_->LoadOBJ("box"));
 
+	rightHandObj_ = std::make_unique<Object3d>();
+
+	rightHandObj_->Initialize(modelManager_->LoadOBJ("box"));
+
+	leftHandObj_ = std::make_unique<Object3d>();
+
+	leftHandObj_->Initialize(modelManager_->LoadOBJ("box"));
+
 	input_ = Input::GetInstance();
 
 	PLTransform_.Init();
 
 	PLTransform_.scale_ = { 1.0f,1.0f,1.0f };
+
+	RHandTransform_.Init();
+
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	RHandTransform_.translation_.x = 2.0f;
+	RHandTransform_.parent_ = &bodyObj_->worldTransform_;
+
+	LHandTransform_.Init();
+
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.translation_.x = -2.0f;
+	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
+
 
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
@@ -19,9 +40,6 @@ void Player::Initialize(){
 	anim_ = AnimationManager::Load("LockOn");
 	anim_.SetAnimationSpeed(1.0f / 90.0f);
 
-	lockOnObj_ = std::make_unique<Object3d>();
-
-	lockOnObj_->Initialize(modelManager_->LoadGLTF("LockOn"));
 
 }
 
@@ -78,25 +96,22 @@ void Player::Update(){
 		frontVec_ = postureVec_;
 	}
 
-
+	//行列更新
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
-	if (isDive_) {
-		anim_.Play(lockOnObj_->GetModel()->rootNode_, true);
-		lockOnObj_->worldTransform_.translation_ = PLTransform_.translation_;
-		lockOnObj_->worldTransform_.translation_.y = 2.0f;
-		lockOnObj_->worldTransform_.UpdateMatrix();
 
-		lockOnObj_->worldTransform_.matWorld_ = anim_.GetLocalMatrix() * lockOnObj_->worldTransform_.matWorld_;
-	}
+	rightHandObj_->worldTransform_ = RHandTransform_;
+	rightHandObj_->worldTransform_.UpdateMatrix();
+
+	leftHandObj_->worldTransform_ = LHandTransform_;
+	leftHandObj_->worldTransform_.UpdateMatrix();
 }
 
 void Player::Draw(const Camera& camera) {
 
 	bodyObj_->Draw(camera);
-	if (isDive_) {
-		lockOnObj_->Draw(camera);
-	}
+	rightHandObj_->Draw(camera);
+	leftHandObj_->Draw(camera);
 }
 
 void Player::ParticleDraw(const Camera& camera){
@@ -173,7 +188,7 @@ void Player::BehaviorRootUpdate(){
 	move_.Normalize();
 	move_ *= moveSpeed_;
 	move_.y = 0.0f; 
-
+	//スティック操作していれば方向ベクトルを更新する
 	if (input_->GetJoystickLState()){
 		postureVec_ = move_;
 
@@ -185,14 +200,14 @@ void Player::BehaviorRootUpdate(){
 	}
 	
 	PLTransform_.translation_ += move_;
-
+	//Aボタンでジャンプ
 	if (input_->TriggerButton(XINPUT_GAMEPAD_A) and !isDown_) {
 		downVector_.y += jumpPower_;
 		isDown_ = true;
 	}
-
+	//重力系の処理
 	Gravity();
-
+	//RBボタンで回避ダッシュ
 	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_){
 		behaviorRequest_ = Behavior::kAvoid;
 
@@ -201,11 +216,100 @@ void Player::BehaviorRootUpdate(){
 }
 
 void Player::BehaviorAttackInitialize(){
+	workAttack_.comboNext_ = false;
+	workAttack_.attackParameter_ = 0;
+	workAttack_.nextAttackTimer_ = 21;
 
+	workAttack_.AttackTimer_ = 0;
+	WaitTime_ = WaitTimeBase_;
+	isEndAttack_ = false;
+	isShakeDown_ = false;
 }
 
 void Player::BehaviorAttackUpdate(){
+	frontVec_ = postureVec_;
 
+	if (isEndAttack_) {
+		if (workAttack_.comboNext_) {
+			workAttack_.comboIndex_++;
+
+			if (input_->GetMoveXZ().x != 0 || input_->GetMoveXZ().z != 0) {
+				postureVec_ = input_->GetMoveXZ();
+				/*Matrix4x4 newRotateMatrix = Matrix::GetInstance()->MakeRotateMatrix(viewProjection_->rotation_);
+				postureVec_ = Matrix::GetInstance()->TransformNormal(postureVec_, newRotateMatrix);*/
+				postureVec_.y = 0;
+				postureVec_.Normalize();
+				Matrix4x4 directionTodirection;
+				directionTodirection= DirectionToDirection((frontVec_), (postureVec_));
+				playerRotateMat_ = playerRotateMat_ * directionTodirection;
+
+			}
+			
+
+			if (workAttack_.comboIndex_ == 1) {
+				BehaviorAttackInitialize();
+			}
+			else if (workAttack_.comboIndex_ == 2) {
+				BehaviorSecondAttackInitialize();
+			}
+			else if (workAttack_.comboIndex_ == 3) {
+				BehaviorThirdAttackInitialize();
+			}
+			
+		}
+		else {
+
+			 {
+				if (++workAttack_.attackParameter_ >= ((float)(workAttack_.nextAttackTimer_ + motionDistance_) / motionSpeed_)) {
+
+					behaviorRequest_ = Behavior::kRoot;
+					workAttack_.attackParameter_ = 0;
+				}
+			}
+
+		}
+
+	}
+	
+	switch (workAttack_.comboIndex_) {
+	case 1:
+		AttackMotion();
+		break;
+	case 2:
+		secondAttackMotion();
+		break;
+	case 3:
+		thirdAttackMotion();
+		break;
+	default:
+		break;
+	}
+	//コンボ上限に達していない
+	if (workAttack_.comboIndex_ < conboNum_) {
+		if (input_->TriggerButton(XINPUT_GAMEPAD_X)) {
+			//コンボ有効
+			workAttack_.comboNext_ = true;
+		}
+	}
+	Gravity();
+
+	/*if (workAttack_.attackParameter_ >= 35) {
+		if (workAttack_.comboNext_) {
+
+
+		}
+		else {
+
+			workAttack_.attackParameter_ = 0;
+
+
+			behaviorRequest_ = Behavior::kRoot;
+		}
+	}*/
+
+	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		behaviorRequest_ = Behavior::kAvoid;
+	}
 }
 
 void Player::BehaviorAvoidInitialize(){
@@ -342,6 +446,57 @@ void Player::BehaviorFallingAttackUpdate(){
 		OnFloorCollision();
 		behaviorRequest_ = Behavior::kRoot;
 	}
+}
+
+void Player::BehaviorSecondAttackInitialize(){
+	workAttack_.comboNext_ = false;
+	workAttack_.attackParameter_ = 0;
+	workAttack_.nextAttackTimer_ = 28;
+
+	workAttack_.AttackTimer_ = 0;
+	WaitTime_ = WaitTimeBase_;
+	isEndAttack_ = false;
+	isShakeDown_ = false;
+}
+
+void Player::BehaviorThirdAttackInitialize(){
+	workAttack_.comboNext_ = false;
+	workAttack_.attackParameter_ = 0;
+	workAttack_.nextAttackTimer_ = 12;
+	workAttack_.AttackTimer_ = 0;
+	WaitTime_ = WaitTimeBase_;
+	isEndAttack_ = false;
+	isShakeDown_ = false;
+}
+
+void Player::AttackMotion(){
+	easeT_ += 0.08f * motionSpeed_;
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+		WaitTime_ -= 1;
+	}
+	else {
+		workAttack_.AttackTimer_++;
+	}
+
+	if (WaitTime_ <= 0) {
+		isEndAttack_ = true;
+	}
+
+	RHandTransform_.translation_.x = Ease::Easing(Ease::EaseName::EaseInBack, 3.0f, 0.0f, easeT_);
+	RHandTransform_.translation_.y = Ease::Easing(Ease::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+	}
+}
+
+void Player::secondAttackMotion(){
+
+}
+
+void Player::thirdAttackMotion(){
+
 }
 
 

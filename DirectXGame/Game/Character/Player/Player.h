@@ -59,6 +59,20 @@ private:
 	//ダッシュ行動更新
 	void BehaviorFallingAttackUpdate();
 
+private:
+	/*攻撃処理の初期化、更新*/
+	
+	//攻撃行動初期化
+	void BehaviorSecondAttackInitialize();
+	//攻撃行動
+	void BehaviorThirdAttackInitialize();
+
+	//攻撃のモーション
+	void AttackMotion();
+
+	void secondAttackMotion();
+
+	void thirdAttackMotion();
 
 private:
 	//落下復帰処理
@@ -75,8 +89,11 @@ private:
 	//体のモデル
 	std::unique_ptr<Object3d> bodyObj_;
 
-	//場所表示のモデル
-	std::unique_ptr<Object3d> lockOnObj_;
+	//右手のモデル
+	std::unique_ptr<Object3d> rightHandObj_;
+
+	//左手のモデル
+	std::unique_ptr<Object3d> leftHandObj_;
 	//キー入力
 	Input* input_;
 
@@ -102,9 +119,47 @@ private:
 	float jumpPowerAttack_ = 0.9f;
 
 private:
+	/*攻撃関連変数*/
+	struct  WorkAttack {
+		uint32_t attackParameter_ = 0;
+		//現在のコンボ段数
+		int32_t comboIndex_ = 0;
+		int32_t inComboPhase_ = 0;
+		//次の段の攻撃を有効化するかどうか
+		bool comboNext_ = false;
+		uint32_t AttackTimer_ = 0;
+		uint32_t nextAttackTimer_ = 0;
+	};
+
+	WorkAttack workAttack_;
+
+	bool endCombo_ = false;
+
+	bool isEndAttack_ = false;
+
+	bool isShakeDown_ = false;
+
+	int WaitTimeBase_ = 7;
+	int WaitTime_ = 0;
+
+	float motionDistance_ = 3.0f;
+
+	float easeT_ = 0.0f;
+
+	float motionSpeed_ = 1.0f;
+
+	int conboNum_ = 1;
+
+private:
 	/*行動関連の変数*/
-	//Behaviorで操作するトランスフォーム
+	//Behaviorで操作する本体のトランスフォーム
 	WorldTransform PLTransform_;
+
+	//Behaviorで操作する右手のトランスフォーム
+	WorldTransform RHandTransform_;
+
+	//Behaviorで操作する左手のトランスフォーム
+	WorldTransform LHandTransform_;
 
 	//移動ベクトル
 	Vector3 move_;
