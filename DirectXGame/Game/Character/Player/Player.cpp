@@ -95,16 +95,17 @@ void Player::Update(){
 	if (front == -posture) {
 		frontVec_ = postureVec_;
 	}
+	//playerRotateMatX_ = MakeRotateXMatrix(0.52f);
 
 	//行列更新
 	bodyObj_->worldTransform_ = PLTransform_;
-	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
+	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_ * playerRotateMatY_);
 
 	rightHandObj_->worldTransform_ = RHandTransform_;
-	rightHandObj_->worldTransform_.UpdateMatrix();
+	rightHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
 
 	leftHandObj_->worldTransform_ = LHandTransform_;
-	leftHandObj_->worldTransform_.UpdateMatrix();
+	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
 }
 
 void Player::Draw(const Camera& camera) {
@@ -136,6 +137,9 @@ void Player::Imgui(){
 	ImGui::DragFloat("motionSpeed", &motionSpeed_, 0.01f, 0.0f, 10.0f);
 	ImGui::DragInt("motionDistance", &(motionDistance_), 1, 0, 50);
 
+	ImGui::DragFloat3("rightHand", &RHandTransform_.translation_.x, 0.1f);
+	ImGui::DragFloat3("leftHand", &LHandTransform_.translation_.x, 0.1f);
+
 	ImGui::End();
 }
 
@@ -143,8 +147,11 @@ void Player::BehaviorRootInitialize(){
 	isDive_ = false;
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
-	RHandTransform_.translation_.x = 2.0f;
-	RHandTransform_.translation_.z = 0.0f;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
+
 }
 
 void Player::BehaviorRootUpdate(){
@@ -214,7 +221,7 @@ void Player::BehaviorRootUpdate(){
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
 
-		playerRotateMat_ = playerRotateMat_ * directionTodirection;
+		playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 	}
 	else {
@@ -254,6 +261,8 @@ void Player::BehaviorAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
 	easeT_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
 	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
@@ -276,7 +285,7 @@ void Player::BehaviorAttackUpdate(){
 				postureVec_.Normalize();
 				Matrix4x4 directionTodirection;
 				directionTodirection= DirectionToDirection((frontVec_), (postureVec_));
-				playerRotateMat_ = playerRotateMat_ * directionTodirection;
+				playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 			}
 			
@@ -349,10 +358,13 @@ void Player::BehaviorAttackUpdate(){
 
 void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
 }
 
 void Player::BehaviorAvoidUpdate(){
-	Matrix4x4 newRotateMatrix_ = playerRotateMat_;
+	Matrix4x4 newRotateMatrix_ = playerRotateMatY_;
 	move_ = { 0, 0, dashSpeed_ };
 
 	move_ = TransformNormal(move_, newRotateMatrix_);
@@ -385,6 +397,8 @@ void Player::BehaviorAvoidUpdate(){
 }
 
 void Player::BehaviorDashInitialize(){
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
 }
 
@@ -443,7 +457,7 @@ void Player::BehaviorDashUpdate(){
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
 
-		playerRotateMat_ = playerRotateMat_ * directionTodirection;
+		playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 	}
 	else {
@@ -487,6 +501,8 @@ void Player::BehaviorSecondAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
 	easeT_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
 	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
@@ -499,6 +515,8 @@ void Player::BehaviorThirdAttackInitialize(){
 	workAttack_.attackParameter_ = 0;
 	workAttack_.AttackTimer_ = 0;
 	easeT_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
@@ -528,11 +546,56 @@ void Player::AttackMotion(){
 }
 
 void Player::secondAttackMotion(){
+	easeT_ += baseAttackSpeed_ * motionSpeed_;
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+		WaitTime_ -= 1;
+	}
+	else {
+		workAttack_.AttackTimer_++;
+	}
 
+	if (WaitTime_ <= 0) {
+		isEndAttack_ = true;
+	}
+
+	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+	}
 }
 
 void Player::thirdAttackMotion(){
+	easeT_ += baseAttackSpeed_ * motionSpeed_;
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+		WaitTime_ -= 1;
+	}
+	else {
+		workAttack_.AttackTimer_++;
+	}
 
+	if (WaitTime_ <= 0) {
+		isEndAttack_ = true;
+	}
+
+	auto radian = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 0.52f, easeT_);
+
+	playerRotateMatX_ = MakeRotateXMatrix(radian);
+
+	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
+	RHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
+
+	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
+	LHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
+
+	if (easeT_ >= 1.0f) {
+		easeT_ = 1.0f;
+	}
 }
 
 

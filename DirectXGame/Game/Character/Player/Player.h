@@ -138,7 +138,7 @@ private:
 
 	bool isShakeDown_ = false;
 
-	int WaitTimeBase_ = 7;
+	int WaitTimeBase_ = 10;
 	int WaitTime_ = 0;
 
 	float baseAttackSpeed_ = 0.08f;
@@ -149,7 +149,7 @@ private:
 
 	float motionSpeed_ = 2.0f;
 
-	int conboNum_ = 1;
+	int conboNum_ = 3;
 
 private:
 	/*行動関連の変数*/
@@ -164,8 +164,11 @@ private:
 
 	//移動ベクトル
 	Vector3 move_;
-	//代入する回転行列
-	Matrix4x4 playerRotateMat_;
+	//代入する回転行列Y軸
+	Matrix4x4 playerRotateMatY_;
+
+	//代入する回転行列X軸
+	Matrix4x4 playerRotateMatX_;
 
 	//前フレームの向きベクトル
 	Vector3 frontVec_;
