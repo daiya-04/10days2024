@@ -6,6 +6,7 @@
 #include"Particle/Particle.h"
 #include"AnimationManager.h"
 #include"Input.h"
+#include"Engine/Easing/Easing.h"
 
 class Player {
 public:
@@ -124,11 +125,9 @@ private:
 		uint32_t attackParameter_ = 0;
 		//現在のコンボ段数
 		int32_t comboIndex_ = 0;
-		int32_t inComboPhase_ = 0;
 		//次の段の攻撃を有効化するかどうか
 		bool comboNext_ = false;
 		uint32_t AttackTimer_ = 0;
-		uint32_t nextAttackTimer_ = 0;
 	};
 
 	WorkAttack workAttack_;
@@ -142,11 +141,13 @@ private:
 	int WaitTimeBase_ = 7;
 	int WaitTime_ = 0;
 
-	float motionDistance_ = 3.0f;
+	float baseAttackSpeed_ = 0.08f;
+
+	int32_t motionDistance_ = 25;
 
 	float easeT_ = 0.0f;
 
-	float motionSpeed_ = 1.0f;
+	float motionSpeed_ = 2.0f;
 
 	int conboNum_ = 1;
 

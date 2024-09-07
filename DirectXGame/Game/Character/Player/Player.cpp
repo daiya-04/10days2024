@@ -133,11 +133,18 @@ void Player::Imgui(){
 	ImGui::DragFloat("gravityAttack", &gravityPowerAttack_, 0.01f);
 	ImGui::DragFloat("jumpPowerAttack", &jumpPowerAttack_, 0.01f);
 
+	ImGui::DragFloat("motionSpeed", &motionSpeed_, 0.01f, 0.0f, 10.0f);
+	ImGui::DragInt("motionDistance", &(motionDistance_), 1, 0, 50);
+
 	ImGui::End();
 }
 
 void Player::BehaviorRootInitialize(){
 	isDive_ = false;
+	workAttack_.comboIndex_ = 0;
+	workAttack_.comboNext_ = false;
+	RHandTransform_.translation_.x = 2.0f;
+	RHandTransform_.translation_.z = 0.0f;
 }
 
 void Player::BehaviorRootUpdate(){
@@ -148,6 +155,12 @@ void Player::BehaviorRootUpdate(){
 	if (input_->GetMoveXZ().z != 0) {
 		move_.z = (input_->GetMoveXZ().z / 32767.0f) * moveSpeed_;
 	}
+	/*else if (input_->PushKey(DIK_UP)){
+		move_.z += moveSpeed_;
+	}
+	else if (input_->PushKey(DIK_DOWN)) {
+		move_.z -= moveSpeed_;
+	}*/
 	else {
 
 		if (move_.z > 0.0f) {
@@ -165,6 +178,12 @@ void Player::BehaviorRootUpdate(){
 	if (input_->GetMoveXZ().x != 0) {
 		move_.x = (input_->GetMoveXZ().x / 32767.0f) * moveSpeed_;
 	}
+	/*else if (input_->PushKey(DIK_RIGHT)) {
+		move_.x += moveSpeed_;
+	}
+	else if (input_->PushKey(DIK_LEFT)) {
+		move_.x -= moveSpeed_;
+	}*/
 	else {
 		if (move_.x > 0.0f) {
 			move_.x -= 0.01f;
@@ -198,6 +217,16 @@ void Player::BehaviorRootUpdate(){
 		playerRotateMat_ = playerRotateMat_ * directionTodirection;
 
 	}
+	else {
+		/*if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
+			postureVec_ = move_;
+
+			Matrix4x4 directionTodirection;
+			directionTodirection = DirectionToDirection(frontVec_, postureVec_);
+
+			playerRotateMat_ = playerRotateMat_ * directionTodirection;
+		}*/
+	}
 	
 	PLTransform_.translation_ += move_;
 	//Aボタンでジャンプ
@@ -207,6 +236,12 @@ void Player::BehaviorRootUpdate(){
 	}
 	//重力系の処理
 	Gravity();
+	//Xボタンで攻撃
+	if (input_->TriggerButton(XINPUT_GAMEPAD_X) and !isDown_) {
+		workAttack_.comboIndex_++;
+		behaviorRequest_ = Behavior::kAttack;
+	}
+
 	//RBボタンで回避ダッシュ
 	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER) and !isDown_){
 		behaviorRequest_ = Behavior::kAvoid;
@@ -218,7 +253,7 @@ void Player::BehaviorRootUpdate(){
 void Player::BehaviorAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
-	workAttack_.nextAttackTimer_ = 21;
+	easeT_ = 0;
 
 	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
@@ -260,7 +295,7 @@ void Player::BehaviorAttackUpdate(){
 		else {
 
 			 {
-				if (++workAttack_.attackParameter_ >= ((float)(workAttack_.nextAttackTimer_ + motionDistance_) / motionSpeed_)) {
+				if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
 
 					behaviorRequest_ = Behavior::kRoot;
 					workAttack_.attackParameter_ = 0;
@@ -451,7 +486,7 @@ void Player::BehaviorFallingAttackUpdate(){
 void Player::BehaviorSecondAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
-	workAttack_.nextAttackTimer_ = 28;
+	easeT_ = 0;
 
 	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
@@ -462,15 +497,16 @@ void Player::BehaviorSecondAttackInitialize(){
 void Player::BehaviorThirdAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
-	workAttack_.nextAttackTimer_ = 12;
 	workAttack_.AttackTimer_ = 0;
+	easeT_ = 0;
+
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
 	isShakeDown_ = false;
 }
 
 void Player::AttackMotion(){
-	easeT_ += 0.08f * motionSpeed_;
+	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 		WaitTime_ -= 1;
@@ -483,8 +519,8 @@ void Player::AttackMotion(){
 		isEndAttack_ = true;
 	}
 
-	RHandTransform_.translation_.x = Ease::Easing(Ease::EaseName::EaseInBack, 3.0f, 0.0f, easeT_);
-	RHandTransform_.translation_.y = Ease::Easing(Ease::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
 
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
@@ -514,7 +550,7 @@ void Player::Gravity(){
 		downVector_.y += gravityPower_;
 	}
 
-	if (fabsf(downVector_.y) < 0.3f and input_->TriggerButton(XINPUT_GAMEPAD_X)){
+	if ((fabsf(downVector_.y) < 0.3f and input_->TriggerButton(XINPUT_GAMEPAD_X)) and isDown_) {
 		behaviorRequest_ = Behavior::kFallingAttack;
 	}
 

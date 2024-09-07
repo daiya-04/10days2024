@@ -1,9 +1,50 @@
-﻿#pragma once
+#pragma once
+#include"Vec2.h"
+#include"Vec3.h"
 
 //イージング関数チートシートサイトURL(https://easings.net/ja)
 
 class Easing {
 public:
+
+	enum class EaseName
+	{
+
+		EaseInSine,
+		EaseOutSine,
+		EaseInOutSine,
+		EaseInQuad,
+		EaseOutQuad,
+		EaseInOutQuad,
+		EaseInCubic,
+		EaseOutCubic,
+		EaseInOutCubic,
+		EaseInQuart,
+		EaseOutQuart,
+		EaseInOutQuart,
+		EaseInQuint,
+		EaseOutQuint,
+		EaseInOutQuint,
+		EaseInExpo,
+		EaseOutExpo,
+		EaseInOutExpo,
+		EaseInCirc,
+		EaseOutCirc,
+		EaseInOutCirc,
+		EaseInBack,
+		EaseOutBack,
+		EaseInOutBack,
+		EaseInElastic,
+		EaseOutElastic,
+		EaseInOutElastic,
+		EaseInBounce,
+		EaseOutBounce,
+		EaseInOutBounce,
+		Lerp
+
+	};
+
+private:
 	//1
 	static float easeInSine(float x);
 	//2
@@ -64,4 +105,16 @@ public:
 	static float easeOutBounce(float x);
 	//30
 	static float easeInOutBounce(float x);
+
+	static float SetEaseT(Easing::EaseName name, float t);
+
+public:
+
+	//float
+	static float Ease(Easing::EaseName name, const float start, const float end, float t);
+	//Vector2
+	static Vector2 Ease(Easing::EaseName name, const Vector2& start, const Vector2& end, float t);
+	//Vector3
+	static Vector3 Ease(Easing::EaseName name, const Vector3& start, const Vector3& end, float t);
+
 };
