@@ -37,8 +37,6 @@ void Player::Initialize(){
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
 
-	anim_ = AnimationManager::Load("LockOn");
-	anim_.SetAnimationSpeed(1.0f / 90.0f);
 
 
 }
@@ -64,6 +62,9 @@ void Player::Update(){
 		case Behavior::kFallingAttack:
 			BehaviorFallingAttackInitialize();
 			break;
+		case Behavior::kChargeAttack:
+			BehaviorChargeAttackInitialize();
+			break;
 		}
 
 	}
@@ -87,6 +88,9 @@ void Player::Update(){
 	case Behavior::kFallingAttack:
 		BehaviorFallingAttackUpdate();
 		break;
+	case Behavior::kChargeAttack:
+		BehaviorChargeAttackUpdate();
+		break;
 
 	}
 	auto front = frontVec_.Normalize();
@@ -95,7 +99,6 @@ void Player::Update(){
 	if (front == -posture) {
 		frontVec_ = postureVec_;
 	}
-	//playerRotateMatX_ = MakeRotateXMatrix(0.52f);
 
 	//行列更新
 	bodyObj_->worldTransform_ = PLTransform_;
@@ -144,7 +147,6 @@ void Player::Imgui(){
 }
 
 void Player::BehaviorRootInitialize(){
-	isDive_ = false;
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
@@ -264,10 +266,8 @@ void Player::BehaviorAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
-	isShakeDown_ = false;
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -302,14 +302,16 @@ void Player::BehaviorAttackUpdate(){
 			
 		}
 		else {
-
-			 {
-				if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
-
-					behaviorRequest_ = Behavior::kRoot;
-					workAttack_.attackParameter_ = 0;
-				}
+			if (workAttack_.chargeAttackNext_){
+				behaviorRequest_ = Behavior::kChargeAttack;
 			}
+			 
+			if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
+
+				behaviorRequest_ = Behavior::kRoot;
+				workAttack_.attackParameter_ = 0;
+			}
+			
 
 		}
 
@@ -334,22 +336,14 @@ void Player::BehaviorAttackUpdate(){
 			//コンボ有効
 			workAttack_.comboNext_ = true;
 		}
+		if (input_->PushButton(XINPUT_GAMEPAD_X)) {
+			//コンボ有効
+			workAttack_.chargeAttackNext_ = true;
+		}
 	}
 	Gravity();
 
-	/*if (workAttack_.attackParameter_ >= 35) {
-		if (workAttack_.comboNext_) {
-
-
-		}
-		else {
-
-			workAttack_.attackParameter_ = 0;
-
-
-			behaviorRequest_ = Behavior::kRoot;
-		}
-	}*/
+	
 
 	if (input_->TriggerButton(XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		behaviorRequest_ = Behavior::kAvoid;
@@ -504,23 +498,19 @@ void Player::BehaviorSecondAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	workAttack_.AttackTimer_ = 0;
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
-	isShakeDown_ = false;
 }
 
 void Player::BehaviorThirdAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
-	workAttack_.AttackTimer_ = 0;
 	easeT_ = 0;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
-	isShakeDown_ = false;
 }
 
 void Player::AttackMotion(){
@@ -528,9 +518,6 @@ void Player::AttackMotion(){
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 		WaitTime_ -= 1;
-	}
-	else {
-		workAttack_.AttackTimer_++;
 	}
 
 	if (WaitTime_ <= 0) {
@@ -551,9 +538,6 @@ void Player::secondAttackMotion(){
 		easeT_ = 1.0f;
 		WaitTime_ -= 1;
 	}
-	else {
-		workAttack_.AttackTimer_++;
-	}
 
 	if (WaitTime_ <= 0) {
 		isEndAttack_ = true;
@@ -572,9 +556,6 @@ void Player::thirdAttackMotion(){
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 		WaitTime_ -= 1;
-	}
-	else {
-		workAttack_.AttackTimer_++;
 	}
 
 	if (WaitTime_ <= 0) {
@@ -595,6 +576,41 @@ void Player::thirdAttackMotion(){
 
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
+	}
+}
+
+void Player::BehaviorChargeAttackInitialize(){
+	workAttack_.comboNext_ = false;
+	workAttack_.attackParameter_ = 0;
+	easeT_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	playerRotateMatYBefore_ = playerRotateMatY_;
+	chargeTime_ = 0;
+	timeRotateMat_ = Matrix4x4();
+
+	WaitTime_ = WaitTimeBase_;
+	isEndAttack_ = false;
+}
+
+void Player::BehaviorChargeAttackUpdate(){
+	if (input_->PushButton(XINPUT_GAMEPAD_X)){
+		chargeRotateSpeed_ = (chargeTime_ / 30) + 1;
+		chargeRotate_ += 0.03f * chargeRotateSpeed_;
+
+		timeRotateMat_ = MakeRotateYMatrix(chargeRotate_);
+
+		playerRotateMatY_ = playerRotateMatYBefore_ * timeRotateMat_;
+
+		chargeTime_++;
+		if (chargeTime_ >= 180) {
+			chargeTime_ = 180;
+		}
+	}
+	else {
+		playerRotateMatY_ = playerRotateMatYBefore_;
+		behaviorRequest_ = Behavior::kRoot;
 	}
 }
 

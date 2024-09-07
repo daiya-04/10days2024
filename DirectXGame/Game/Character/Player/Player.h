@@ -29,7 +29,8 @@ private:
 		kAttack,		//攻撃
 		kAvoid,			//加速しながら回避
 		kDash,			//ダッシュ中
-		kFallingAttack	//落下攻撃
+		kFallingAttack,	//落下攻撃
+		kChargeAttack	//溜め攻撃
 	};
 	//現在の状態
 	Behavior behavior_ = Behavior::kRoot;
@@ -75,6 +76,11 @@ private:
 
 	void thirdAttackMotion();
 
+	//溜め攻撃初期化
+	void BehaviorChargeAttackInitialize();
+	//溜め攻撃更新
+	void BehaviorChargeAttackUpdate();
+
 private:
 	//落下復帰処理
 	void Respawn();
@@ -100,8 +106,6 @@ private:
 
 	std::unique_ptr<Particle> diveParticle_;
 
-	Animation anim_;
-
 private:
 	/*重力関係*/
 
@@ -122,34 +126,43 @@ private:
 private:
 	/*攻撃関連変数*/
 	struct  WorkAttack {
+		//
 		uint32_t attackParameter_ = 0;
 		//現在のコンボ段数
 		int32_t comboIndex_ = 0;
 		//次の段の攻撃を有効化するかどうか
 		bool comboNext_ = false;
-		uint32_t AttackTimer_ = 0;
+		//チャージ攻撃を有効化するかどうか
+		bool chargeAttackNext_ = false;
 	};
 
 	WorkAttack workAttack_;
-
+	//現時点でのコンボが終了したかどうか
 	bool endCombo_ = false;
 
 	bool isEndAttack_ = false;
-
-	bool isShakeDown_ = false;
-
+	//攻撃後の待機時間
 	int WaitTimeBase_ = 10;
 	int WaitTime_ = 0;
-
+	//大本なる攻撃の速度
 	float baseAttackSpeed_ = 0.08f;
-
+	//モーションとモーションの隙間時間
 	int32_t motionDistance_ = 25;
-
+	//イージングに使用する変数
 	float easeT_ = 0.0f;
-
+	//モーションの速度倍率
 	float motionSpeed_ = 2.0f;
-
+	//最大コンボ数
 	int conboNum_ = 3;
+
+	//チャージ用の倍率変数
+	int32_t chargeRotateSpeed_ = 1;
+	//チャージ用の回転変数
+	float chargeRotate_ = 0.0f;
+
+	int32_t chargeTime_ = 0;
+
+
 
 private:
 	/*行動関連の変数*/
@@ -167,6 +180,12 @@ private:
 	//代入する回転行列Y軸
 	Matrix4x4 playerRotateMatY_;
 
+	//回転行動する前の回転行列Y軸
+	Matrix4x4 playerRotateMatYBefore_;
+
+	//代入する回転行列Y軸
+	Matrix4x4 timeRotateMat_;
+
 	//代入する回転行列X軸
 	Matrix4x4 playerRotateMatX_;
 
@@ -182,8 +201,6 @@ private:
 	float avoidSpeed_ = 1.0f;
 	//回避の継続時間
 	uint32_t avoidTime_ = 0;
-
-	bool isDive_ = false;
 
 };
 
