@@ -134,6 +134,8 @@ private:
 		bool comboNext_ = false;
 		//チャージ攻撃を有効化するかどうか
 		bool chargeAttackNext_ = false;
+		//チャージ攻撃に派生するための時間
+		int32_t chargeFlugTime_ = 0;
 	};
 
 	WorkAttack workAttack_;
@@ -143,6 +145,7 @@ private:
 	bool isEndAttack_ = false;
 	//攻撃後の待機時間
 	int WaitTimeBase_ = 10;
+	int WaitTimeBaseCharge_ = 20;
 	int WaitTime_ = 0;
 	//大本なる攻撃の速度
 	float baseAttackSpeed_ = 0.08f;
@@ -157,12 +160,14 @@ private:
 
 	//チャージ用の倍率変数
 	int32_t chargeRotateSpeed_ = 1;
+	//元となる回転速度
+	float beseRotateSpeed_ = 0.1f;
 	//チャージ用の回転変数
 	float chargeRotate_ = 0.0f;
-
+	//チャージ攻撃している時間
 	int32_t chargeTime_ = 0;
-
-
+	//チャージ攻撃中か
+	bool isCharge_ = false;
 
 private:
 	/*行動関連の変数*/
@@ -175,20 +180,19 @@ private:
 	//Behaviorで操作する左手のトランスフォーム
 	WorldTransform LHandTransform_;
 
+	//溜め攻撃をするときの右手のトランスフォーム
+	WorldTransform RRotateHandTransform_;
+
 	//移動ベクトル
 	Vector3 move_;
 	//代入する回転行列Y軸
 	Matrix4x4 playerRotateMatY_;
 
-	//回転行動する前の回転行列Y軸
-	Matrix4x4 playerRotateMatYBefore_;
-
-	//代入する回転行列Y軸
-	Matrix4x4 timeRotateMat_;
-
 	//代入する回転行列X軸
 	Matrix4x4 playerRotateMatX_;
 
+	//右腕の回転行列
+	Matrix4x4 rightHandRotateMat_;
 	//前フレームの向きベクトル
 	Vector3 frontVec_;
 	//現在の向きベクトル

@@ -116,4 +116,14 @@ public:
 
 		return p;
 	}
+
+	friend inline Vector3 CatmullRom(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
+		Vector3 result{};
+		result =
+			((p0 * -1.0f + p1 * 3.0f + p2 * -3.0f + p3) * std::powf(t, 3.0f) +
+				(p0 * 2.0f + p1 * -5.0f + p2 * 4.0f + p3 * -1.0f) * std::powf(t, 2.0f) +
+				(p0 * -1.0f + p2) * t + p1 * 2.0f) * 0.5f;
+
+		return result;
+	}
 };

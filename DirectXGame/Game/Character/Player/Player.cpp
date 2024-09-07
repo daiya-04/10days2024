@@ -27,12 +27,17 @@ void Player::Initialize(){
 	RHandTransform_.translation_.x = 2.0f;
 	RHandTransform_.parent_ = &bodyObj_->worldTransform_;
 
+	RRotateHandTransform_.Init();
+
+	RRotateHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	RRotateHandTransform_.translation_.y = 3.0f;
+	RRotateHandTransform_.parent_ = &RHandTransform_;
+
 	LHandTransform_.Init();
 
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.translation_.x = -2.0f;
 	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
-
 
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
@@ -104,8 +109,19 @@ void Player::Update(){
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_ * playerRotateMatY_);
 
-	rightHandObj_->worldTransform_ = RHandTransform_;
-	rightHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+	if (isCharge_) {
+		rightHandRotateMat_ = MakeRotateXMatrix(chargeRotate_);
+
+		RHandTransform_.UpdateMatrixRotate(rightHandRotateMat_ * playerRotateMatX_.Inverse());
+
+		rightHandObj_->worldTransform_ = RRotateHandTransform_;
+		rightHandObj_->worldTransform_.UpdateMatrix();
+	}
+	else {
+		rightHandObj_->worldTransform_ = RHandTransform_;
+		rightHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+
+	}
 
 	leftHandObj_->worldTransform_ = LHandTransform_;
 	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
@@ -143,6 +159,8 @@ void Player::Imgui(){
 	ImGui::DragFloat3("rightHand", &RHandTransform_.translation_.x, 0.1f);
 	ImGui::DragFloat3("leftHand", &LHandTransform_.translation_.x, 0.1f);
 
+	ImGui::DragFloat("RotateSpeed", &beseRotateSpeed_, 0.01f, 0.0f, 3.14f);
+
 	ImGui::End();
 }
 
@@ -151,6 +169,10 @@ void Player::BehaviorRootInitialize(){
 	workAttack_.comboNext_ = false;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
 
 	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
 
@@ -268,6 +290,10 @@ void Player::BehaviorAttackInitialize(){
 
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -303,6 +329,7 @@ void Player::BehaviorAttackUpdate(){
 		}
 		else {
 			if (workAttack_.chargeAttackNext_){
+				workAttack_.chargeFlugTime_ = 0;
 				behaviorRequest_ = Behavior::kChargeAttack;
 			}
 			 
@@ -336,9 +363,13 @@ void Player::BehaviorAttackUpdate(){
 			//コンボ有効
 			workAttack_.comboNext_ = true;
 		}
-		if (input_->PushButton(XINPUT_GAMEPAD_X)) {
-			//コンボ有効
-			workAttack_.chargeAttackNext_ = true;
+		else if (input_->PushButton(XINPUT_GAMEPAD_X)) {
+			workAttack_.chargeFlugTime_++;
+			if (workAttack_.chargeFlugTime_ >= 20) {
+				//コンボ有効
+				workAttack_.chargeAttackNext_ = true;
+			}
+			
 		}
 	}
 	Gravity();
@@ -500,6 +531,10 @@ void Player::BehaviorSecondAttackInitialize(){
 
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
 }
 
 void Player::BehaviorThirdAttackInitialize(){
@@ -511,6 +546,10 @@ void Player::BehaviorThirdAttackInitialize(){
 
 	WaitTime_ = WaitTimeBase_;
 	isEndAttack_ = false;
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
 }
 
 void Player::AttackMotion(){
@@ -585,23 +624,19 @@ void Player::BehaviorChargeAttackInitialize(){
 	easeT_ = 0;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
-
-	playerRotateMatYBefore_ = playerRotateMatY_;
+	isCharge_ = true;
+	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
-	timeRotateMat_ = Matrix4x4();
 
-	WaitTime_ = WaitTimeBase_;
+	WaitTime_ = WaitTimeBaseCharge_;
 	isEndAttack_ = false;
 }
 
 void Player::BehaviorChargeAttackUpdate(){
 	if (input_->PushButton(XINPUT_GAMEPAD_X)){
 		chargeRotateSpeed_ = (chargeTime_ / 30) + 1;
-		chargeRotate_ += 0.03f * chargeRotateSpeed_;
+		chargeRotate_ += beseRotateSpeed_ * chargeRotateSpeed_;
 
-		timeRotateMat_ = MakeRotateYMatrix(chargeRotate_);
-
-		playerRotateMatY_ = playerRotateMatYBefore_ * timeRotateMat_;
 
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
@@ -609,8 +644,25 @@ void Player::BehaviorChargeAttackUpdate(){
 		}
 	}
 	else {
-		playerRotateMatY_ = playerRotateMatYBefore_;
-		behaviorRequest_ = Behavior::kRoot;
+		isCharge_ = false;
+		easeT_ += baseAttackSpeed_ * motionSpeed_;
+		if (easeT_ >= 1.0f) {
+			easeT_ = 1.0f;
+			WaitTime_ -= 1;
+		}
+
+		if (WaitTime_ <= 0) {
+			behaviorRequest_ = Behavior::kRoot;
+		}
+
+		RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
+		RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, 6.0f, easeT_);
+
+		if (easeT_ >= 1.0f) {
+			easeT_ = 1.0f;
+		}
+
+		
 	}
 }
 
