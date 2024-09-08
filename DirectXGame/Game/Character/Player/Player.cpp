@@ -1,6 +1,51 @@
 #include "Player.h"
 
+void Player::SetGlobalVariables(){
+	GlobalVariables* global = GlobalVariables::GetInstance();
+	//グループの追加
+	global->CreateGroup(groupName_);
+	//項目の追加
+	global->AddItem(groupName_, "moveSpeed", moveSpeed_);
+	global->AddItem(groupName_, "dashSpeed", dashSpeed_);
+	global->AddItem(groupName_, "avoidSpeed", avoidSpeed_);
+
+	global->AddItem(groupName_, "gravityPower", gravityPower_);
+	global->AddItem(groupName_, "jumpPower", jumpPower_);
+	global->AddItem(groupName_, "gravityPowerAttack", gravityPowerAttack_);
+	global->AddItem(groupName_, "jumpPowerAttack", jumpPowerAttack_);
+	global->AddItem(groupName_, "waitTimeBase", waitTimeBase_);
+	global->AddItem(groupName_, "waitTimeBaseCharge", waitTimeBaseCharge_);
+	global->AddItem(groupName_, "baseAttackSpeed", baseAttackSpeed_);
+	global->AddItem(groupName_, "motionDistance", motionDistance_);
+	global->AddItem(groupName_, "motionSpeed", motionSpeed_);
+	global->AddItem(groupName_, "beseRotateSpeed", beseRotateSpeed_);
+
+}
+
+void Player::ApplyGlobalVariables(){
+	GlobalVariables* global = GlobalVariables::GetInstance();
+	//項目の追加
+	moveSpeed_ = global->GetFloatValue(groupName_, "moveSpeed");
+	dashSpeed_ = global->GetFloatValue(groupName_, "dashSpeed");
+	avoidSpeed_ = global->GetFloatValue(groupName_, "avoidSpeed");
+
+	gravityPower_ = global->GetFloatValue(groupName_, "gravityPower");
+	jumpPower_ = global->GetFloatValue(groupName_, "jumpPower");
+	gravityPowerAttack_ = global->GetFloatValue(groupName_, "gravityPowerAttack");
+	jumpPowerAttack_ = global->GetFloatValue(groupName_, "jumpPowerAttack");
+	waitTimeBase_ = global->GetIntValue(groupName_, "waitTimeBase");
+	waitTimeBaseCharge_ = global->GetIntValue(groupName_, "waitTimeBaseCharge");
+	baseAttackSpeed_ = global->GetFloatValue(groupName_, "baseAttackSpeed");
+	motionDistance_ = global->GetIntValue(groupName_, "motionDistance");
+	motionSpeed_ = global->GetFloatValue(groupName_, "motionSpeed");
+	beseRotateSpeed_ = global->GetFloatValue(groupName_, "beseRotateSpeed");
+
+}
+
+
 void Player::Initialize(){
+	SetGlobalVariables();
+
 	modelManager_ = ModelManager::GetInstance();
 
 	bodyObj_ = std::make_unique<Object3d>();
@@ -20,6 +65,7 @@ void Player::Initialize(){
 	PLTransform_.Init();
 
 	PLTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	PLTransform_.translation_.z = -10.0f;
 
 	RHandTransform_.Init();
 
@@ -47,6 +93,8 @@ void Player::Initialize(){
 }
 
 void Player::Update(){
+	ApplyGlobalVariables();
+
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -239,8 +287,11 @@ void Player::BehaviorRootUpdate(){
 	move_ *= moveSpeed_;
 	move_.y = 0.0f; 
 	//スティック操作していれば方向ベクトルを更新する
-	if (input_->GetJoystickLState()){
+	if (input_->GetJoystickLState() and (move_ != Vector3(0.0f,0.0f,0.0f))) {
 		postureVec_ = move_;
+		postureVec_.y = 0;
+		postureVec_.Normalize();
+		postureVec_.y = 0;
 
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
@@ -248,16 +299,19 @@ void Player::BehaviorRootUpdate(){
 		playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 	}
-	else {
-		/*if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
+	/*else {
+		if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
 			postureVec_ = move_;
+			postureVec_.y = 0;
+			postureVec_.Normalize();
+			postureVec_.y = 0;
 
 			Matrix4x4 directionTodirection;
 			directionTodirection = DirectionToDirection(frontVec_, postureVec_);
 
-			playerRotateMat_ = playerRotateMat_ * directionTodirection;
-		}*/
-	}
+			playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
+		}
+	}*/
 	
 	PLTransform_.translation_ += move_;
 	//Aボタンでジャンプ
@@ -288,7 +342,7 @@ void Player::BehaviorAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -309,6 +363,7 @@ void Player::BehaviorAttackUpdate(){
 				postureVec_ = Matrix::GetInstance()->TransformNormal(postureVec_, newRotateMatrix);*/
 				postureVec_.y = 0;
 				postureVec_.Normalize();
+				postureVec_.y = 0;
 				Matrix4x4 directionTodirection;
 				directionTodirection= DirectionToDirection((frontVec_), (postureVec_));
 				playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
@@ -422,8 +477,16 @@ void Player::BehaviorAvoidUpdate(){
 }
 
 void Player::BehaviorDashInitialize(){
+	workAttack_.comboIndex_ = 0;
+	workAttack_.comboNext_ = false;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
+
+	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
 
 }
 
@@ -476,8 +539,11 @@ void Player::BehaviorDashUpdate(){
 	move_ *= (dashSpeed_);
 	move_.y = 0.0f;
 
-	if (input_->GetJoystickLState()) {
+	if (input_->GetJoystickLState() and (move_ != Vector3(0.0f, 0.0f, 0.0f))) {
 		postureVec_ = move_;
+		postureVec_.y = 0;
+		postureVec_.Normalize();
+		postureVec_.y = 0;
 
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
@@ -500,6 +566,11 @@ void Player::BehaviorDashUpdate(){
 	}
 
 	Gravity();
+	//Xボタンで攻撃
+	if (input_->TriggerButton(Input::Button::X) and !isDown_) {
+		workAttack_.comboIndex_++;
+		behaviorRequest_ = Behavior::kAttack;
+	}
 
 	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_) {
 		behaviorRequest_ = Behavior::kAvoid;
@@ -529,7 +600,7 @@ void Player::BehaviorSecondAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -544,7 +615,7 @@ void Player::BehaviorThirdAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -556,10 +627,10 @@ void Player::AttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -575,10 +646,10 @@ void Player::secondAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -594,10 +665,10 @@ void Player::thirdAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -628,7 +699,7 @@ void Player::BehaviorChargeAttackInitialize(){
 	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
 
-	WaitTime_ = WaitTimeBaseCharge_;
+	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
 }
 
@@ -648,10 +719,10 @@ void Player::BehaviorChargeAttackUpdate(){
 		easeT_ += baseAttackSpeed_ * motionSpeed_;
 		if (easeT_ >= 1.0f) {
 			easeT_ = 1.0f;
-			WaitTime_ -= 1;
+			waitTime_ -= 1;
 		}
 
-		if (WaitTime_ <= 0) {
+		if (waitTime_ <= 0) {
 			behaviorRequest_ = Behavior::kRoot;
 		}
 
@@ -704,7 +775,9 @@ void Player::StageClampCollision(const Vector3& centerTarget) {
 	const float kMin = 10.0f;
 
 	// 中央から現在地のベクトルを取得
-	Vector3 vec = bodyObj_->worldTransform_.translation_ - centerTarget;
+	Vector3 vec = PLTransform_.translation_ - centerTarget;
+	//高さに関係なくするためにｙを打ち消す
+	vec.y = 0;
 	// 長さを取得し、クランプ
 	float length = vec.Length();
 
@@ -719,7 +792,7 @@ void Player::StageClampCollision(const Vector3& centerTarget) {
 	}
 
 	if (flag) {
-		bodyObj_->worldTransform_.translation_ = vec;
-		bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
+		PLTransform_.translation_ = { vec.x,PLTransform_.translation_.y,vec.z };
+		PLTransform_.UpdateMatrixRotate(playerRotateMatY_);
 	}
 }
