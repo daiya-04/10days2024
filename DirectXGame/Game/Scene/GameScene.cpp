@@ -90,10 +90,13 @@ void GameScene::Update() {
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
 
+	stage_->Update();
+
 	boss_->Update();
 	meteor_->Update();
 
 	player_->Update();
+	player_->StageClampCollision(Vector3(0.0f, 0.0f, 0.0f));
 	
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
@@ -115,7 +118,7 @@ void GameScene::DrawModel(){
 	meteor_->Draw(camera_);
 
 	stage_->Draw(camera_);
-	floor_->Draw(camera_);
+	//floor_->Draw(camera_);
 	player_->Draw(camera_);
 
 }

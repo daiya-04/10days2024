@@ -9,10 +9,12 @@ public:
 
 	void Initialize(const LevelData* data);
 
+	void Update();
+
 	void Draw(const Camera& camera);
 
 private:
 
-	std::array<std::unique_ptr<Ground>, 3> grounds_;
+	std::array<std::unique_ptr<Ground>, 1> grounds_;
 
 };
