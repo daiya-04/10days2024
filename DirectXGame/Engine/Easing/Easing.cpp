@@ -171,3 +171,132 @@ float Easing::easeInOutBounce(float x) {
 		? (1.0f - easeOutBounce(1.0f - 2.0f * x)) / 2.0f
 		: (1.0f + easeOutBounce(2.0f * x - 1.0f)) / 2.0f;
 }
+
+float Easing::SetEaseT(Easing::EaseName name, float t){
+
+	switch (name)
+	{
+	case Easing::EaseName::EaseInSine:
+		return easeInSine(t);
+		break;
+	case Easing::EaseName::EaseOutSine:
+		return easeOutSine(t);
+		break;
+	case Easing::EaseName::EaseInOutSine:
+		return easeInOutSine(t);
+		break;
+	case Easing::EaseName::EaseInQuad:
+		return easeInQuad(t);
+		break;
+	case Easing::EaseName::EaseOutQuad:
+		return easeOutQuad(t);
+		break;
+	case Easing::EaseName::EaseInOutQuad:
+		return easeInOutQuad(t);
+		break;
+	case Easing::EaseName::EaseInCubic:
+		return easeInCubic(t);
+		break;
+	case Easing::EaseName::EaseOutCubic:
+		return easeOutCubic(t);
+		break;
+	case Easing::EaseName::EaseInOutCubic:
+		return easeInOutCubic(t);
+		break;
+	case Easing::EaseName::EaseInQuart:
+		return easeInQuart(t);
+		break;
+	case Easing::EaseName::EaseOutQuart:
+		return easeOutQuart(t);
+		break;
+	case Easing::EaseName::EaseInOutQuart:
+		return easeInOutQuart(t);
+		break;
+	case Easing::EaseName::EaseInQuint:
+		return easeInQuint(t);
+		break;
+	case Easing::EaseName::EaseOutQuint:
+		return easeOutQuint(t);
+		break;
+	case Easing::EaseName::EaseInOutQuint:
+		return easeInOutQuint(t);
+		break;
+	case Easing::EaseName::EaseInExpo:
+		return easeInExpo(t);
+		break;
+	case Easing::EaseName::EaseOutExpo:
+		return easeOutExpo(t);
+		break;
+	case Easing::EaseName::EaseInOutExpo:
+		return easeInOutExpo(t);
+		break;
+	case Easing::EaseName::EaseInCirc:
+		return easeInCirc(t);
+		break;
+	case Easing::EaseName::EaseOutCirc:
+		return easeOutCirc(t);
+		break;
+	case Easing::EaseName::EaseInOutCirc:
+		return easeInOutCirc(t);
+		break;
+	case Easing::EaseName::EaseInBack:
+		return easeInBack(t);
+		break;
+	case Easing::EaseName::EaseOutBack:
+		return easeOutBack(t);
+		break;
+	case Easing::EaseName::EaseInOutBack:
+		return easeInOutBack(t);
+		break;
+	case Easing::EaseName::EaseInElastic:
+		return easeInElastic(t);
+		break;
+	case Easing::EaseName::EaseOutElastic:
+		return easeOutElastic(t);
+		break;
+	case Easing::EaseName::EaseInOutElastic:
+		return easeInOutElastic(t);
+		break;
+	case Easing::EaseName::EaseInBounce:
+		return easeInBounce(t);
+		break;
+	case Easing::EaseName::EaseOutBounce:
+		return easeOutBounce(t);
+		break;
+	case Easing::EaseName::EaseInOutBounce:
+		return easeInOutBounce(t);
+		break;
+	default:
+		return t;
+		break;
+	}
+
+	return 0.0f;
+}
+
+float Easing::Ease(Easing::EaseName name, const float start, const float end, float t){
+	float easeT = SetEaseT(name, t);
+
+	return 	(1.0f - easeT) * start + easeT * end;
+}
+
+Vector2 Easing::Ease(Easing::EaseName name, const Vector2& start, const Vector2& end, float t){
+	float easeT = SetEaseT(name, t);
+
+	Vector2 result;
+	result.x = (1.0f - easeT) * start.x + easeT * end.x;
+	result.y = (1.0f - easeT) * start.y + easeT * end.y;
+
+	return result;
+}
+
+Vector3 Easing::Ease(Easing::EaseName name, const Vector3& start, const Vector3& end, float t){
+	float easeT = SetEaseT(name, t);
+
+	Vector3 result;
+	result.x = (1.0f - easeT) * start.x + easeT * end.x;
+	result.y = (1.0f - easeT) * start.y + easeT * end.y;
+	result.z = (1.0f - easeT) * start.z + easeT * end.z;
+
+	return result;
+}
