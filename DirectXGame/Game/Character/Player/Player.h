@@ -62,6 +62,8 @@ private:
 	void Gravity();
 	//床に当たったときの反応処理
 	void OnFloorCollision();
+
+public: // とりあえずGameSceneで角
 	//Stageとの衝突判定Clamp 中心点(原点)
 	void StageClampCollision(const Vector3& centerTarget);
 

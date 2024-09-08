@@ -350,7 +350,7 @@ void Player::StageClampCollision(const Vector3& centerTarget) {
 	const float kMin = 10.0f;
 
 	// 中央から現在地のベクトルを取得
-	Vector3 vec = PLTransform_.translation_ - centerTarget;
+	Vector3 vec = bodyObj_->worldTransform_.translation_ - centerTarget;
 	// 長さを取得し、クランプ
 	float length = vec.Length();
 
@@ -365,7 +365,7 @@ void Player::StageClampCollision(const Vector3& centerTarget) {
 	}
 
 	if (flag) {
-		PLTransform_.translation_ = vec;
-		PLTransform_.UpdateMatrix();
+		bodyObj_->worldTransform_.translation_ = vec;
+		bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMat_);
 	}
 }

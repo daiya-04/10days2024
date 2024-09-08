@@ -96,6 +96,7 @@ void GameScene::Update() {
 	meteor_->Update();
 
 	player_->Update();
+	player_->StageClampCollision(Vector3(0.0f, 0.0f, 0.0f));
 	
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
