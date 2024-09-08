@@ -11,8 +11,13 @@ void Stage::Initialize(const LevelData* data) {
 	for (auto& ground : grounds_) {
 		ground = std::make_unique<Ground>();
 		ground->Initialize(data, { stagePiece }, transform);
-		transform.translation_.y += 50.0f;
 		transform.UpdateMatrix();
+	}
+}
+
+void Stage::Update() {
+	for (auto& ground : grounds_) {
+		ground->Update();
 	}
 }
 

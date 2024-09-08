@@ -90,6 +90,8 @@ void GameScene::Update() {
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
 
+	stage_->Update();
+
 	boss_->Update();
 	meteor_->Update();
 
@@ -115,7 +117,7 @@ void GameScene::DrawModel(){
 	meteor_->Draw(camera_);
 
 	stage_->Draw(camera_);
-	floor_->Draw(camera_);
+	//floor_->Draw(camera_);
 	player_->Draw(camera_);
 
 }

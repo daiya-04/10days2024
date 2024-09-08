@@ -17,4 +17,5 @@ private:
 	std::vector<std::unique_ptr<GroundPiece>> pieces_;
 	WorldTransform transform_; // 地面の親world座標
 
+
 };
