@@ -105,6 +105,8 @@ private:
 	Input* input_;
 
 	std::unique_ptr<Particle> diveParticle_;
+	//プレイヤーの基本となる回転軸
+	const Vector3 baseAxis_ = { 0.0f,1.0f,0.0f };
 
 private:
 	/*重力関係*/

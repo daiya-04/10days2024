@@ -239,8 +239,11 @@ void Player::BehaviorRootUpdate(){
 	move_ *= moveSpeed_;
 	move_.y = 0.0f; 
 	//スティック操作していれば方向ベクトルを更新する
-	if (input_->GetJoystickLState()){
+	if (input_->GetJoystickLState() and (move_ != Vector3(0.0f,0.0f,0.0f))) {
 		postureVec_ = move_;
+		postureVec_.y = 0;
+		postureVec_.Normalize();
+		postureVec_.y = 0;
 
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
@@ -248,16 +251,19 @@ void Player::BehaviorRootUpdate(){
 		playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 	}
-	else {
-		/*if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
+	/*else {
+		if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
 			postureVec_ = move_;
+			postureVec_.y = 0;
+			postureVec_.Normalize();
+			postureVec_.y = 0;
 
 			Matrix4x4 directionTodirection;
 			directionTodirection = DirectionToDirection(frontVec_, postureVec_);
 
-			playerRotateMat_ = playerRotateMat_ * directionTodirection;
-		}*/
-	}
+			playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
+		}
+	}*/
 	
 	PLTransform_.translation_ += move_;
 	//Aボタンでジャンプ
@@ -309,6 +315,7 @@ void Player::BehaviorAttackUpdate(){
 				postureVec_ = Matrix::GetInstance()->TransformNormal(postureVec_, newRotateMatrix);*/
 				postureVec_.y = 0;
 				postureVec_.Normalize();
+				postureVec_.y = 0;
 				Matrix4x4 directionTodirection;
 				directionTodirection= DirectionToDirection((frontVec_), (postureVec_));
 				playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
@@ -422,8 +429,16 @@ void Player::BehaviorAvoidUpdate(){
 }
 
 void Player::BehaviorDashInitialize(){
+	workAttack_.comboIndex_ = 0;
+	workAttack_.comboNext_ = false;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	isCharge_ = false;
+	workAttack_.chargeAttackNext_ = false;
+	workAttack_.chargeFlugTime_ = 0;
+
+	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
 
 }
 
@@ -476,8 +491,11 @@ void Player::BehaviorDashUpdate(){
 	move_ *= (dashSpeed_);
 	move_.y = 0.0f;
 
-	if (input_->GetJoystickLState()) {
+	if (input_->GetJoystickLState() and (move_ != Vector3(0.0f, 0.0f, 0.0f))) {
 		postureVec_ = move_;
+		postureVec_.y = 0;
+		postureVec_.Normalize();
+		postureVec_.y = 0;
 
 		Matrix4x4 directionTodirection;
 		directionTodirection = DirectionToDirection(frontVec_, postureVec_);
@@ -500,6 +518,11 @@ void Player::BehaviorDashUpdate(){
 	}
 
 	Gravity();
+	//Xボタンで攻撃
+	if (input_->TriggerButton(Input::Button::X) and !isDown_) {
+		workAttack_.comboIndex_++;
+		behaviorRequest_ = Behavior::kAttack;
+	}
 
 	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_) {
 		behaviorRequest_ = Behavior::kAvoid;

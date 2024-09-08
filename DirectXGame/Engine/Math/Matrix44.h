@@ -305,6 +305,9 @@ public:
 
 
 		result.m[0][0] = std::powf(axis.x, 2) * (1.0f - cos) + cos;
+		if (std::isnan(result.m[0][0])) {
+			return MakeIdentity44();
+		}
 		result.m[0][1] = axis.x * axis.y * (1.0f - cos) + axis.z * sin;
 		result.m[0][2] = axis.x * axis.z * (1.0f - cos) - axis.y * sin;
 
@@ -318,6 +321,7 @@ public:
 
 		return result;
 	}
+
 
 	inline Vector3 MakeScale(const Matrix4x4& matrix) {
 
