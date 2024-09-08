@@ -7,9 +7,15 @@
 #include"AnimationManager.h"
 #include"Input.h"
 #include"Engine/Easing/Easing.h"
+#include"Engine/DebugText/GlobalVariables.h"
 
 class Player {
 public:
+	//調整項目の代入
+	void ApplyGlobalVariables();
+
+	//調整項目の追加
+	void SetGlobalVariables();
 	//初期化処理
 	void Initialize();
 	//更新処理
@@ -108,6 +114,8 @@ private:
 	//プレイヤーの基本となる回転軸
 	const Vector3 baseAxis_ = { 0.0f,1.0f,0.0f };
 
+	const char* groupName_ = "Player";
+
 private:
 	/*重力関係*/
 
@@ -146,9 +154,9 @@ private:
 
 	bool isEndAttack_ = false;
 	//攻撃後の待機時間
-	int WaitTimeBase_ = 10;
-	int WaitTimeBaseCharge_ = 20;
-	int WaitTime_ = 0;
+	int waitTimeBase_ = 10;
+	int waitTimeBaseCharge_ = 20;
+	int waitTime_ = 0;
 	//大本なる攻撃の速度
 	float baseAttackSpeed_ = 0.08f;
 	//モーションとモーションの隙間時間
@@ -158,7 +166,7 @@ private:
 	//モーションの速度倍率
 	float motionSpeed_ = 2.0f;
 	//最大コンボ数
-	int conboNum_ = 3;
+	const int conboNum_ = 3;
 
 	//チャージ用の倍率変数
 	int32_t chargeRotateSpeed_ = 1;

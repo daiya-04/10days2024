@@ -1,6 +1,51 @@
 #include "Player.h"
 
+void Player::SetGlobalVariables(){
+	GlobalVariables* global = GlobalVariables::GetInstance();
+	//グループの追加
+	global->CreateGroup(groupName_);
+	//項目の追加
+	global->AddItem(groupName_, "moveSpeed", moveSpeed_);
+	global->AddItem(groupName_, "dashSpeed", dashSpeed_);
+	global->AddItem(groupName_, "avoidSpeed", avoidSpeed_);
+
+	global->AddItem(groupName_, "gravityPower", gravityPower_);
+	global->AddItem(groupName_, "jumpPower", jumpPower_);
+	global->AddItem(groupName_, "gravityPowerAttack", gravityPowerAttack_);
+	global->AddItem(groupName_, "jumpPowerAttack", jumpPowerAttack_);
+	global->AddItem(groupName_, "waitTimeBase", waitTimeBase_);
+	global->AddItem(groupName_, "waitTimeBaseCharge", waitTimeBaseCharge_);
+	global->AddItem(groupName_, "baseAttackSpeed", baseAttackSpeed_);
+	global->AddItem(groupName_, "motionDistance", motionDistance_);
+	global->AddItem(groupName_, "motionSpeed", motionSpeed_);
+	global->AddItem(groupName_, "beseRotateSpeed", beseRotateSpeed_);
+
+}
+
+void Player::ApplyGlobalVariables(){
+	GlobalVariables* global = GlobalVariables::GetInstance();
+	//項目の追加
+	moveSpeed_ = global->GetFloatValue(groupName_, "moveSpeed");
+	dashSpeed_ = global->GetFloatValue(groupName_, "dashSpeed");
+	avoidSpeed_ = global->GetFloatValue(groupName_, "avoidSpeed");
+
+	gravityPower_ = global->GetFloatValue(groupName_, "gravityPower");
+	jumpPower_ = global->GetFloatValue(groupName_, "jumpPower");
+	gravityPowerAttack_ = global->GetFloatValue(groupName_, "gravityPowerAttack");
+	jumpPowerAttack_ = global->GetFloatValue(groupName_, "jumpPowerAttack");
+	waitTimeBase_ = global->GetIntValue(groupName_, "waitTimeBase");
+	waitTimeBaseCharge_ = global->GetIntValue(groupName_, "waitTimeBaseCharge");
+	baseAttackSpeed_ = global->GetFloatValue(groupName_, "baseAttackSpeed");
+	motionDistance_ = global->GetIntValue(groupName_, "motionDistance");
+	motionSpeed_ = global->GetFloatValue(groupName_, "motionSpeed");
+	beseRotateSpeed_ = global->GetFloatValue(groupName_, "beseRotateSpeed");
+
+}
+
+
 void Player::Initialize(){
+	SetGlobalVariables();
+
 	modelManager_ = ModelManager::GetInstance();
 
 	bodyObj_ = std::make_unique<Object3d>();
@@ -47,6 +92,8 @@ void Player::Initialize(){
 }
 
 void Player::Update(){
+	ApplyGlobalVariables();
+
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -294,7 +341,7 @@ void Player::BehaviorAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -552,7 +599,7 @@ void Player::BehaviorSecondAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -567,7 +614,7 @@ void Player::BehaviorThirdAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
-	WaitTime_ = WaitTimeBase_;
+	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
 	isCharge_ = false;
@@ -579,10 +626,10 @@ void Player::AttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -598,10 +645,10 @@ void Player::secondAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -617,10 +664,10 @@ void Player::thirdAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
-		WaitTime_ -= 1;
+		waitTime_ -= 1;
 	}
 
-	if (WaitTime_ <= 0) {
+	if (waitTime_ <= 0) {
 		isEndAttack_ = true;
 	}
 
@@ -651,7 +698,7 @@ void Player::BehaviorChargeAttackInitialize(){
 	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
 
-	WaitTime_ = WaitTimeBaseCharge_;
+	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
 }
 
@@ -671,10 +718,10 @@ void Player::BehaviorChargeAttackUpdate(){
 		easeT_ += baseAttackSpeed_ * motionSpeed_;
 		if (easeT_ >= 1.0f) {
 			easeT_ = 1.0f;
-			WaitTime_ -= 1;
+			waitTime_ -= 1;
 		}
 
-		if (WaitTime_ <= 0) {
+		if (waitTime_ <= 0) {
 			behaviorRequest_ = Behavior::kRoot;
 		}
 
