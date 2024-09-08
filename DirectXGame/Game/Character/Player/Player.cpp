@@ -344,3 +344,28 @@ void Player::OnFloorCollision(){
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
 }
+
+void Player::StageClampCollision(const Vector3& centerTarget) {
+	const float kMax = 20.0f;
+	const float kMin = 10.0f;
+
+	// 中央から現在地のベクトルを取得
+	Vector3 vec = PLTransform_.translation_ - centerTarget;
+	// 長さを取得し、クランプ
+	float length = vec.Length();
+
+	bool flag = false;
+	if (length <= kMin) {
+		vec = vec.Normalize() * kMin;
+		flag = true;
+	}
+	else if (length >= kMax) {
+		vec = vec.Normalize() * kMax;
+		flag = true;
+	}
+
+	if (flag) {
+		PLTransform_.translation_ = vec;
+		PLTransform_.UpdateMatrix();
+	}
+}
