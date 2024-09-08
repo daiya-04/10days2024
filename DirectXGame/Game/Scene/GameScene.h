@@ -62,12 +62,7 @@ private:
 
 private:
 
-	std::unique_ptr<Boss> boss_;
-
-	MeteorManager* meteor_ = nullptr;
-
 	LevelData* levelData_;
-	std::unique_ptr<Stage> stage_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 
 private:

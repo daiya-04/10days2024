@@ -37,13 +37,6 @@ void GameScene::Init(){
 	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
 	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
 
-
-	boss_ = std::make_unique<Boss>();
-	boss_->Init(bossModel);
-
-	meteor_ = MeteorManager::GetInstance();
-	meteor_->Init(meteorModel);
-
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
 
 #ifdef _DEBUG
@@ -52,9 +45,6 @@ void GameScene::Init(){
 
 
 	levelData_ = LevelLoader::LoadFile("stageTest");
-
-	stage_ = std::make_unique<Stage>();
-	stage_->Initialize(levelData_);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
@@ -90,9 +80,6 @@ void GameScene::Update() {
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
 
-	boss_->Update();
-	meteor_->Update();
-
 	player_->Update();
 	
 	camera_.UpdateMatrix();
@@ -111,10 +98,6 @@ void GameScene::DrawBackGround(){
 void GameScene::DrawModel(){
 
 
-	boss_->Draw(camera_);
-	meteor_->Draw(camera_);
-
-	stage_->Draw(camera_);
 	floor_->Draw(camera_);
 	player_->Draw(camera_);
 
@@ -129,7 +112,6 @@ void GameScene::DrawParticleModel(){
 void GameScene::DrawParticle(){
 
 	GPUParticle::preDraw();
-	meteor_->DrawParticle(camera_);
 
 }
 
