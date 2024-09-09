@@ -13,6 +13,8 @@ public:
 
 	void Draw(const Camera& camera);
 
+	void IsCollision(const Vector3& position);
+
 private:
 
 	std::array<std::unique_ptr<Ground>, 1> grounds_;

@@ -26,3 +26,15 @@ void Stage::Draw(const Camera& camera) {
 		ground->Draw(camera);
 	}
 }
+
+void Stage::IsCollision(const Vector3& position) {
+	float angle = GetRadianVectorToVector(Vector3(0.0f, 0.0f, 1.0f), position);
+	if (position.x < 0.0f) {
+		angle = -angle;
+	}
+	float oneRad = 16.0f / 360.0f;
+
+	for (auto& ground : grounds_) {
+		ground->IsCollision(angle);
+	}
+}
