@@ -336,3 +336,12 @@ public:
 
 		return result;
 	}
+
+	inline float RotateAngleYFromMatrix(const Matrix4x4& m) {
+		float angle = std::acos(m.m[0][0]);
+		if (m.m[2][0] < 0) {
+			angle = -angle;  // acosの結果だけでは回転の向きがわからないので符号を調整
+		}
+
+		return angle;
+	}

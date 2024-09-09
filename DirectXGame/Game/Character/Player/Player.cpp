@@ -64,7 +64,7 @@ void Player::Initialize(){
 
 	PLTransform_.Init();
 
-	PLTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	PLTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	PLTransform_.translation_.z = -10.0f;
 
 	RHandTransform_.Init();

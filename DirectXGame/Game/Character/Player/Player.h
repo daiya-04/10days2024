@@ -28,6 +28,12 @@ public:
 	//デバック用GUIの表示
 	void Imgui();
 
+public:
+	const WorldTransform& GetWorldTrnas() const { return PLTransform_; }
+
+	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
+
+
 private:
 	/*振る舞い系*/
 	enum class Behavior {
@@ -119,6 +125,9 @@ private:
 	const Vector3 baseAxis_ = { 0.0f,1.0f,0.0f };
 
 	const char* groupName_ = "Player";
+
+	//カメラの回転
+	const Vector3* cameraRotate_ = nullptr;
 
 private:
 	/*重力関係*/

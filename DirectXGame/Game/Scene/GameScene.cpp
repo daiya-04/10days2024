@@ -50,6 +50,7 @@ void GameScene::Init(){
 	debugCamera_ = std::make_unique<DebugCamera>();
 #endif // _DEBUG
 
+	
 
 	levelData_ = LevelLoader::LoadFile("stageTest");
 
@@ -58,6 +59,11 @@ void GameScene::Init(){
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->SetTarget(&player_->GetWorldTrnas());
+
+	player_->SetCameraRotate(&followCamera_->GetCameraRotate());
 
 	modelManager_ = ModelManager::GetInstance();
 
@@ -85,6 +91,12 @@ void GameScene::Update() {
 	if (debugCamera_->Update()) {
 		camera_.translation_ = debugCamera_->GetCameraTranslate();
 		camera_.rotation_ = debugCamera_->GetCameraRotate();
+	}
+	else {
+		followCamera_->Update();
+		camera_.translation_ = followCamera_->GetCameraTranslate();
+		camera_.rotation_ = followCamera_->GetCameraRotate();
+
 	}
 
 #endif // _DEBUG
