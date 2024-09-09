@@ -218,6 +218,8 @@
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
       <Filter>Game\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Cannon.cpp" />
+    <ClCompile Include="CannonManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -385,5 +387,7 @@
     <ClInclude Include="Game\Camera\DebugCamera.h">
       <Filter>Game\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Cannon.h" />
+    <ClInclude Include="CannonManager.h" />
   </ItemGroup>
 </Project>

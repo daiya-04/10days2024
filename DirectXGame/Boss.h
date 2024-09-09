@@ -14,7 +14,7 @@
 class Boss {
 public:
 
-	enum AttackMode {
+	enum class AttackMode {
 		kHigh,
 		kMiddle,
 		kUnder,
@@ -76,7 +76,7 @@ private:
 
 	Shapes::AABB collider_;
 
-	AttackMode attackMode_ = AttackMode::kHigh;
+	AttackMode attackMode_ = AttackMode::kMiddle;
 
 	int32_t maxHp_ = 100;
 	int32_t hp_ = maxHp_;
