@@ -23,9 +23,8 @@ void Stage::Update() {
 
 void Stage::Draw(const Camera& camera) {
 	for (auto& ground : grounds_) {
-		//ground->Draw(camera);
+		ground->Draw(camera);
 	}
-	grounds_.at(0)->Draw(camera);
 }
 
 void Stage::IsCollision(const Vector3& position) {

@@ -66,12 +66,11 @@ void Ground::Update() {
 
 void Ground::Draw(const Camera& camera) {
 	for (auto& piece : pieces_) {
+		piece->Draw(camera);
 	}
-	pieces_.at(0)->Draw(camera);
 }
 
 void Ground::IsCollision(const float& angle) {
-	// min以上maxより小さいで取っているから、ぴったり90度ならRightDownになる
 
 	std::string tag;
 	float oneRad = std::numbers::pi_v<float> / 2.0f; // 90度
@@ -79,13 +78,13 @@ void Ground::IsCollision(const float& angle) {
 	if (0 <= angle && angle < oneRad) {
 		tag = "RightUp";
 	}
-	else if (oneRad <= angle && angle < oneRad * 2.0f) {
+	else if (oneRad <= angle && angle <= oneRad * 2.0f) {
 		tag = "RightDown";
 	}
 	else if (angle < 0.0f && angle >= -oneRad) {
 		tag = "LeftUp";
 	}
-	else if (angle < -oneRad && angle >= -(oneRad * 2.0f)) {
+	else if (angle < -oneRad && angle > -(oneRad * 2.0f)) {
 		tag = "LeftDown";
 	}
 
@@ -96,7 +95,7 @@ void Ground::IsCollision(const float& angle) {
 		if (ground->GetTag() == tag) {
 			Vector3 rot = ground->GetRotation();
 			// 1つずつ調べている
-			if (angle <= rot.y && rot.y < angle + angle) {
+			if (angle <= rot.y && rot.y < angle + (oneRad / 4.0f)/*90度を4分割*/) {
 				ground->OnCollision(1.0f);
 				return;
 			}
