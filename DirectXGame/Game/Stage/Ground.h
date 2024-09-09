@@ -10,7 +10,7 @@ public:
 	void SetGlobalVariables();
 	void ApplyGlobalVariables();
 
-	void Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform);
+	void Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel);
 
 	void Update();
 
@@ -26,5 +26,7 @@ private:
 	float endurancePower_ = 100.0f; // 耐久力
 	float groundScale_ = 1.0f; // マスターscale
 	std::string groupName_ = "Ground";
+
+	std::unique_ptr<Object3d> electricBoard_;
 
 };

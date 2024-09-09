@@ -18,13 +18,12 @@ void Ground::ApplyGlobalVariables() {
 	groundScale_ = global->GetFloatValue(groupName_, "GroundScale");
 }
 
-void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform) {
+void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel) {
 	transform_ = transform;
 	transform_.scale_ = Vector3(1.0f, 1.0f, 1.0f);
 	transform_.UpdateMatrix();
 
-	uint32_t index = 0u;
-	
+	// pieceのtag付けと初期化
 	for (auto& objectdata : data->objectDatas_) {
 		if (objectdata.objectName.find("Ground") != std::string::npos) {
 			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>());
@@ -45,6 +44,12 @@ void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr
 			piece->Initialize(objectdata, models, tag, &transform_);
 		}
 	}
+
+	// 電光板
+	electricBoard_ = std::make_unique<Object3d>();
+	electricBoard_->Initialize(boardModel);
+	electricBoard_->worldTransform_.parent_ = &transform_;
+	electricBoard_->worldTransform_.UpdateMatrix();
 }
 
 void Ground::Update() {
@@ -62,12 +67,16 @@ void Ground::Update() {
 	for (auto& piece : pieces_) {
 		piece->Update();
 	}
+	// 適当に1度ずつ回転
+	electricBoard_->worldTransform_.rotation_.y += 0.01f;
+	electricBoard_->worldTransform_.UpdateMatrix();
 }
 
 void Ground::Draw(const Camera& camera) {
 	for (auto& piece : pieces_) {
 		piece->Draw(camera);
 	}
+	electricBoard_->Draw(camera);
 }
 
 void Ground::IsCollision(const float& angle) {
@@ -87,15 +96,27 @@ void Ground::IsCollision(const float& angle) {
 	else if (angle < -oneRad && angle > -(oneRad * 2.0f)) {
 		tag = "LeftDown";
 	}
-
+#ifdef _DEBUG
 	ImGui::Text("Tag %s", tag.c_str());
+#endif // _DEBUG
 
 	for (auto& ground : pieces_) {
 		// tagの確認
 		if (ground->GetTag() == tag) {
 			Vector3 rot = ground->GetRotation();
 			// 1つずつ調べている
-			if (angle <= rot.y && rot.y < angle + (oneRad / 4.0f)/*90度を4分割*/) {
+			float maxRad = rot.y + (oneRad * 0.25f);/*90度を4分割*/
+			
+			// 左側なので-
+			if (tag.find("Left") != std::string::npos) {
+				maxRad = rot.y + (oneRad * 0.25f);
+				// angleがrotよりも大きく、maxRadよりも小さい
+				if (maxRad >= angle && angle > rot.y) {
+					ground->OnCollision(1.0f);
+					return;
+				}
+			}
+			else if (rot.y <= angle && angle < maxRad) {
 				ground->OnCollision(1.0f);
 				return;
 			}
