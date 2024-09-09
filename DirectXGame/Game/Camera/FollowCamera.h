@@ -11,10 +11,10 @@ public:
 	
 
 	void Update();
-	Vector3 GetCameraTranslate() const {
+	const Vector3& GetCameraTranslate() const {
 		return translate_;
 	}
-	Vector3 GetCameraRotate() const {
+	const Vector3& GetCameraRotate() const {
 		return rotation_;
 	}
 
@@ -39,10 +39,9 @@ private:
 	}
 
 private:
-	float moveSpeed_ = 1.0f;
-	float rotSpeed_ = 0.2f;
-	float offsetSpeed_ = 0.5f;
+	const char* groupName_ = "FollowCamera";
 
+private:
 	const WorldTransform* target_ = nullptr;
 
 	//姿勢ベクトル
@@ -53,6 +52,7 @@ private:
 	float distance_ = -10.0f;
 	float height_ = 1.5f;
 
+	float cameraRotateX_ = 0.15f;
 
 	//基準のオフセット
 	Vector3 baseOffset_;
