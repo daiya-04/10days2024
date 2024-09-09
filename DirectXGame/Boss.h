@@ -20,7 +20,7 @@ public:
 		kUnder,
 	};
 
-	enum Behavior {
+	enum class Behavior {
 		kRoot,
 		kAttack,
 		kDead,

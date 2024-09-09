@@ -220,6 +220,8 @@
     </ClCompile>
     <ClCompile Include="Cannon.cpp" />
     <ClCompile Include="CannonManager.cpp" />
+    <ClCompile Include="Stamp.cpp" />
+    <ClCompile Include="StampManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -389,5 +391,7 @@
     </ClInclude>
     <ClInclude Include="Cannon.h" />
     <ClInclude Include="CannonManager.h" />
+    <ClInclude Include="Stamp.h" />
+    <ClInclude Include="StampManager.h" />
   </ItemGroup>
 </Project>

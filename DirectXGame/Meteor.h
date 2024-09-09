@@ -14,7 +14,7 @@
 class Meteor {
 public:
 
-	enum Phase {
+	enum class Phase {
 		kRoot,
 		kAttack,
 	};

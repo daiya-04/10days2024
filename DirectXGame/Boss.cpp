@@ -2,6 +2,7 @@
 
 #include "MeteorManager.h"
 #include "CannonManager.h"
+#include "StampManager.h"
 #include "ImGuiManager.h"
 
 void Boss::Init(const std::shared_ptr<Model>& model) {
@@ -46,6 +47,7 @@ void Boss::RootInit() {
 
 	MeteorManager::GetInstance()->AttackFinish();
 	CannonManager::GetInstance()->AttackFinish();
+	StampManager::GetInstance()->AttackFinish();
 
 }
 
@@ -62,6 +64,8 @@ void Boss::AttackInit() {
 	}
 	else if (attackMode_ == AttackMode::kMiddle) {
 		CannonManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+	}else if (attackMode_ == AttackMode::kUnder) {
+		StampManager::GetInstance()->AttackStart(obj_->GetWorldPos());
 	}
 	
 

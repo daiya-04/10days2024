@@ -1,58 +1,55 @@
 #pragma once
 #include "ModelManager.h"
-#include "Camera.h"
 #include "WorldTransform.h"
+#include "Camera.h"
 #include "Object3d.h"
-#include "CollisionShapes.h"
 #include "GPUParticle.h"
-#include "Vec3.h"
+#include "CollisionShapes.h"
 
 #include <memory>
 #include <map>
 #include <functional>
 #include <optional>
 
-class Cannon {
+
+class Stamp {
 public:
 
 	enum class Phase {
 		kRoot,
 		kCharge,
-		kShoot,
+		kAttack,
 	};
 
 	Phase phase_ = Phase::kRoot;
 	std::optional<Phase> phaseRequest_ = Phase::kRoot;
 
 	std::map<Phase, std::function<void()>> phaseInitTable_{
-		{Phase::kRoot,[this]() { RootInit(); }},
+		{Phase::kRoot,[this]() {RootInit(); }},
 		{Phase::kCharge,[this]() {ChargeInit(); }},
-		{Phase::kShoot,[this]() {ShootInit(); }},
+		{Phase::kAttack,[this]() {AttackInit(); }},
 	};
 
 	std::map<Phase, std::function<void()>> phaseUpdateTable_{
 		{Phase::kRoot,[this]() {RootUpdate(); }},
 		{Phase::kCharge,[this]() {ChargeUpdate(); }},
-		{Phase::kShoot,[this]() {ShootUpdate(); }},
+		{Phase::kAttack,[this]() { AttackUpdate(); }},
 	};
 
 	struct ChargeData {
 		float param_ = 0.0f;
-		Vector3 minScale_ = { 0.0f, 0.0f, 0.0f };
-		Vector3 maxScale_ = { 2.0f, 2.0f, 2.0f };
+		Vector3 minScale_ = {};
+		Vector3 maxScale_ = { 1.0f,1.0f,1.0f };
 	};
 
-	struct ShootData {
+	struct AttackData {
 		float param_ = 0.0f;
-		Vector3 startPoint_{};
-		Vector3 controlPoint_{};
+		Vector3 startPos_{};
 		Vector3 impactPoint_{};
-		float impactPointRange_ = 15.0f;
-		float controlPointHeight_ = 5.0f;
 	};
 
 	ChargeData chargeData_;
-	ShootData shootData_;
+	AttackData attackData_;
 
 
 private:
@@ -63,10 +60,9 @@ private:
 	void ChargeInit();
 	void ChargeUpdate();
 
-	void ShootInit();
-	void ShootUpdate();
+	void AttackInit();
+	void AttackUpdate();
 
-	
 public:
 
 	void Init(const std::shared_ptr<Model>& model);
@@ -77,22 +73,21 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
-	void AttackStart(const Vector3& pos, const Vector3& direction);
+	void AttackStart(const Vector3& startPos,const Vector3& direction);
 
 	bool IsLife() const { return isLife_; }
-	bool HitFlag() const { return !isLife_ && preIsLife_; }
-
-	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
-	std::unique_ptr<GPUParticle> trail_;
+	Vector3 direction_{};
 
-	Shapes::Sphere collider_;
+	Matrix4x4 rotateMat_ = MakeIdentity44();
+
+	Shapes::OBB collider_;
 
 	bool isLife_ = false;
 	bool preIsLife_ = false;
 
-};
 
+};

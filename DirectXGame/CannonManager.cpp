@@ -30,6 +30,7 @@ void CannonManager::Init(const std::shared_ptr<Model>& model) {
 }
 
 void CannonManager::Update() {
+	preIsAttack_ = isAttack_;
 
 	for (auto& cannon : cannons_) {
 		cannon->Update();

@@ -37,6 +37,7 @@ void GameScene::Init(){
 	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
 	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
+	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
 
 	boss_ = std::make_unique<Boss>();
@@ -47,6 +48,9 @@ void GameScene::Init(){
 
 	cannon_ = CannonManager::GetInstance();
 	cannon_->Init(cannonModel);
+
+	stamp_ = StampManager::GetInstance();
+	stamp_->Init(stampModel);
 	
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
@@ -98,6 +102,7 @@ void GameScene::Update() {
 	boss_->Update();
 	meteor_->Update();
 	cannon_->Update();
+	stamp_->Update();
 
 	player_->Update();
 	
@@ -120,6 +125,7 @@ void GameScene::DrawModel(){
 	boss_->Draw(camera_);
 	meteor_->Draw(camera_);
 	cannon_->Draw(camera_);
+	stamp_->Draw(camera_);
 
 	stage_->Draw(camera_);
 	floor_->Draw(camera_);
@@ -138,6 +144,7 @@ void GameScene::DrawParticle(){
 	GPUParticle::preDraw();
 	meteor_->DrawParticle(camera_);
 	cannon_->DrawParticle(camera_);
+	stamp_->DrawParticle(camera_);
 
 }
 
