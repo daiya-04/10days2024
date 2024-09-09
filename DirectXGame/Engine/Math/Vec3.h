@@ -126,4 +126,13 @@ public:
 
 		return result;
 	}
+
+	// 2つの
+	friend inline float GetRadianVectorToVector(const Vector3& vec1, const Vector3& vec2) {
+		float dot = Dot(vec1, vec2);
+		float costheta = dot / (vec1.Length() * vec2.Length());
+
+		return std::acosf(costheta);
+	}
+
 };
