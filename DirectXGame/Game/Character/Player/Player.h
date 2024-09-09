@@ -103,7 +103,7 @@ private:
 
 public: // とりあえずGameSceneで角
 	//Stageとの衝突判定Clamp 中心点(原点)
-	void StageClampCollision(const Vector3& centerTarget);
+	void StageClampCollision(const Vector3& centerTarget, const Vector2& minAndMax);
 
 private:
 	/*ベースとなるモデルやトランスフォームなど*/

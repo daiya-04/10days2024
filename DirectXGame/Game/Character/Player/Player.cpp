@@ -766,9 +766,9 @@ void Player::OnFloorCollision(){
 	isDown_ = false;
 }
 
-void Player::StageClampCollision(const Vector3& centerTarget) {
-	const float kMax = 20.0f;
-	const float kMin = 10.0f;
+void Player::StageClampCollision(const Vector3& centerTarget, const Vector2& minAndMax){
+	const float kMin = minAndMax.x;
+	const float kMax = minAndMax.y;
 
 	// 中央から現在地のベクトルを取得
 	Vector3 vec = PLTransform_.translation_ - centerTarget;
@@ -792,3 +792,6 @@ void Player::StageClampCollision(const Vector3& centerTarget) {
 		PLTransform_.UpdateMatrixRotate(playerRotateMatY_);
 	}
 }
+
+
+
