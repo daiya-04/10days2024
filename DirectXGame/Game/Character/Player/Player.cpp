@@ -357,8 +357,8 @@ void Player::BehaviorAttackUpdate(){
 
 			if (input_->GetMoveXZ().x != 0 || input_->GetMoveXZ().z != 0) {
 				postureVec_ = input_->GetMoveXZ();
-				/*Matrix4x4 newRotateMatrix = Matrix::GetInstance()->MakeRotateMatrix(viewProjection_->rotation_);
-				postureVec_ = Matrix::GetInstance()->TransformNormal(postureVec_, newRotateMatrix);*/
+				Matrix4x4 newRotateMatrix = MakeRotateYMatrix(cameraRotate_->y);
+				postureVec_ = TransformNormal(postureVec_, newRotateMatrix);
 				postureVec_.y = 0;
 				postureVec_.Normalize();
 				postureVec_.y = 0;
@@ -528,11 +528,9 @@ void Player::BehaviorDashUpdate(){
 
 
 	//カメラの向きによって移動ベクトルに補正を掛ける
-	/*Matrix4x4 newRotateMatrix = Matrix::GetInstance()->MakeRotateMatrix(viewProjection_->rotation_);
-	move_ = Matrix::GetInstance()->TransformNormal(move_, newRotateMatrix);
+	Matrix4x4 newRotateMatrix = MakeRotateYMatrix(cameraRotate_->y);
+	move_ = TransformNormal(move_, newRotateMatrix);
 	move_.y = 0.0f;
-	move_ = Vector3::Mutiply(Vector3::Normalize(move_), moveSpeed_ * 3.0f);
-	move_.y = 0.0f;*/
 	move_.Normalize();
 	move_ *= (dashSpeed_);
 	move_.y = 0.0f;
