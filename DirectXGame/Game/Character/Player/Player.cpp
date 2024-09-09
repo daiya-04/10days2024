@@ -50,15 +50,15 @@ void Player::Initialize(){
 
 	bodyObj_ = std::make_unique<Object3d>();
 
-	bodyObj_->Initialize(modelManager_->LoadOBJ("box"));
+	bodyObj_->Initialize(modelManager_->LoadGLTF("PlayerFace"));
 
 	rightHandObj_ = std::make_unique<Object3d>();
 
-	rightHandObj_->Initialize(modelManager_->LoadOBJ("box"));
+	rightHandObj_->Initialize(modelManager_->LoadOBJ("PlayerHand"));
 
 	leftHandObj_ = std::make_unique<Object3d>();
 
-	leftHandObj_->Initialize(modelManager_->LoadOBJ("box"));
+	leftHandObj_->Initialize(modelManager_->LoadOBJ("PlayerHand"));
 
 	input_ = Input::GetInstance();
 
@@ -764,7 +764,7 @@ void Player::Gravity(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
-	if (PLTransform_.translation_.y <= 0.0f){
+	if (PLTransform_.translation_.y < 0.0f){
 		OnFloorCollision();
 	}
 }
