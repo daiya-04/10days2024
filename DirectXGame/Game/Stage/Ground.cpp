@@ -30,16 +30,16 @@ void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr
 			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>());
 			std::string tag;
 			if (objectdata.objectName.find("右上") != std::string::npos) {
-				tag = "右上";
+				tag = "RightUp";
 			}
 			else if (objectdata.objectName.find("右下") != std::string::npos) {
-				tag = "右下";
+				tag = "RightDown";
 			}
 			else if (objectdata.objectName.find("左上") != std::string::npos) {
-				tag = "左上";
+				tag = "LeftUp";
 			}
 			else if (objectdata.objectName.find("左下") != std::string::npos) {
-				tag = "左下";
+				tag = "LeftDown";
 			}
 
 			piece->Initialize(objectdata, models, tag, &transform_);
@@ -66,32 +66,40 @@ void Ground::Update() {
 
 void Ground::Draw(const Camera& camera) {
 	for (auto& piece : pieces_) {
-		piece->Draw(camera);
 	}
+	pieces_.at(0)->Draw(camera);
 }
 
 void Ground::IsCollision(const float& angle) {
+	// min以上maxより小さいで取っているから、ぴったり90度ならRightDownになる
+
 	std::string tag;
 	float oneRad = std::numbers::pi_v<float> / 2.0f; // 90度
-
+	// 現在のtag判定
 	if (0 <= angle && angle < oneRad) {
-		tag = "RU右上";
+		tag = "RightUp";
 	}
 	else if (oneRad <= angle && angle < oneRad * 2.0f) {
-		tag = "RD右下";
+		tag = "RightDown";
 	}
 	else if (angle < 0.0f && angle >= -oneRad) {
-		tag = "LU左上";
+		tag = "LeftUp";
 	}
 	else if (angle < -oneRad && angle >= -(oneRad * 2.0f)) {
-		tag = "LD左下";
+		tag = "LeftDown";
 	}
 
 	ImGui::Text("Tag %s", tag.c_str());
 
 	for (auto& ground : pieces_) {
+		// tagの確認
 		if (ground->GetTag() == tag) {
-
+			Vector3 rot = ground->GetRotation();
+			// 1つずつ調べている
+			if (angle <= rot.y && rot.y < angle + angle) {
+				ground->OnCollision(1.0f);
+				return;
+			}
 		}
 	}
 }

@@ -65,7 +65,7 @@ void GameScene::Init(){
 
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
-	floor_->worldTransform_.scale_ = { 100.0f,1.0f,100.0f };
+	floor_->worldTransform_.scale_ = { 10.0f,10.0f,10.0f };
 
 }
 
@@ -97,6 +97,12 @@ void GameScene::Update() {
 
 	player_->Update();
 	player_->StageClampCollision(Vector3(0.0f, 0.0f, 0.0f));
+
+	static Vector3 testPos = Vector3(10.0f, 0.0f, 0.0f);
+	ImGui::DragFloat3("MasterTestPosition", &testPos.x, 0.1f);
+	floor_->worldTransform_.translation_ = testPos;
+	floor_->worldTransform_.UpdateMatrix();
+	stage_->IsCollision(testPos);
 	
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
@@ -118,7 +124,7 @@ void GameScene::DrawModel(){
 	meteor_->Draw(camera_);
 
 	stage_->Draw(camera_);
-	//floor_->Draw(camera_);
+	floor_->Draw(camera_);
 	player_->Draw(camera_);
 
 }

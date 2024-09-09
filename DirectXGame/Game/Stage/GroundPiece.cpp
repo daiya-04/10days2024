@@ -8,13 +8,16 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::vecto
 		models_.at(index)->Initialize(a);
 	}
 	isAlive_ = true;
+	transform_.Init();
+	transform_.parent_ = parent;
+	transform_.scale_ = data.scaling;
+	transform_.rotation_ = data.rotation;
+	transform_.translation_ = data.translation;
+	transform_.UpdateMatrix();
 	for (auto& model : models_) {
 		if (parent) {
-			model->worldTransform_.parent_ = parent;
+			model->worldTransform_.parent_ = &transform_;
 		}
-		model->worldTransform_.translation_ = data.translation;
-		model->worldTransform_.scale_ = data.scaling;
-		model->worldTransform_.rotation_ = data.rotation;
 		model->worldTransform_.UpdateMatrix();
 	}
 
@@ -36,10 +39,11 @@ void GroundPiece::Draw(const Camera& camera) {
 }
 
 void GroundPiece::OnCollision(const float& damage) {
-
+	transform_.translation_.y += 0.0001f;
 }
 
 void GroundPiece::UpdateTrans() {
+	transform_.UpdateMatrix();
 	for (auto& model : models_) {
 		model->worldTransform_.UpdateMatrix();
 	}

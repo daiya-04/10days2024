@@ -21,7 +21,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground1"
+            "object_name": "Ground右上1"
         },
         {
             "type": "MESH",
@@ -43,7 +43,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground2"
+            "object_name": "Ground右上2"
         },
         {
             "type": "MESH",
@@ -65,7 +65,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground3"
+            "object_name": "Ground右上3"
         },
         {
             "type": "MESH",
@@ -87,7 +87,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground4"
+            "object_name": "Ground右上4"
         },
         {
             "type": "MESH",
@@ -109,7 +109,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground5"
+            "object_name": "Ground右下1"
         },
         {
             "type": "MESH",
@@ -131,7 +131,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground6"
+            "object_name": "Ground右下2"
         },
         {
             "type": "MESH",
@@ -153,7 +153,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground7"
+            "object_name": "Ground右下3"
         },
         {
             "type": "MESH",
@@ -175,7 +175,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground8"
+            "object_name": "Ground右下4"
         },
         {
             "type": "MESH",
@@ -197,7 +197,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground9"
+            "object_name": "Ground左上1"
         },
         {
             "type": "MESH",
@@ -219,7 +219,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground10"
+            "object_name": "Ground左上2"
         },
         {
             "type": "MESH",
@@ -241,7 +241,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground11"
+            "object_name": "Ground左上3"
         },
         {
             "type": "MESH",
@@ -263,7 +263,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground12"
+            "object_name": "Ground左上4"
         },
         {
             "type": "MESH",
@@ -285,7 +285,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground13"
+            "object_name": "Ground左下1"
         },
         {
             "type": "MESH",
@@ -307,7 +307,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground14"
+            "object_name": "Ground左下2"
         },
         {
             "type": "MESH",
@@ -329,7 +329,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground15"
+            "object_name": "Ground左下3"
         },
         {
             "type": "MESH",
@@ -351,7 +351,7 @@
                     0.45814087986946106
                 ]
             },
-            "object_name": "Ground16"
+            "object_name": "Ground左下4"
         }
     ]
 }

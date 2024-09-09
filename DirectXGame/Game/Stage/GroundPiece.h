@@ -23,12 +23,15 @@ public:
 
 	const std::string& GetTag() const { return tag_; }
 
+	Vector3 GetRotation() const { return transform_.rotation_; }
+
 private:
 	void UpdateTrans(); // 座標更新用関数
 
 private:
 	std::string tag_;
 	std::vector<std::shared_ptr<Object3d>> models_;
+	WorldTransform transform_;
 	bool isAlive_ = true; // 生存フラグ
 	float hp_ = 100.0f; // 耐久力
 
