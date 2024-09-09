@@ -65,7 +65,7 @@ void GameScene::Init(){
 
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
-	floor_->worldTransform_.scale_ = { 10.0f,10.0f,10.0f };
+	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
 }
 
@@ -99,10 +99,13 @@ void GameScene::Update() {
 	player_->StageClampCollision(Vector3(0.0f, 0.0f, 0.0f));
 
 	static Vector3 testPos = Vector3(10.0f, 0.0f, 0.0f);
+#ifdef _DEBUG
 	ImGui::DragFloat3("MasterTestPosition", &testPos.x, 0.1f);
+#endif // _DEBUG
 	floor_->worldTransform_.translation_ = testPos;
 	floor_->worldTransform_.UpdateMatrix();
-	stage_->IsCollision(testPos);
+	// ボスの攻撃座標を入れる
+	stage_->IsCollision(player_->GetTransform().translation_);
 	
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
