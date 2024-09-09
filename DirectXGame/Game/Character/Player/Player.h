@@ -19,7 +19,7 @@ public:
 	//初期化処理
 	void Initialize();
 	//更新処理
-	void Update();
+	void Update(const Vector3& centerTarget, const Vector2& minAndMax);
 	//描画処理
 	void Draw(const Camera& camera);
 
@@ -103,7 +103,7 @@ private:
 
 public: // とりあえずGameSceneで角
 	//Stageとの衝突判定Clamp 中心点(原点)
-	void StageClampCollision(const Vector3& centerTarget, const Vector2& minAndMax);
+	bool StageClampCollision(const Vector3& worldTrans);
 
 private:
 	/*ベースとなるモデルやトランスフォームなど*/
@@ -129,6 +129,10 @@ private:
 	//カメラの回転
 	const Vector3* cameraRotate_ = nullptr;
 
+	//ステージ内外でのあたり用変数
+	Vector2 minAndMax_;
+
+	Vector3 centerPos_;
 private:
 	/*重力関係*/
 

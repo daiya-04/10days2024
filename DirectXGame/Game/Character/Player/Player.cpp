@@ -92,7 +92,7 @@ void Player::Initialize(){
 
 }
 
-void Player::Update(){
+void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	ApplyGlobalVariables();
 
 	if (behaviorRequest_) {
@@ -123,6 +123,9 @@ void Player::Update(){
 	}
 	// 振る舞いリクエストをリセット
 	behaviorRequest_ = std::nullopt;
+
+	centerPos_ = centerTarget;
+	minAndMax_ = minAndMax;
 
 	switch (behavior_) {
 	case Behavior::kRoot:
@@ -310,8 +313,13 @@ void Player::BehaviorRootUpdate(){
 			playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 		}
 	}*/
+
+	auto PLTransfromNext = PLTransform_.translation_ + move_;
+
+	if (!StageClampCollision(PLTransfromNext)){
+		PLTransform_.translation_ += move_;
+	}	
 	
-	PLTransform_.translation_ += move_;
 	//Aボタンでジャンプ
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
@@ -447,18 +455,15 @@ void Player::BehaviorAvoidUpdate(){
 
 	move_ = TransformNormal(move_, newRotateMatrix_);
 
+	
 	//ダッシュの時間<frame>
 	const uint32_t behaviorDashTime = 15;
 
-	Vector3 NextPos = PLTransform_.translation_ + move_;
+	auto PLTransfromNext = PLTransform_.translation_ + move_;
 
-	/*if (NextPos.x >= 97.0f or NextPos.x <= -97.0f) {
-		move_.x = 0;
+	if (!StageClampCollision(PLTransfromNext)) {
+		PLTransform_.translation_ += move_;
 	}
-	if (NextPos.z >= 97.0f or NextPos.z <= -97.0f) {
-		move_.z = 0;
-	}*/
-	PLTransform_.translation_ += move_;
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
@@ -554,7 +559,11 @@ void Player::BehaviorDashUpdate(){
 		
 	}
 
-	PLTransform_.translation_ += move_;
+	auto PLTransfromNext = PLTransform_.translation_ + move_;
+
+	if (!StageClampCollision(PLTransfromNext)) {
+		PLTransform_.translation_ += move_;
+	}
 
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
@@ -766,12 +775,12 @@ void Player::OnFloorCollision(){
 	isDown_ = false;
 }
 
-void Player::StageClampCollision(const Vector3& centerTarget, const Vector2& minAndMax){
-	const float kMin = minAndMax.x;
-	const float kMax = minAndMax.y;
+bool Player::StageClampCollision(const Vector3& worldTrans){
+	const float kMin = minAndMax_.x;
+	const float kMax = minAndMax_.y;
 
 	// 中央から現在地のベクトルを取得
-	Vector3 vec = PLTransform_.translation_ - centerTarget;
+	Vector3 vec = worldTrans - centerPos_;
 	//高さに関係なくするためにｙを打ち消す
 	vec.y = 0;
 	// 長さを取得し、クランプ
@@ -789,8 +798,10 @@ void Player::StageClampCollision(const Vector3& centerTarget, const Vector2& min
 
 	if (flag) {
 		PLTransform_.translation_ = { vec.x,PLTransform_.translation_.y,vec.z };
-		PLTransform_.UpdateMatrixRotate(playerRotateMatY_);
+		return true;
 	}
+
+	return false;
 }
 
 

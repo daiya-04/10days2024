@@ -1,16 +1,16 @@
 {
     "Player": {
-        "avoidSpeed": 1.0,
+        "avoidSpeed": 0.699999988079071,
         "baseAttackSpeed": 0.07999999821186066,
         "beseRotateSpeed": 0.10000000149011612,
-        "dashSpeed": 0.800000011920929,
+        "dashSpeed": 0.550000011920929,
         "gravityPower": -0.03999999910593033,
         "gravityPowerAttack": -0.07999999821186066,
         "jumpPower": 0.8999999761581421,
         "jumpPowerAttack": 0.8999999761581421,
         "motionDistance": 25,
         "motionSpeed": 2.0,
-        "moveSpeed": 0.6000000238418579,
+        "moveSpeed": 0.4000000059604645,
         "waitTimeBase": 10,
         "waitTimeBaseCharge": 20
     }
