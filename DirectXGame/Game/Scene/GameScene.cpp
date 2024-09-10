@@ -71,7 +71,7 @@ void GameScene::Init(){
 
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
-	floor_->worldTransform_.scale_ = { 100.0f,1.0f,100.0f };
+	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
 }
 
@@ -109,6 +109,9 @@ void GameScene::Update() {
 
 	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(19.5f, 28.5f));
 	
+	// ボスの攻撃座標を入れる
+	stage_->IsCollision(player_->GetTransform().translation_);
+
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
 	camera_.UpdateMatrix();
@@ -129,7 +132,7 @@ void GameScene::DrawModel(){
 	meteor_->Draw(camera_);
 
 	stage_->Draw(camera_);
-	//floor_->Draw(camera_);
+	floor_->Draw(camera_);
 	player_->Draw(camera_);
 
 }

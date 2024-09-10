@@ -7,27 +7,32 @@
 #include "ModelManager.h"
 #include "Object3d.h"
 #include "LevelLoader.h"
-#include "CollisionShapes.h"
 
 class GroundPiece {
 public:
 	GroundPiece() = default;
 	~GroundPiece() = default;
 
-	void Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models, const WorldTransform* parent = nullptr);
+	void Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models, const std::string& tag, const WorldTransform* parent = nullptr);
 
 	void Update();
 
 	void Draw(const Camera& camera);
 
+	void OnCollision(const float& damage); // ダメージを追った処理
+
+	const std::string& GetTag() const { return tag_; }
+
+	Vector3 GetRotation() const { return transform_.rotation_; }
+
 private:
 	void UpdateTrans(); // 座標更新用関数
 
 private:
-
+	std::string tag_;
 	std::vector<std::shared_ptr<Object3d>> models_;
+	WorldTransform transform_;
 	bool isAlive_ = true; // 生存フラグ
-
-	Shapes::OBB collider_;
+	float hp_ = 100.0f; // 耐久力
 
 };

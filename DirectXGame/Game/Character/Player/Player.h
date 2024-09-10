@@ -105,6 +105,9 @@ public: // とりあえずGameSceneで角
 	//Stageとの衝突判定Clamp 中心点(原点)
 	bool StageClampCollision(const Vector3& worldTrans);
 
+	// ゲッター
+	const WorldTransform& GetTransform() const { return PLTransform_; }
+
 private:
 	/*ベースとなるモデルやトランスフォームなど*/
 	//モデルマネージャー
