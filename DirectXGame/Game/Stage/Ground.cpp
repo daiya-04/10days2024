@@ -102,7 +102,7 @@ bool Ground::IsCollision(const float& angle, const float& damage) {
 	else if (angle < 0.0f && angle >= -oneRad) {
 		tag = "LeftUp";
 	}
-	else if (angle < -oneRad && angle > -(oneRad * 2.0f)) {
+	else if (angle < -oneRad && angle >= -(oneRad * 2.0f)) {
 		tag = "LeftDown";
 	}
 
@@ -119,7 +119,7 @@ bool Ground::IsCollision(const float& angle, const float& damage) {
 			if (tag.find("Left") != std::string::npos) {
 				maxRad = rot.y + (oneRad * 0.25f);
 				// angleがrotよりも大きく、maxRadよりも小さい
-				if (maxRad >= angle && angle > rot.y) {
+				if (maxRad >= angle && angle >= rot.y) {
 					// ダメージが0なら通らない
 					if (damage != 0.0f) {
 						ground->OnCollision(damage);
