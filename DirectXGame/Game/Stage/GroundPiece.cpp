@@ -1,12 +1,16 @@
 #include "GroundPiece.h"
 
-void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models, const std::string& tag, const WorldTransform* parent) {
-	tag_ = tag;
+GroundPiece::GroundPiece(const std::vector<std::shared_ptr<Model>>& models) {
 	for (uint8_t index = 0u; index < models.size(); index++) {
 		models_.push_back(std::make_shared<Object3d>());
 		auto& a = models.at(index);
 		models_.at(index)->Initialize(a);
 	}
+}
+
+void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::string& tag, const WorldTransform* parent) {
+	tag_ = tag;
+	
 	isAlive_ = true;
 	transform_.Init();
 	transform_.parent_ = parent;
@@ -21,6 +25,11 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::vecto
 		model->worldTransform_.UpdateMatrix();
 	}
 
+}
+
+void GroundPiece::Initialize() {
+	isAlive_ = true;
+	hp_ = 100.0f;
 }
 
 void GroundPiece::Update() {
@@ -39,7 +48,10 @@ void GroundPiece::Draw(const Camera& camera) {
 }
 
 void GroundPiece::OnCollision(const float& damage) {
-	transform_.translation_.y += 0.0001f;
+	hp_ -= damage;
+	if (hp_ <= 0.0f) {
+		isAlive_ = false;
+	}
 }
 
 void GroundPiece::UpdateTrans() {

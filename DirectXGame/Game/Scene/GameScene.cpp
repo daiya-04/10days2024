@@ -120,8 +120,21 @@ void GameScene::Update() {
 
 	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(19.5f, 28.5f));
 	
-	// ボスの攻撃座標を入れる
-	stage_->IsCollision(player_->GetTransform().translation_);
+	// playerとstageの当たり判定
+	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
+		// 床がなかった場合
+		player_->SetFloorPosition(stage_->GetNextGroundPosition().y);
+		player_->SetFall(true);
+		// playerが下層より下に行った場合
+		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {
+			// playerのparameterをReset
+			player_->Reset();
+		}
+	}
+	else {
+		// 床があった場合
+		player_->SetFloorPosition(stage_->GetGroundPosition().y);
+	}
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();

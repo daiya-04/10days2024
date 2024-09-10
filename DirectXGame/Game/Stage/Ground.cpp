@@ -18,15 +18,18 @@ void Ground::ApplyGlobalVariables() {
 	groundScale_ = global->GetFloatValue(groupName_, "GroundScale");
 }
 
-void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel) {
+void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel, const std::string& layer) {
 	transform_ = transform;
+
 	transform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 38.0f;
+
 	transform_.UpdateMatrix();
+	layer_ = layer;
 
 	// pieceのtag付けと初期化
 	for (auto& objectdata : data->objectDatas_) {
 		if (objectdata.objectName.find("Ground") != std::string::npos) {
-			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>());
+			auto& piece = pieces_.emplace_back(std::make_unique<GroundPiece>(models));
 			std::string tag;
 			if (objectdata.objectName.find("右上") != std::string::npos) {
 				tag = "RightUp";
@@ -41,7 +44,7 @@ void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr
 				tag = "LeftDown";
 			}
 
-			piece->Initialize(objectdata, models, tag, &transform_);
+			piece->Initialize(objectdata, tag, &transform_);
 		}
 	}
 
@@ -52,13 +55,22 @@ void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr
 	electricBoard_->worldTransform_.UpdateMatrix();
 }
 
+void Ground::Initialize() {
+	for (auto& piece : pieces_) {
+		piece->Initialize();
+	}
+}
+
 void Ground::Update() {
 #ifdef _DEBUG
 
-	ImGui::Begin("Ground");
-	static float mastarScale = 38.0f;
-	ImGui::DragFloat("MasterScale", &mastarScale, 0.1f, 0.1f);
-	transform_.scale_ = Vector3(mastarScale, mastarScale, mastarScale);
+	ImGui::Begin("Stage");
+	if (ImGui::TreeNode(layer_.c_str())) {
+		ImGui::DragFloat("MasterScale", &transform_.scale_.x, 0.1f, 0.1f);
+		ImGui::TreePop();
+	}
+	transform_.scale_ = Vector3(transform_.scale_.x, transform_.scale_.x, transform_.scale_.x);
+
 	transform_.UpdateMatrix();
 
 	ImGui::End();
@@ -79,7 +91,7 @@ void Ground::Draw(const Camera& camera) {
 	electricBoard_->Draw(camera);
 }
 
-void Ground::IsCollision(const float& angle) {
+bool Ground::IsCollision(const float& angle, const float& damage) {
 
 	std::string tag;
 	float oneRad = std::numbers::pi_v<float> / 2.0f; // 90度
@@ -96,30 +108,36 @@ void Ground::IsCollision(const float& angle) {
 	else if (angle < -oneRad && angle > -(oneRad * 2.0f)) {
 		tag = "LeftDown";
 	}
-#ifdef _DEBUG
-	ImGui::Text("Tag %s", tag.c_str());
-#endif // _DEBUG
 
 	for (auto& ground : pieces_) {
+		// 床が壊れている場合は早期リターン
+		if (!ground->GetIsAlive()) { continue; }
+		
 		// tagの確認
 		if (ground->GetTag() == tag) {
 			Vector3 rot = ground->GetRotation();
 			// 1つずつ調べている
 			float maxRad = rot.y + (oneRad * 0.25f);/*90度を4分割*/
-			
 			// 左側なので-
 			if (tag.find("Left") != std::string::npos) {
 				maxRad = rot.y + (oneRad * 0.25f);
 				// angleがrotよりも大きく、maxRadよりも小さい
 				if (maxRad >= angle && angle > rot.y) {
-					ground->OnCollision(1.0f);
-					return;
+					// ダメージが0なら通らない
+					if (damage != 0.0f) {
+						ground->OnCollision(damage);
+					}
+					return true;
 				}
 			}
 			else if (rot.y <= angle && angle < maxRad) {
-				ground->OnCollision(1.0f);
-				return;
+				// ダメージが0なら通らない
+				if (damage != 0.0f) {
+					ground->OnCollision(damage);
+				}
+				return true;
 			}
 		}
 	}
+	return false;
 }
