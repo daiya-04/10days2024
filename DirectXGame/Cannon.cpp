@@ -68,6 +68,8 @@ void Cannon::AttackStart(const Vector3& pos, const Vector3& direction) {
 	shootData_.controlPoint_ += direction * 8.0f;
 	shootData_.controlPoint_.y += shootData_.controlPointHeight_;
 
+	collider_.radius = 1.0f;
+
 	phaseRequest_ = Phase::kCharge;
 
 	obj_->worldTransform_.UpdateMatrix();

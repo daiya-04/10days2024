@@ -73,6 +73,9 @@ public:
 	void Init(const std::shared_ptr<Model>& model);
 
 	void Update();
+	void Update() {
+		collider_.center = obj_->GetWorldPos();
+	}
 
 	void Draw(const Camera& camera);
 
@@ -84,6 +87,7 @@ public:
 	bool HitFlag() const { return !isLife_ && preIsLife_; }
 
 	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
+	Shapes::Sphere GEtCollider() { return collider_; }
 
 private:
 

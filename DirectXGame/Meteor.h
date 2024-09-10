@@ -45,6 +45,9 @@ public:
 	void Init(const std::shared_ptr<Model>& model);
 
 	void Update();
+	void UpdateCollider() {
+		collider_.center = obj_->GetWorldPos();
+	}
 
 	void Draw(const Camera& camera);
 

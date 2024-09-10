@@ -10,6 +10,7 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 	fireTrail_->isLoop_ = true;
 
 	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 2.0f;
+	collider_.radius = 2.0f;
 	
 	fireTrail_->emitter_.color = Vector4(0.89f, 0.27f, 0.03f, 1.0f);
 	fireTrail_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);

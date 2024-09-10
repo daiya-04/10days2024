@@ -22,6 +22,8 @@ public:
 	void AttackStart(const Vector3& basePos);
 	void AttackFinish();
 
+	Shapes::Sphere GetCollider(uint32_t index) { return meteors_[index]->GetCollider(); }
+
 private:
 
 	std::array<std::unique_ptr<Meteor>, 16> meteors_;
