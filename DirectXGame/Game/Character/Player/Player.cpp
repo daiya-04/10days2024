@@ -68,7 +68,7 @@ void Player::Initialize(){
 
 	PLTransform_.Init();
 
-	PLTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	PLTransform_.scale_ = { 0.3f,0.3f,0.3f };
 	PLTransform_.translation_ = Vector3(1.0f, 8.0f, -30.0f);
 
 	RHandTransform_.Init();
@@ -828,8 +828,8 @@ void Player::Shadow(){
 
 	ShadowTransform_.translation_.y = shadowY_;
 
-	ShadowTransform_.scale_.x = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
-	ShadowTransform_.scale_.z = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+	ShadowTransform_.scale_.x = 0.5f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+	ShadowTransform_.scale_.z = 0.5f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
 
 	if (ShadowTransform_.scale_.x < 0.1f) {
 		ShadowTransform_.scale_.x = 0.0f;
