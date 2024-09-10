@@ -775,7 +775,7 @@ void Player::Shadow(){
 	ShadowTransform_.scale_.x = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
 	ShadowTransform_.scale_.z = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
 
-	if (ShadowTransform_.scale_.x < 0.0f) {
+	if (ShadowTransform_.scale_.x < 0.1f) {
 		ShadowTransform_.scale_.x = 0.0f;
 		ShadowTransform_.scale_.z = 0.0f;
 	}
