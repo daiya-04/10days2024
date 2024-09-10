@@ -33,6 +33,7 @@ public:
 
 	Vector3 GetGroundPosition() const;
 	Vector3 GetNextGroundPosition() const;
+	uint32_t GetLayerNumber() const { return nowLayerNumber_; } // 現在の階層番号の取得 012 = 上中下
 
 private:
 	std::string LayerCheck(const float& playerPositionY);

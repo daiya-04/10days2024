@@ -117,8 +117,11 @@ void GameScene::Update() {
 	meteor_->Update();
 	cannon_->Update();
 	stamp_->Update();
-
-	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(19.5f, 28.5f));
+	static Vector2 minmax = Vector2(26.2f, 37.0f);
+#ifdef _DEBUG
+	ImGui::DragFloat2("TestMinMax", &minmax.x, 0.1f);
+#endif // _DEBUG
+	player_->Update(Vector3(0.0f, 0.0f, 0.0f), minmax);
 	
 	// playerとstageの当たり判定
 	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
