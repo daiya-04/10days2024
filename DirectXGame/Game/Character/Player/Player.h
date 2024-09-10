@@ -27,6 +27,9 @@ public:
 	//ゲーム中での初期化
 	void Reset();
 
+	//ゲーム中での初期化
+	void HitEnemyAttackCollision();
+
 	//描画処理
 	void ParticleDraw(const Camera& camera);
 	//デバック用GUIの表示
@@ -55,7 +58,8 @@ private:
 		kAvoid,			//加速しながら回避
 		kDash,			//ダッシュ中
 		kFallingAttack,	//落下攻撃
-		kChargeAttack	//溜め攻撃
+		kChargeAttack,	//溜め攻撃
+		kHitCollision	//攻撃を受けたときの反応
 	};
 	//現在の状態
 	Behavior behavior_ = Behavior::kRoot;
@@ -81,10 +85,15 @@ private:
 	void BehaviorDashInitialize();
 	//ダッシュ行動更新
 	void BehaviorDashUpdate();
-	//ダッシュ行動初期化
+	//落下攻撃初期化
 	void BehaviorFallingAttackInitialize();
-	//ダッシュ行動更新
+	//落下攻撃更新
 	void BehaviorFallingAttackUpdate();
+
+	//ダッシュ行動初期化
+	void BehaviorHitCollosionInitialize();
+	//ダッシュ行動更新
+	void BehaviorHitCollisionUpdate();
 
 private:
 	/*攻撃処理の初期化、更新*/
@@ -273,6 +282,9 @@ private:
 	// 足場のY座標
 	float floorPositionY_ = 0.0f;
 
+private:
+	//当たったときに回転する用
+	float hitRotateX_;
 };
 
 

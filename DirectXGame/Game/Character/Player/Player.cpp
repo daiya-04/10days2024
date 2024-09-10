@@ -129,6 +129,9 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 		case Behavior::kChargeAttack:
 			BehaviorChargeAttackInitialize();
 			break;
+		case Behavior::kHitCollision:
+			BehaviorHitCollosionInitialize();
+			break;
 		}
 
 	}
@@ -158,6 +161,9 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	case Behavior::kChargeAttack:
 		BehaviorChargeAttackUpdate();
 		break;
+	case Behavior::kHitCollision:
+		BehaviorHitCollisionUpdate();
+		break;
 
 	}
 	auto front = frontVec_.Normalize();
@@ -183,13 +189,26 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 		rightHandObj_->worldTransform_.UpdateMatrix();
 	}
 	else {
-		rightHandObj_->worldTransform_ = RHandTransform_;
-		rightHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+		if (behavior_ == Behavior::kHitCollision){
+			rightHandObj_->worldTransform_ = RHandTransform_;
+			rightHandObj_->worldTransform_.UpdateMatrix();
+		}
+		else {
+			rightHandObj_->worldTransform_ = RHandTransform_;
+			rightHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
 
+		}
+		
 	}
-
-	leftHandObj_->worldTransform_ = LHandTransform_;
-	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+	if (behavior_ == Behavior::kHitCollision) {
+		leftHandObj_->worldTransform_ = LHandTransform_;
+		leftHandObj_->worldTransform_.UpdateMatrix();
+	}
+	else {
+		leftHandObj_->worldTransform_ = LHandTransform_;
+		leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+	}
+	
 
 	Shadow();
 
@@ -218,6 +237,10 @@ void Player::Reset(){
 
 	behaviorRequest_ = Behavior::kRoot;
 
+}
+
+void Player::HitEnemyAttackCollision(){
+	behaviorRequest_ = Behavior::kHitCollision;
 }
 
 void Player::ParticleDraw(const Camera& camera){
@@ -373,6 +396,11 @@ void Player::BehaviorRootUpdate(){
 	if (input_->TriggerButton(Input::Button::X) and !isDown_) {
 		workAttack_.comboIndex_++;
 		behaviorRequest_ = Behavior::kAttack;
+	}
+
+	//Xボタンで攻撃
+	if (input_->TriggerKey(DIK_SPACE)) {
+		HitEnemyAttackCollision();
 	}
 
 	//RBボタンで回避ダッシュ
@@ -672,6 +700,45 @@ void Player::BehaviorFallingAttackUpdate(){
 	if (waitTime_ < 0) {
 		behaviorRequest_ = Behavior::kRoot;
 		playerRotateMatY_ = basePlayerRotateMatY_;
+	}
+}
+
+void Player::BehaviorHitCollosionInitialize(){
+	avoidTime_ = 0;
+	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	downVector_.y += jumpPower_ / 2.0f;
+	hitRotateX_ = 0;
+	isDown_ = true;
+}
+
+void Player::BehaviorHitCollisionUpdate(){
+	Matrix4x4 newRotateMatrix_ = playerRotateMatY_;
+	move_ = { 0, 0, -(dashSpeed_ / 2.0f) };
+
+	move_ = TransformNormal(move_, newRotateMatrix_);
+
+	//重力系の処理
+	Gravity();
+	//ダッシュの時間<frame>
+
+	hitRotateX_ += 0.5f;
+
+	playerRotateMatX_ = MakeRotateXMatrix(hitRotateX_);
+
+	const uint32_t behaviorDashTime = 15;
+
+	auto PLTransfromNext = PLTransform_.translation_ + move_;
+
+	if (!StageClampCollision(PLTransfromNext)) {
+		PLTransform_.translation_ += move_;
+	}
+
+	//既定の時間経過で通常状態に戻る
+	if (++avoidTime_ >= behaviorDashTime) {
+		
+		behaviorRequest_ = Behavior::kRoot;
+		
 	}
 }
 
