@@ -10,9 +10,10 @@ void Stage::Initialize(const LevelData* data) {
 	transform.Init();
 	transform.translation_.y = 0.0f;
 	transform.UpdateMatrix();
-	for (auto& ground : grounds_) {
-		ground = std::make_unique<Ground>();
-		ground->Initialize(data, { stagePiece }, transform, electricBoardModel);
+	
+	for (uint32_t i = 0u; i < grounds_.size(); i++) {
+		grounds_.at(i) = std::make_unique<Ground>();
+		grounds_.at(i)->Initialize(data, { stagePiece }, transform, electricBoardModel, layer.at(i));
 		transform.translation_.y -= 15.0f;
 		transform.UpdateMatrix();
 	}
@@ -54,4 +55,43 @@ void Stage::IsCollision(const Vector3& position) {
 	for (auto& ground : grounds_) {
 		ground->IsCollision(angle);
 	}
+}
+
+bool Stage::IsPlayerCollision(const Vector3& position) {
+	float angle = GetRadianVectorToVector(Vector3(0.0f, 0.0f, 1.0f).Normalize(), Vector3(position.x, 0.0f, position.z).Normalize());
+	if (position.x < 0.0f) {
+		angle = -angle;
+	}
+	float oneRad = 16.0f / 360.0f;
+
+	std::string lLayer = LayerCheck(position.y);
+
+	// playerと同じ階層が更新される
+	return grounds_.at(nowLayerNumber_)->IsCollision(angle, 1.0f);
+}
+
+Vector3 Stage::GetGroundPosition() const {
+	return grounds_.at(nowLayerNumber_)->GetTransform().GetWorldPosition();
+}
+
+Vector3 Stage::GetNextGroundPosition() const {
+	uint32_t index = nowLayerNumber_ + 1u;
+	if (index >= layer.size()) {
+		index = 0;
+		for (auto& ground : grounds_) {
+			ground->Initialize();
+		}
+	}
+	return grounds_.at(index)->GetTransform().GetWorldPosition();
+}
+
+std::string Stage::LayerCheck(const float& playerPositionY) {
+	nowLayerNumber_ = 0;
+	for (auto& ground : grounds_) {
+		if (playerPositionY >= ground->transform_.GetWorldPosition().y) {
+			return layer.at(nowLayerNumber_);
+		}
+		nowLayerNumber_++;
+	}
+	return "None";
 }

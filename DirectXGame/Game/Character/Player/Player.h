@@ -33,6 +33,13 @@ public:
 
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
+	void SetFloorPosition(const float& positionY);
+
+	void SetFall(const bool& flag) { isDown_ = flag; }
+
+	// ゲッター
+	const WorldTransform& GetTransform() const { return PLTransform_; }
+
 
 private:
 	/*振る舞い系*/
@@ -101,12 +108,9 @@ private:
 	//床に当たったときの反応処理
 	void OnFloorCollision();
 
-public: // とりあえずGameSceneで角
+private:
 	//Stageとの衝突判定Clamp 中心点(原点)
 	bool StageClampCollision(const Vector3& worldTrans);
-
-	// ゲッター
-	const WorldTransform& GetTransform() const { return PLTransform_; }
 
 private:
 	/*ベースとなるモデルやトランスフォームなど*/
@@ -235,6 +239,8 @@ private:
 	float avoidSpeed_ = 1.0f;
 	//回避の継続時間
 	uint32_t avoidTime_ = 0;
+	// 足場のY座標
+	float floorPositionY_ = 0.0f;
 
 };
 

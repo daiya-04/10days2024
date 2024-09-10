@@ -11,9 +11,11 @@
 class GroundPiece {
 public:
 	GroundPiece() = default;
+	GroundPiece(const std::vector<std::shared_ptr<Model>>& models);
 	~GroundPiece() = default;
 
-	void Initialize(const LevelData::ObjectData& data, const std::vector<std::shared_ptr<Model>>& models, const std::string& tag, const WorldTransform* parent = nullptr);
+	void Initialize(const LevelData::ObjectData& data, const std::string& tag, const WorldTransform* parent = nullptr);
+	void Initialize();
 
 	void Update();
 
@@ -24,6 +26,7 @@ public:
 	const std::string& GetTag() const { return tag_; }
 
 	Vector3 GetRotation() const { return transform_.rotation_; }
+	bool GetIsAlive() const { return isAlive_; }
 
 private:
 	void UpdateTrans(); // 座標更新用関数
