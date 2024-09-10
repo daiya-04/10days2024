@@ -398,7 +398,7 @@ void Player::BehaviorRootUpdate(){
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
-	//Xボタンで攻撃
+	//SPACEボタンで被弾モーション
 	if (input_->TriggerKey(DIK_SPACE)) {
 		HitEnemyAttackCollision();
 	}
