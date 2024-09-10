@@ -69,6 +69,7 @@ void Player::Initialize(){
 	PLTransform_.Init();
 
 	PLTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	PLTransform_.translation_.y = 8.0f;
 	PLTransform_.translation_.z = -30.0f;
 
 	RHandTransform_.Init();
@@ -197,6 +198,12 @@ void Player::Draw(const Camera& camera) {
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
 	shadowObj_->Draw(camera);
+}
+
+void Player::Reset(){
+	PLTransform_.translation_ = { 0.0f,8.0f,-30.0f };
+	behaviorRequest_ = Behavior::kRoot;
+
 }
 
 void Player::ParticleDraw(const Camera& camera){

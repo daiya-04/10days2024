@@ -23,6 +23,9 @@ public:
 	//描画処理
 	void Draw(const Camera& camera);
 
+	//ゲーム中での初期化
+	void Reset();
+
 	//描画処理
 	void ParticleDraw(const Camera& camera);
 	//デバック用GUIの表示

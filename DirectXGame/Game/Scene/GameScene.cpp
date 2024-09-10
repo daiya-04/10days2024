@@ -128,7 +128,7 @@ void GameScene::Update() {
 		// playerが下層より下に行った場合
 		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {
 			// playerのparameterをReset
-
+			player_->Reset();
 		}
 	}
 	else {
