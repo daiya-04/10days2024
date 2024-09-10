@@ -4,6 +4,7 @@
 #include "CannonManager.h"
 #include "StampManager.h"
 #include "ImGuiManager.h"
+#include "ShapesDraw.h"
 
 void Boss::Init(const std::shared_ptr<Model>& model) {
 
@@ -17,7 +18,12 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	rotateMat_ = DirectionToDirection({ 0.0f,0.0f,1.0f }, direction_);
 
-	obj_->worldTransform_.translation_ = { 0.0f,-5.0f,0.0f };
+	collider_[AttackMode::kHigh] = { Vector3(0.0f,10.0f,0.0f),4.0f };
+	collider_[AttackMode::kMiddle] = { Vector3(0.0f,0.0f,0.0f),15.0f };
+	collider_[AttackMode::kUnder] = { Vector3(0.0f,-12.0f,0.0f),23.0f };
+
+	obj_->worldTransform_.translation_ = { 0.0f,-23.0f,0.0f };
+	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 
 }
 
@@ -40,6 +46,13 @@ void Boss::Update() {
 }
 
 void Boss::Draw(const Camera& camera) {
+#ifdef _DEBUG
+
+	ShapesDraw::DrawSphere(collider_[attackMode_], camera, Vector4(1.0f, 0.0f, 0.0f, 1.0f));
+
+#endif // _DEBUG
+
+
 	obj_->Draw(camera);
 }
 
@@ -60,12 +73,11 @@ void Boss::RootUpdate() {
 void Boss::AttackInit() {
 
 	if (attackMode_ == AttackMode::kHigh) {
-		MeteorManager::GetInstance()->AttackStart(obj_->GetWorldPos());
-	}
-	else if (attackMode_ == AttackMode::kMiddle) {
-		CannonManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+		MeteorManager::GetInstance()->AttackStart(collider_[AttackMode::kHigh].center);
+	}else if (attackMode_ == AttackMode::kMiddle) {
+		CannonManager::GetInstance()->AttackStart(collider_[AttackMode::kMiddle].center);
 	}else if (attackMode_ == AttackMode::kUnder) {
-		StampManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+		StampManager::GetInstance()->AttackStart(collider_[AttackMode::kUnder].center);
 	}
 	
 
@@ -123,7 +135,17 @@ void Boss::DebugGUI() {
 		behaviorRequest_ = Behavior::kRoot;
 	}
 	
+	ImGui::DragFloat3("scale", &obj_->worldTransform_.scale_.x, 0.1f);
+	ImGui::DragFloat3("tranlation", &obj_->worldTransform_.translation_.x, 0.01f);
 
+	ImGui::DragFloat3("High Collider center", &collider_[AttackMode::kHigh].center.x, 0.01f);
+	ImGui::DragFloat("High Collider radius", &collider_[AttackMode::kHigh].radius, 0.01f);
+
+	ImGui::DragFloat3("Middle Collider center", &collider_[AttackMode::kMiddle].center.x, 0.01f);
+	ImGui::DragFloat("Middle Collider radius", &collider_[AttackMode::kMiddle].radius, 0.01f);
+
+	ImGui::DragFloat3("Under Collider center", &collider_[AttackMode::kUnder].center.x, 0.01f);
+	ImGui::DragFloat("Under Collider radius", &collider_[AttackMode::kUnder].radius, 0.01f);
 
 
 	ImGui::End();

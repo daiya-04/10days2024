@@ -5,7 +5,7 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
 
-	fireTrail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 200000));
+	fireTrail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 20000));
 
 	fireTrail_->isLoop_ = true;
 
@@ -19,7 +19,7 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 	fireTrail_->emitter_.scale = 0.5f;
 	fireTrail_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 3.5f;
 	fireTrail_->emitter_.speed = 0.0f;
-	fireTrail_->emitter_.count = 10000;
+	fireTrail_->emitter_.count = 1000;
 
 	velocity_ = { 0.0f,-0.1f,0.0f };
 
@@ -96,7 +96,7 @@ void Meteor::AttackUpdate() {
 	obj_->worldTransform_.translation_ += velocity_;
 
 
-	if (obj_->worldTransform_.translation_.y <= 0.0f) {
+	if (obj_->worldTransform_.translation_.y <= 10.0f) {
 		isLife_ = false;
 		phaseRequest_ = Phase::kRoot;
 	}

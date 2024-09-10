@@ -21,7 +21,7 @@ void Stage::Initialize(const LevelData* data) {
 void Stage::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("Stage");
-	static float distance = 15.0f;
+	static float distance = 10.0f;
 	ImGui::DragFloat("Distance", &distance, 0.1f);
 	ImGui::End();
 	float lDist = distance;

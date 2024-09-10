@@ -18,7 +18,7 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 
 	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 50000));
 
-	float range = 23.0f;
+	float range = 30.0f;
 
 	for (int32_t index = 0; index < 16; index++) {
 		float angle = float(index) * (360.0f / 16.0f);
@@ -95,7 +95,7 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 
 	isAttack_ = true;
 	basePos_ = basePos;
-	basePos_.y = startHight_;
+	basePos_.y += startHight_;
 	meteorIndex_ = 0;
 
 	meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);

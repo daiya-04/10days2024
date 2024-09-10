@@ -74,9 +74,9 @@ private:
 
 	std::unique_ptr<Object3d> obj_;
 
-	Shapes::AABB collider_;
+	std::map<AttackMode, Shapes::Sphere> collider_;
 
-	AttackMode attackMode_ = AttackMode::kMiddle;
+	AttackMode attackMode_ = AttackMode::kHigh;
 
 	int32_t maxHp_ = 100;
 	int32_t hp_ = maxHp_;

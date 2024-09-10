@@ -20,7 +20,7 @@ void Ground::ApplyGlobalVariables() {
 
 void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel) {
 	transform_ = transform;
-	transform_.scale_ = Vector3(1.0f, 1.0f, 1.0f);
+	transform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 38.0f;
 	transform_.UpdateMatrix();
 
 	// pieceのtag付けと初期化
@@ -56,7 +56,7 @@ void Ground::Update() {
 #ifdef _DEBUG
 
 	ImGui::Begin("Ground");
-	static float mastarScale = 30.0f;
+	static float mastarScale = 38.0f;
 	ImGui::DragFloat("MasterScale", &mastarScale, 0.1f, 0.1f);
 	transform_.scale_ = Vector3(mastarScale, mastarScale, mastarScale);
 	transform_.UpdateMatrix();
