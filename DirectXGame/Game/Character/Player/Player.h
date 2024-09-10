@@ -117,6 +117,9 @@ private:
 
 	//左手のモデル
 	std::unique_ptr<Object3d> leftHandObj_;
+
+	//左手のモデル
+	std::unique_ptr<Object3d> shadowObj_;
 	//キー入力
 	Input* input_;
 
@@ -209,6 +212,11 @@ private:
 
 	//溜め攻撃をするときの右手のトランスフォーム
 	WorldTransform RRotateHandTransform_;
+
+	//影用のトランスフォーム
+	WorldTransform ShadowTransform_;
+
+	float shadowY_ = -1.7f;
 
 	//移動ベクトル
 	Vector3 move_;

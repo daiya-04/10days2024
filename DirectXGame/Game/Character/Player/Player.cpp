@@ -60,6 +60,10 @@ void Player::Initialize(){
 
 	leftHandObj_->Initialize(modelManager_->LoadOBJ("PlayerHand"));
 
+	shadowObj_= std::make_unique<Object3d>();
+
+	shadowObj_->Initialize(modelManager_->LoadGLTF("shadow"));
+
 	input_ = Input::GetInstance();
 
 	PLTransform_.Init();
@@ -84,6 +88,9 @@ void Player::Initialize(){
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.translation_.x = -2.0f;
 	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
+
+	ShadowTransform_.Init();
+	ShadowTransform_.scale_ = { 0.5f,0.005f,0.5f };
 
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
@@ -176,6 +183,13 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 
 	leftHandObj_->worldTransform_ = LHandTransform_;
 	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+
+	ShadowTransform_.translation_ = PLTransform_.translation_;
+
+	ShadowTransform_.translation_.y = shadowY_;
+
+	shadowObj_->worldTransform_ = ShadowTransform_;
+	shadowObj_->worldTransform_.UpdateMatrix();
 }
 
 void Player::Draw(const Camera& camera) {
@@ -183,6 +197,7 @@ void Player::Draw(const Camera& camera) {
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
+	shadowObj_->Draw(camera);
 }
 
 void Player::ParticleDraw(const Camera& camera){
@@ -209,6 +224,8 @@ void Player::Imgui(){
 
 	ImGui::DragFloat3("rightHand", &RHandTransform_.translation_.x, 0.1f);
 	ImGui::DragFloat3("leftHand", &LHandTransform_.translation_.x, 0.1f);
+
+	ImGui::DragFloat("shadowY", &shadowY_, 0.01f);
 
 	ImGui::DragFloat("RotateSpeed", &beseRotateSpeed_, 0.01f, 0.0f, 3.14f);
 
