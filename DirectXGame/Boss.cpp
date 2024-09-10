@@ -17,7 +17,7 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	rotateMat_ = DirectionToDirection({ 0.0f,0.0f,1.0f }, direction_);
 
-	obj_->worldTransform_.translation_ = { 0.0f,0.0f,0.0f };
+	obj_->worldTransform_.translation_ = { 0.0f,-5.0f,0.0f };
 
 }
 

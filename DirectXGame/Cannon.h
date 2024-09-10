@@ -47,8 +47,8 @@ public:
 		Vector3 startPoint_{};
 		Vector3 controlPoint_{};
 		Vector3 impactPoint_{};
-		float impactPointRange_ = 15.0f;
-		float controlPointHeight_ = 5.0f;
+		float impactPointRange_ = 23.0f;
+		float controlPointHeight_ = 15.0f;
 	};
 
 	ChargeData chargeData_;
