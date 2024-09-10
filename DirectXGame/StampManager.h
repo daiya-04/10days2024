@@ -25,15 +25,15 @@ public:
 
 private:
 
-	std::array<std::unique_ptr<Stamp>, 8> stamps_;
+	std::array<std::unique_ptr<Stamp>, 16> stamps_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;
 
 	Vector3 basePos_{};
-	float startHeight_ = 10.0f;
+	float startHeight_ = 0.0f;
 
-	std::array<Vector3, 8> offsets_;
+	std::array<Vector3, 16> offsets_;
 	int32_t stampIndex_ = 0;
 
 	int32_t count_ = 0;

@@ -46,6 +46,8 @@ public:
 		float param_ = 0.0f;
 		Vector3 startPos_{};
 		Vector3 impactPoint_{};
+		int32_t count_ = 0;
+		int32_t coolTime_ = 20;
 	};
 
 	ChargeData chargeData_;

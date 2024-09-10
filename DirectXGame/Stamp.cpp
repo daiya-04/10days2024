@@ -47,7 +47,7 @@ void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
 	obj_->worldTransform_.translation_ = startPos;
 	attackData_.startPos_ = startPos;
 	attackData_.impactPoint_ = startPos;
-	attackData_.impactPoint_.y = 0.0f;
+	attackData_.impactPoint_.y = -12.0f;
 	phaseRequest_ = Phase::kCharge;
 	isLife_ = true;
 
@@ -90,6 +90,7 @@ void Stamp::ChargeUpdate() {
 void Stamp::AttackInit() {
 
 	attackData_.param_ = 0.0f;
+	attackData_.count_ = 0;
 
 }
 
@@ -100,8 +101,10 @@ void Stamp::AttackUpdate() {
 	obj_->worldTransform_.translation_ = Lerp(attackData_.param_, attackData_.startPos_, attackData_.impactPoint_);
 
 	if (attackData_.param_ >= 1.0f) {
-		phaseRequest_ = Phase::kRoot;
-		isLife_ = false;
+		if (++attackData_.count_ >= attackData_.coolTime_) {
+			phaseRequest_ = Phase::kRoot;
+			isLife_ = false;
+		}
 	}
 
 }
