@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "ShapesDraw.h"
 
 void Player::SetGlobalVariables(){
 	GlobalVariables* global = GlobalVariables::GetInstance();
@@ -69,6 +70,9 @@ void Player::Initialize(){
 	PLTransform_.Init();
 
 	PLTransform_.scale_ = { 0.3f,0.3f,0.3f };
+
+	collider_.radius = 0.4f;
+
 	PLTransform_.translation_ = Vector3(1.0f, 8.0f, -30.0f);
 
 	RHandTransform_.Init();
@@ -167,6 +171,7 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	PLTransform_.UpdateMatrix();
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.translation_.y -= 1.0f;
+	collider_.center = bodyObj_->worldTransform_.translation_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_ * playerRotateMatY_);
 
 	if (isCharge_) {
@@ -193,6 +198,11 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 }
 
 void Player::Draw(const Camera& camera) {
+#ifdef _DEBUG
+
+	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+#endif // _DEBUG
 
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);

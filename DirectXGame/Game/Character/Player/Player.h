@@ -8,6 +8,7 @@
 #include"Input.h"
 #include"Engine/Easing/Easing.h"
 #include"Engine/DebugText/GlobalVariables.h"
+#include"CollisionShapes.h"
 
 class Player {
 public:
@@ -33,6 +34,8 @@ public:
 
 public:
 	const WorldTransform& GetWorldTrnas() const { return PLTransform_; }
+
+	const Sphere& GetCollider() const { return collider_; }
 
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
@@ -149,6 +152,9 @@ private:
 	Vector2 minAndMax_;
 
 	Vector3 centerPos_;
+
+	//コライダー
+	Sphere collider_;
 private:
 	/*重力関係*/
 
