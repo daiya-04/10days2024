@@ -1,5 +1,6 @@
 #include "DebugCamera.h"
 #include "Input.h"
+#include "ImGuiManager.h"
 
 DebugCamera::DebugCamera() {
 
@@ -48,6 +49,16 @@ bool DebugCamera::Update() {
 	else if (input->PushKey(DIK_DOWNARROW)) {
 		translate_.y -= moveSpeed_;
 	}
+#ifdef _DEBUG
+	ImGui::Begin("DebugCamera");
+	if (ImGui::TreeNode("Transform")) {
+		ImGui::DragFloat3("Translate", &translate_.x, 0.1f);
+		ImGui::DragFloat3("Rotate", &rotation_.x, 0.1f);
+		ImGui::TreePop();
+	}
+
+	ImGui::End();
+#endif // _DEBUG
 
 	return true;
 }

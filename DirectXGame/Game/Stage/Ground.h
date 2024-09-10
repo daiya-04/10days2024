@@ -19,9 +19,9 @@ public:
 	void IsCollision(const float& angle); // ボスの攻撃座標
 
 
+	WorldTransform transform_; // 地面の親world座標
 private:
 	std::vector<std::unique_ptr<GroundPiece>> pieces_;
-	WorldTransform transform_; // 地面の親world座標
 
 	float endurancePower_ = 100.0f; // 耐久力
 	float groundScale_ = 1.0f; // マスターscale

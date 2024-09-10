@@ -17,6 +17,6 @@ public:
 
 private:
 
-	std::array<std::unique_ptr<Ground>, 1> grounds_;
+	std::array<std::unique_ptr<Ground>, 3> grounds_;
 
 };

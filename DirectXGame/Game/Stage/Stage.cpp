@@ -1,4 +1,5 @@
 #include "Stage.h"
+#include "ImGuiManager.h"
 
 void Stage::Initialize(const LevelData* data) {
 
@@ -12,11 +13,26 @@ void Stage::Initialize(const LevelData* data) {
 	for (auto& ground : grounds_) {
 		ground = std::make_unique<Ground>();
 		ground->Initialize(data, { stagePiece }, transform, electricBoardModel);
+		transform.translation_.y -= 15.0f;
 		transform.UpdateMatrix();
 	}
 }
 
 void Stage::Update() {
+#ifdef _DEBUG
+	ImGui::Begin("Stage");
+	static float distance = 15.0f;
+	ImGui::DragFloat("Distance", &distance, 0.1f);
+	ImGui::End();
+	float lDist = distance;
+	for (auto& ground : grounds_) {
+		ground->transform_.translation_.y = lDist;
+		lDist -= distance;
+	}
+
+#endif // _DEBUG
+
+
 	for (auto& ground : grounds_) {
 		ground->Update();
 	}
