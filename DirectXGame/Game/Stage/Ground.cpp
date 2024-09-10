@@ -79,6 +79,7 @@ void Ground::Update() {
 	for (auto& piece : pieces_) {
 		piece->Update();
 	}
+	CheckAlive();
 	// 適当に1度ずつ回転
 	electricBoard_->worldTransform_.rotation_.y += 0.01f;
 	electricBoard_->worldTransform_.UpdateMatrix();
@@ -140,4 +141,10 @@ bool Ground::IsCollision(const float& angle, const float& damage) {
 		}
 	}
 	return false;
+}
+
+void Ground::CheckAlive() {
+	for (uint32_t index = 0u; index < pieces_.size(); index++) {
+		pieceAlives_.at(index) = pieces_.at(index)->GetIsAlive();
+	}
 }
