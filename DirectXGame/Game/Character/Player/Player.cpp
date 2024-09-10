@@ -827,10 +827,10 @@ void Player::Shadow(){
 
 	ShadowTransform_.translation_ = PLTransform_.translation_;
 
-	ShadowTransform_.translation_.y = shadowY_;
+	ShadowTransform_.translation_.y = shadowY_ + floorPositionY_;
 
-	ShadowTransform_.scale_.x = 0.5f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
-	ShadowTransform_.scale_.z = 0.5f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+	ShadowTransform_.scale_.x = 0.5f * (groundLength_ / (groundLength_ + (PLTransform_.translation_.y - floorPositionY_)));
+	ShadowTransform_.scale_.z = 0.5f * (groundLength_ / (groundLength_ + (PLTransform_.translation_.y - floorPositionY_)));
 
 	if (ShadowTransform_.scale_.x < 0.1f) {
 		ShadowTransform_.scale_.x = 0.0f;
