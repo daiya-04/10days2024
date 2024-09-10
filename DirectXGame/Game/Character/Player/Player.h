@@ -103,6 +103,9 @@ private:
 private:
 	//落下復帰処理
 	void Respawn();
+	//丸影の処理
+	void Shadow();
+	
 	//重力関係の処理
 	void Gravity();
 	//床に当たったときの反応処理
@@ -124,6 +127,9 @@ private:
 
 	//左手のモデル
 	std::unique_ptr<Object3d> leftHandObj_;
+
+	//左手のモデル
+	std::unique_ptr<Object3d> shadowObj_;
 	//キー入力
 	Input* input_;
 
@@ -156,6 +162,8 @@ private:
 	float gravityPowerAttack_ = -0.08f;
 	//ジャンプ攻撃時のジャンプの強さ
 	float jumpPowerAttack_ = 0.9f;
+
+	float groundLength_ = 1.7f;
 
 private:
 	/*攻撃関連変数*/
@@ -203,6 +211,12 @@ private:
 	//チャージ攻撃中か
 	bool isCharge_ = false;
 
+	//落下攻撃用
+	float xRadian_;
+	float yRadian_;
+
+	float fallingEaseT_;
+
 private:
 	/*行動関連の変数*/
 	//Behaviorで操作する本体のトランスフォーム
@@ -217,10 +231,18 @@ private:
 	//溜め攻撃をするときの右手のトランスフォーム
 	WorldTransform RRotateHandTransform_;
 
+	//影用のトランスフォーム
+	WorldTransform ShadowTransform_;
+
+	float shadowY_ = -1.7f;
+
 	//移動ベクトル
 	Vector3 move_;
 	//代入する回転行列Y軸
 	Matrix4x4 playerRotateMatY_;
+
+	//代入する回転行列Y軸
+	Matrix4x4 basePlayerRotateMatY_;
 
 	//代入する回転行列X軸
 	Matrix4x4 playerRotateMatX_;

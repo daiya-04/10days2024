@@ -60,6 +60,10 @@ void Player::Initialize(){
 
 	leftHandObj_->Initialize(modelManager_->LoadOBJ("PlayerHand"));
 
+	shadowObj_= std::make_unique<Object3d>();
+
+	shadowObj_->Initialize(modelManager_->LoadGLTF("shadow"));
+
 	input_ = Input::GetInstance();
 
 	PLTransform_.Init();
@@ -84,6 +88,9 @@ void Player::Initialize(){
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.translation_.x = -2.0f;
 	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
+
+	ShadowTransform_.Init();
+	ShadowTransform_.scale_ = { 0.5f,0.005f,0.5f };
 
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
@@ -177,6 +184,11 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 
 	leftHandObj_->worldTransform_ = LHandTransform_;
 	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
+
+	Shadow();
+
+	shadowObj_->worldTransform_ = ShadowTransform_;
+	shadowObj_->worldTransform_.UpdateMatrix();
 }
 
 void Player::Draw(const Camera& camera) {
@@ -184,6 +196,7 @@ void Player::Draw(const Camera& camera) {
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
+	shadowObj_->Draw(camera);
 }
 
 void Player::ParticleDraw(const Camera& camera){
@@ -210,6 +223,8 @@ void Player::Imgui(){
 
 	ImGui::DragFloat3("rightHand", &RHandTransform_.translation_.x, 0.1f);
 	ImGui::DragFloat3("leftHand", &LHandTransform_.translation_.x, 0.1f);
+
+	ImGui::DragFloat("shadowY", &shadowY_, 0.01f);
 
 	ImGui::DragFloat("RotateSpeed", &beseRotateSpeed_, 0.01f, 0.0f, 3.14f);
 
@@ -359,6 +374,9 @@ void Player::BehaviorAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+
+	basePlayerRotateMatY_ = playerRotateMatY_;
+	yRadian_ = 0;
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -590,6 +608,12 @@ void Player::BehaviorDashUpdate(){
 
 void Player::BehaviorFallingAttackInitialize(){
 	downVector_ = { 0.0f,jumpPowerAttack_,0.0f };
+	basePlayerRotateMatY_ = playerRotateMatY_;
+
+	xRadian_ = 0;
+	yRadian_ = 0;
+	fallingEaseT_ = 0.0f;
+	waitTime_ = waitTimeBase_;
 }
 
 void Player::BehaviorFallingAttackUpdate(){
@@ -597,9 +621,35 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
+
+	auto radian = 0.52f;
+	
+	if (downVector_.y <= 0.0f) {
+		fallingEaseT_ += 0.1f;
+	}
+
+	if (fallingEaseT_ > 1.0f) {
+		fallingEaseT_ = 1.0f;
+	}
+	
+	xRadian_ = Easing::Ease(Easing::EaseName::EaseInBack, -0.52f, 1.04f, fallingEaseT_);
+	yRadian_ = Easing::Ease(Easing::EaseName::EaseInBack, 0.52f, -0.52f, fallingEaseT_);
+
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0, 3.0f, fallingEaseT_);
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, -1.0f, fallingEaseT_);
+
+
+	playerRotateMatX_ = MakeRotateXMatrix(xRadian_);
+	playerRotateMatY_ = basePlayerRotateMatY_ * MakeRotateYMatrix(yRadian_);
+
 	if (PLTransform_.translation_.y <= floorPositionY_) {
 		OnFloorCollision();
+		waitTime_--;
+	}
+
+	if (waitTime_ < 0) {
 		behaviorRequest_ = Behavior::kRoot;
+		playerRotateMatY_ = basePlayerRotateMatY_;
 	}
 }
 
@@ -647,6 +697,8 @@ void Player::AttackMotion(){
 	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
 
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
+
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 	}
@@ -665,6 +717,9 @@ void Player::secondAttackMotion(){
 
 	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
+
 
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
@@ -753,6 +808,22 @@ void Player::Respawn(){
 	downVector_ = { 0.0f,0.0f,0.0f };
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
+}
+
+void Player::Shadow(){
+	//層によって値を変更しなければいけないので一旦保留
+
+	ShadowTransform_.translation_ = PLTransform_.translation_;
+
+	ShadowTransform_.translation_.y = shadowY_;
+
+	ShadowTransform_.scale_.x = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+	ShadowTransform_.scale_.z = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+
+	if (ShadowTransform_.scale_.x < 0.1f) {
+		ShadowTransform_.scale_.x = 0.0f;
+		ShadowTransform_.scale_.z = 0.0f;
+	}
 }
 
 void Player::Gravity(){
