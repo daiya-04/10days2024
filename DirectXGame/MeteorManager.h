@@ -40,7 +40,7 @@ private:
 	int32_t meteorIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 30;
+	int32_t attackTime_ = 60;
 
 
 

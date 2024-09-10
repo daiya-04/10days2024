@@ -87,6 +87,8 @@ void GameScene::Init(){
 void GameScene::Update() {
 	DebugGUI();
 
+	boss_->SetAttackMode(stage_->GetLayerNumber());
+
 #ifdef _DEBUG
 
 	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_1)) {

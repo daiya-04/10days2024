@@ -62,11 +62,15 @@ void Boss::RootInit() {
 	CannonManager::GetInstance()->AttackFinish();
 	StampManager::GetInstance()->AttackFinish();
 
+	count_ = 0;
+
 }
 
 void Boss::RootUpdate() {
 
-
+	if (++count_ >= coolTime_) {
+		behaviorRequest_ = Behavior::kAttack;
+	}
 
 }
 
@@ -79,13 +83,15 @@ void Boss::AttackInit() {
 	}else if (attackMode_ == AttackMode::kUnder) {
 		StampManager::GetInstance()->AttackStart(collider_[AttackMode::kUnder].center);
 	}
-	
+	count_ = 0;
 
 }
 
 void Boss::AttackUpdate() {
 
-
+	if (++count_ >= coolTime_) {
+		behaviorRequest_ = Behavior::kRoot;
+	}
 
 }
 

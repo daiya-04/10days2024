@@ -68,6 +68,18 @@ public:
 
 	const WorldTransform& GetWorldTransform() { return obj_->worldTransform_; }
 
+	void SetAttackMode(uint32_t layer_) {
+		if (layer_ == 0) {
+			attackMode_ = AttackMode::kHigh;
+		}
+		else if (layer_ == 1) {
+			attackMode_ = AttackMode::kMiddle;
+		}
+		else if (layer_ == 2) {
+			attackMode_ = AttackMode::kUnder;
+		}
+	}
+
 	void DebugGUI();
 
 private:
@@ -87,6 +99,9 @@ private:
 
 	Vector3 direction_{};
 	Matrix4x4 rotateMat_ = MakeIdentity44();
+
+	int32_t count_ = 0;
+	int32_t coolTime_ = 120;
 
 };
 
