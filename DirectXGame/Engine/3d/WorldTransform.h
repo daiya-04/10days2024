@@ -23,6 +23,11 @@ public:
 
 	const WorldTransform* parent_ = nullptr;
 
+	// world座標の取得
+	Vector3 GetWorldPosition() const {
+		return Vector3(matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2]);
+	}
+
 public:
 
 	void Init();

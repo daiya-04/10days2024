@@ -65,7 +65,7 @@ void Player::Initialize(){
 	PLTransform_.Init();
 
 	PLTransform_.scale_ = { 0.5f,0.5f,0.5f };
-	PLTransform_.translation_.z = -10.0f;
+	PLTransform_.translation_.z = -30.0f;
 
 	RHandTransform_.Init();
 
@@ -157,6 +157,7 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	}
 
 	//行列更新
+	PLTransform_.UpdateMatrix();
 	bodyObj_->worldTransform_ = PLTransform_;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_ * playerRotateMatY_);
 
@@ -213,6 +214,10 @@ void Player::Imgui(){
 	ImGui::DragFloat("RotateSpeed", &beseRotateSpeed_, 0.01f, 0.0f, 3.14f);
 
 	ImGui::End();
+}
+
+void Player::SetFloorPosition(const float& positionY) {
+	floorPositionY_ = positionY;
 }
 
 void Player::BehaviorRootInitialize(){
@@ -592,7 +597,7 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
-	if (PLTransform_.translation_.y <= 0.0f) {
+	if (PLTransform_.translation_.y <= floorPositionY_) {
 		OnFloorCollision();
 		behaviorRequest_ = Behavior::kRoot;
 	}
@@ -764,13 +769,13 @@ void Player::Gravity(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
-	if (PLTransform_.translation_.y < 0.0f){
+	if (PLTransform_.translation_.y < floorPositionY_){
 		OnFloorCollision();
 	}
 }
 
 void Player::OnFloorCollision(){
-	PLTransform_.translation_.y = 0.0f;
+	PLTransform_.translation_.y = floorPositionY_;
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
 }
