@@ -18,11 +18,11 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	rotateMat_ = DirectionToDirection({ 0.0f,0.0f,1.0f }, direction_);
 
-	collider_[AttackMode::kHigh] = { Vector3(0.0f,10.0f,0.0f),4.0f };
-	collider_[AttackMode::kMiddle] = { Vector3(0.0f,0.0f,0.0f),15.0f };
-	collider_[AttackMode::kUnder] = { Vector3(0.0f,-12.0f,0.0f),23.0f };
+	collider_[AttackMode::kHigh] = { Vector3(0.0f,1.0f,0.0f),4.0f };
+	collider_[AttackMode::kMiddle] = { Vector3(0.0f,-10.0f,0.0f),15.0f };
+	collider_[AttackMode::kUnder] = { Vector3(0.0f,-22.0f,0.0f),23.0f };
 
-	obj_->worldTransform_.translation_ = { 0.0f,-23.0f,0.0f };
+	obj_->worldTransform_.translation_ = { 0.0f,-32.0f,0.0f };
 	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 
 }

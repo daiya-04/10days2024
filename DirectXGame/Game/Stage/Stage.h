@@ -40,6 +40,6 @@ private:
 private:
 	std::array<std::unique_ptr<Ground>, 3> grounds_;
 	uint32_t nowLayerNumber_ = 0u;
-	float distance_ = 15.0f;
+	float distance_ = 10.0f;
 
 };

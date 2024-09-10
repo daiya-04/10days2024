@@ -66,7 +66,7 @@ void StampManager::AttackStart(const Vector3& basePos) {
 
 	isAttack_ = true;
 	basePos_ = basePos;
-	basePos_.y = startHeight_;
+	basePos_.y += startHeight_;
 
 }
 

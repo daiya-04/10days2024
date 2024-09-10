@@ -96,7 +96,7 @@ void Meteor::AttackUpdate() {
 	obj_->worldTransform_.translation_ += velocity_;
 
 
-	if (obj_->worldTransform_.translation_.y <= 10.0f) {
+	if (obj_->worldTransform_.translation_.y <= 0.0f) {
 		isLife_ = false;
 		phaseRequest_ = Phase::kRoot;
 	}

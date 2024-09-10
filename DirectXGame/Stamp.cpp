@@ -47,7 +47,7 @@ void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
 	obj_->worldTransform_.translation_ = startPos;
 	attackData_.startPos_ = startPos;
 	attackData_.impactPoint_ = startPos;
-	attackData_.impactPoint_.y = -12.0f;
+	attackData_.impactPoint_.y = -22.0f;
 	phaseRequest_ = Phase::kCharge;
 	isLife_ = true;
 

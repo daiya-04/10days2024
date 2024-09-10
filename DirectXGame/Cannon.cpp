@@ -61,10 +61,12 @@ void Cannon::AttackStart(const Vector3& pos, const Vector3& direction) {
 	isLife_ = true;
 
 	shootData_.startPoint_ = pos;
-	shootData_.impactPoint_ = direction * shootData_.impactPointRange_;
-	shootData_.impactPoint_.y = shootData_.impactPointHeight_;
-	shootData_.controlPoint_ = direction * 22.0f;
-	shootData_.controlPoint_.y = shootData_.controlPointHeight_;
+	shootData_.impactPoint_ = pos;
+	shootData_.impactPoint_ += direction * shootData_.impactPointRange_;
+	shootData_.impactPoint_.y += shootData_.impactPointHeight_;
+	shootData_.controlPoint_ = pos;
+	shootData_.controlPoint_ += direction * 8.0f;
+	shootData_.controlPoint_.y += shootData_.controlPointHeight_;
 
 	phaseRequest_ = Phase::kCharge;
 

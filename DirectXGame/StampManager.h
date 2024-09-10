@@ -31,7 +31,7 @@ private:
 	bool preIsAttack_ = false;
 
 	Vector3 basePos_{};
-	float startHeight_ = 0.0f;
+	float startHeight_ = 10.0f;
 
 	std::array<Vector3, 16> offsets_;
 	int32_t stampIndex_ = 0;
