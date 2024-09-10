@@ -27,6 +27,7 @@
 #include "StampManager.h"
 #include "Stage/Stage.h"
 #include "Camera/DebugCamera.h"
+#include "Camera/FollowCamera.h"
 
 class GameScene : public IScene {
 public:
@@ -73,6 +74,8 @@ private:
 	LevelData* levelData_;
 	std::unique_ptr<Stage> stage_;
 	std::unique_ptr<DebugCamera> debugCamera_;
+	std::unique_ptr<FollowCamera> followCamera_;
+
 
 private:
 	//モデルマネージャー

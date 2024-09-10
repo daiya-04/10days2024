@@ -222,6 +222,9 @@
     <ClCompile Include="CannonManager.cpp" />
     <ClCompile Include="Stamp.cpp" />
     <ClCompile Include="StampManager.cpp" />
+    <ClCompile Include="Game\Camera\FollowCamera.cpp">
+      <Filter>Game\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -393,5 +396,8 @@
     <ClInclude Include="CannonManager.h" />
     <ClInclude Include="Stamp.h" />
     <ClInclude Include="StampManager.h" />
+    <ClInclude Include="Game\Camera\FollowCamera.h">
+      <Filter>Game\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -59,6 +59,7 @@ void GameScene::Init(){
 	debugCamera_ = std::make_unique<DebugCamera>();
 #endif // _DEBUG
 
+	
 
 	levelData_ = LevelLoader::LoadFile("stageTest");
 
@@ -68,13 +69,18 @@ void GameScene::Init(){
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
 
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->SetTarget(&player_->GetWorldTrnas());
+
+	player_->SetCameraRotate(&followCamera_->GetCameraRotate());
+
 	modelManager_ = ModelManager::GetInstance();
 
 	floor_ = std::make_unique<Object3d>();
 
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
-	floor_->worldTransform_.scale_ = { 100.0f,1.0f,100.0f };
+	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
 }
 
@@ -95,17 +101,28 @@ void GameScene::Update() {
 		camera_.translation_ = debugCamera_->GetCameraTranslate();
 		camera_.rotation_ = debugCamera_->GetCameraRotate();
 	}
+	else {
+		followCamera_->Update();
+		camera_.translation_ = followCamera_->GetCameraTranslate();
+		camera_.rotation_ = followCamera_->GetCameraRotate();
+
+	}
 
 #endif // _DEBUG
 	floor_->worldTransform_.UpdateMatrix();
+
+	stage_->Update();
 
 	boss_->Update();
 	meteor_->Update();
 	cannon_->Update();
 	stamp_->Update();
 
-	player_->Update();
+	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(19.5f, 28.5f));
 	
+	// ボスの攻撃座標を入れる
+	stage_->IsCollision(player_->GetTransform().translation_);
+
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
 	camera_.UpdateMatrix();
