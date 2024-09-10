@@ -29,6 +29,8 @@ public:
 	/// <returns>床があればtrue / 床がなければfalse</returns>
 	bool IsPlayerCollision(const Vector3& position);
 
+	bool ResetCheck(const Vector3& position);
+
 	Vector3 GetGroundPosition() const;
 	Vector3 GetNextGroundPosition() const;
 
@@ -38,5 +40,6 @@ private:
 private:
 	std::array<std::unique_ptr<Ground>, 3> grounds_;
 	uint32_t nowLayerNumber_ = 0u;
+	float distance_ = 15.0f;
 
 };

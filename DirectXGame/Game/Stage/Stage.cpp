@@ -22,13 +22,13 @@ void Stage::Initialize(const LevelData* data) {
 void Stage::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("Stage");
-	static float distance = 15.0f;
-	ImGui::DragFloat("Distance", &distance, 0.1f);
+	
+	ImGui::DragFloat("Distance", &distance_, 0.1f);
 	ImGui::End();
-	float lDist = distance;
+	float lDist = 0.0f;
 	for (auto& ground : grounds_) {
 		ground->transform_.translation_.y = lDist;
-		lDist -= distance;
+		lDist -= distance_;
 	}
 
 #endif // _DEBUG
@@ -64,10 +64,23 @@ bool Stage::IsPlayerCollision(const Vector3& position) {
 	}
 	float oneRad = 16.0f / 360.0f;
 
-	std::string lLayer = LayerCheck(position.y);
+	if (LayerCheck(position.y) == "None") {
+		assert(true);
+	}
 
 	// playerと同じ階層が更新される
 	return grounds_.at(nowLayerNumber_)->IsCollision(angle, 1.0f);
+}
+
+bool Stage::ResetCheck(const Vector3& position) {
+	float groundPos = grounds_.at(layer.size() - 1u)->GetTransform().GetWorldPosition().y;
+	if (position.y <= groundPos - distance_) {
+		for (auto& ground : grounds_) {
+			ground->Initialize();
+		}
+		return true;
+	}
+	return false;
 }
 
 Vector3 Stage::GetGroundPosition() const {
@@ -77,10 +90,10 @@ Vector3 Stage::GetGroundPosition() const {
 Vector3 Stage::GetNextGroundPosition() const {
 	uint32_t index = nowLayerNumber_ + 1u;
 	if (index >= layer.size()) {
-		index = 0;
-		for (auto& ground : grounds_) {
-			ground->Initialize();
-		}
+		index = static_cast<uint32_t>(layer.size()) - 1u;
+		Vector3 result = grounds_.at(index)->GetTransform().GetWorldPosition();
+		result.y -= distance_;
+		return result;
 	}
 	return grounds_.at(index)->GetTransform().GetWorldPosition();
 }
@@ -91,7 +104,9 @@ std::string Stage::LayerCheck(const float& playerPositionY) {
 		if (playerPositionY >= ground->transform_.GetWorldPosition().y) {
 			return layer.at(nowLayerNumber_);
 		}
-		nowLayerNumber_++;
+		if (++nowLayerNumber_ >= layer.size()) {
+			nowLayerNumber_ = static_cast<uint32_t>(layer.size()) - 1u;
+		}
 	}
 	return "None";
 }

@@ -125,6 +125,11 @@ void GameScene::Update() {
 		// 床がなかった場合
 		player_->SetFloorPosition(stage_->GetNextGroundPosition().y);
 		player_->SetFall(true);
+		// playerが下層より下に行った場合
+		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {
+			// playerのparameterをReset
+
+		}
 	}
 	else {
 		// 床があった場合
