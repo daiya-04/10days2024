@@ -166,6 +166,7 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	//行列更新
 	PLTransform_.UpdateMatrix();
 	bodyObj_->worldTransform_ = PLTransform_;
+	bodyObj_->worldTransform_.translation_.y -= 1.0f;
 	bodyObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_ * playerRotateMatY_);
 
 	if (isCharge_) {
