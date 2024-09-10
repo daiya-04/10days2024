@@ -399,5 +399,6 @@
     <ClInclude Include="Game\Camera\FollowCamera.h">
       <Filter>Game\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="RandomEngine.h" />
   </ItemGroup>
 </Project>

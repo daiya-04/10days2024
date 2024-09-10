@@ -225,6 +225,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Stage\Ground.h" />
     <ClInclude Include="Game\Stage\GroundPiece.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
+    <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Stamp.h" />
     <ClInclude Include="StampManager.h" />
   </ItemGroup>
