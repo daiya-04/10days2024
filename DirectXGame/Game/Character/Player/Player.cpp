@@ -369,6 +369,9 @@ void Player::BehaviorAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+
+	basePlayerRotateMatY_ = playerRotateMatY_;
+	yRadian_ = 0;
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -689,6 +692,8 @@ void Player::AttackMotion(){
 	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
 
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
+
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 	}
@@ -707,6 +712,9 @@ void Player::secondAttackMotion(){
 
 	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
+
 
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
