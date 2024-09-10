@@ -54,9 +54,7 @@ bool Stage::IsCollision(const Vector3& position, const float& damage) {
 	}
 	float oneRad = 16.0f / 360.0f;
 
-	for (auto& ground : grounds_) {
-		return ground->IsCollision(angle, damage);
-	}
+	return grounds_.at(nowLayerNumber_)->IsCollision(angle, damage);
 }
 
 bool Stage::IsPlayerCollision(const Vector3& position) {
