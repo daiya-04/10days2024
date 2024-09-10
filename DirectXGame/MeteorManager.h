@@ -24,16 +24,16 @@ public:
 
 private:
 
-	std::array<std::unique_ptr<Meteor>, 8> meteors_;
+	std::array<std::unique_ptr<Meteor>, 16> meteors_;
 	std::unique_ptr<GPUParticle> hitEff_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;
 
 	Vector3 basePos_{};
-	float startHight_ = 8.0f;
+	float startHight_ = 15.0f;
 
-	std::array<Vector3, 8> offsets_;
+	std::array<Vector3, 16> offsets_;
 
 	int32_t meteorIndex_ = 0;
 

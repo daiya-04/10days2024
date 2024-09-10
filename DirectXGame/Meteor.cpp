@@ -5,20 +5,21 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
 
-	fireTrail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 10000));
+	fireTrail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 200000));
 
 	fireTrail_->isLoop_ = true;
 
+	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 2.0f;
 	
 	fireTrail_->emitter_.color = Vector4(0.89f, 0.27f, 0.03f, 1.0f);
 	fireTrail_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);
 	fireTrail_->emitter_.angle = 360.0f;
 	fireTrail_->emitter_.frequency = 1.0f / 60.0f;
-	fireTrail_->emitter_.lifeTime = 20.0f / 60.0f;
+	fireTrail_->emitter_.lifeTime = 60.0f / 60.0f;
 	fireTrail_->emitter_.scale = 0.5f;
-	fireTrail_->emitter_.size = Vector3(1.3f, 1.3f, 1.3f);
+	fireTrail_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 3.5f;
 	fireTrail_->emitter_.speed = 0.0f;
-	fireTrail_->emitter_.count = 1000;
+	fireTrail_->emitter_.count = 10000;
 
 	velocity_ = { 0.0f,-0.1f,0.0f };
 

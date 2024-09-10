@@ -1,6 +1,7 @@
 #include "MeteorManager.h"
 #include "TextureManager.h"
 
+#include <numbers>
 
 MeteorManager* MeteorManager::GetInstance() {
 	static MeteorManager instance;
@@ -17,16 +18,22 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 
 	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 50000));
 
-	float range = 5.0f;
+	float range = 23.0f;
 
-	offsets_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * range;
+	/*offsets_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * range;
 	offsets_[1] = Vector3(1.0f, 0.0f, -1.0f).Normalize() * range;
 	offsets_[2] = Vector3(1.0f, 0.0f, 0.0f).Normalize() * range;
 	offsets_[3] = Vector3(1.0f, 0.0f, 1.0f).Normalize() * range;
 	offsets_[4] = Vector3(0.0f, 0.0f, 1.0f).Normalize() * range;
 	offsets_[5] = Vector3(-1.0f, 0.0f, 1.0f).Normalize() * range;
 	offsets_[6] = Vector3(-1.0f, 0.0f, 0.0f).Normalize() * range;
-	offsets_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * range;
+	offsets_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * range;*/
+
+	for (int32_t index = 0; index < 16; index++) {
+		float angle = float(index) * (360.0f / 16.0f);
+		angle = (angle / 180.0f) * std::numbers::pi_v<float>;
+		offsets_[index] = Transform(Vector3(0.0f, 0.0f, 1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
+	}
 
 
 	hitEff_->isLoop_ = false;
@@ -67,7 +74,7 @@ void MeteorManager::Update() {
 	if (!meteors_[meteorIndex_]->IsLife()) {
 		if (++count_ >= attackTime_) {
 			meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-			meteorIndex_ = (meteorIndex_ + 1) % 8;
+			meteorIndex_ = (meteorIndex_ + 1) % 16;
 			count_ = 0;
 		}
 	}
@@ -101,7 +108,7 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 	meteorIndex_ = 0;
 
 	meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-	meteorIndex_ = (meteorIndex_ + 1) % 8;
+	meteorIndex_ = (meteorIndex_ + 1) % 16;
 
 }
 
