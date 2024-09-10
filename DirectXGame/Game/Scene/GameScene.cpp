@@ -146,7 +146,7 @@ void GameScene::DrawModel(){
 
 	stage_->Draw(camera_);
 	floor_->Draw(camera_);
-	//player_->Draw(camera_);
+	player_->Draw(camera_);
 
 }
 
