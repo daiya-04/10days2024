@@ -201,6 +201,10 @@ void Player::Draw(const Camera& camera) {
 
 void Player::Reset(){
 	PLTransform_.translation_ = { -1.0f,8.0f,-30.0f };
+	playerRotateMatY_ = MakeRotateYMatrix(0.0f);
+	postureVec_ = { 0.0f,0.0f,1.0f };
+	frontVec_ = { 0.0f,0.0f,1.0f };
+
 	behaviorRequest_ = Behavior::kRoot;
 
 }
@@ -252,6 +256,7 @@ void Player::BehaviorRootInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 
 	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
+	
 
 }
 

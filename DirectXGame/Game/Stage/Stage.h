@@ -20,7 +20,7 @@ public:
 
 	void Draw(const Camera& camera);
 
-	void IsCollision(const Vector3& position);
+	bool IsCollision(const Vector3& position, const float& damage = 0.0f);
 
 	/// <summary>
 	/// playerの足元に床が存在するか否か
@@ -34,6 +34,7 @@ public:
 	Vector3 GetGroundPosition() const;
 	Vector3 GetNextGroundPosition() const;
 	uint32_t GetLayerNumber() const { return nowLayerNumber_; } // 現在の階層番号の取得 012 = 上中下
+	std::array<bool, 16u> GetPieceAlive() const { return pieceAlives_; } // 現在のLayerのpieceの生存状況をフラグで取得
 
 private:
 	std::string LayerCheck(const float& playerPositionY);
@@ -41,6 +42,7 @@ private:
 private:
 	std::array<std::unique_ptr<Ground>, 3> grounds_;
 	uint32_t nowLayerNumber_ = 0u;
+	std::array<bool, 16u> pieceAlives_;
 	float distance_ = 10.0f;
 
 };
