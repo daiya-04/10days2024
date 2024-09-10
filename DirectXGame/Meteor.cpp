@@ -18,6 +18,7 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 	fireTrail_->emitter_.scale = 0.5f;
 	fireTrail_->emitter_.size = Vector3(1.3f, 1.3f, 1.3f);
 	fireTrail_->emitter_.speed = 0.0f;
+	fireTrail_->emitter_.count = 1000;
 
 	velocity_ = { 0.0f,-0.1f,0.0f };
 
@@ -71,19 +72,21 @@ void Meteor::AttackStart(const Vector3& startPos) {
 
 void Meteor::RootInit() {
 
-	fireTrail_->emitter_.count = 0;
+	fireTrail_->isLoop_ = false;
 
 }
 
 void Meteor::RootUpdate() {
 
-	fireTrail_->emitter_.frequencyTime = 0.0f;
+	
 
 }
 
 void Meteor::AttackInit() {
 
 	fireTrail_->emitter_.count = 1000;
+	fireTrail_->emitter_.frequencyTime = 0.0f;
+	fireTrail_->isLoop_ = true;
 
 }
 

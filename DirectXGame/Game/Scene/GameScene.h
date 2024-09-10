@@ -23,6 +23,8 @@
 
 #include "Boss.h"
 #include "MeteorManager.h"
+#include "CannonManager.h"
+#include "StampManager.h"
 #include "Stage/Stage.h"
 #include "Camera/DebugCamera.h"
 #include "Camera/FollowCamera.h"
@@ -66,6 +68,8 @@ private:
 	std::unique_ptr<Boss> boss_;
 
 	MeteorManager* meteor_ = nullptr;
+	CannonManager* cannon_ = nullptr;
+	StampManager* stamp_ = nullptr;
 
 	LevelData* levelData_;
 	std::unique_ptr<Stage> stage_;

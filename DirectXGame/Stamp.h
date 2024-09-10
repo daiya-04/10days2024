@@ -11,11 +11,13 @@
 #include <functional>
 #include <optional>
 
-class Meteor {
+
+class Stamp {
 public:
 
 	enum class Phase {
 		kRoot,
+		kCharge,
 		kAttack,
 	};
 
@@ -24,18 +26,39 @@ public:
 
 	std::map<Phase, std::function<void()>> phaseInitTable_{
 		{Phase::kRoot,[this]() {RootInit(); }},
+		{Phase::kCharge,[this]() {ChargeInit(); }},
 		{Phase::kAttack,[this]() {AttackInit(); }},
 	};
 
 	std::map<Phase, std::function<void()>> phaseUpdateTable_{
 		{Phase::kRoot,[this]() {RootUpdate(); }},
-		{Phase::kAttack,[this]() {AttackUpdate(); }},
+		{Phase::kCharge,[this]() {ChargeUpdate(); }},
+		{Phase::kAttack,[this]() { AttackUpdate(); }},
 	};
+
+	struct ChargeData {
+		float param_ = 0.0f;
+		Vector3 minScale_ = {};
+		Vector3 maxScale_ = { 1.0f,1.0f,1.0f };
+	};
+
+	struct AttackData {
+		float param_ = 0.0f;
+		Vector3 startPos_{};
+		Vector3 impactPoint_{};
+	};
+
+	ChargeData chargeData_;
+	AttackData attackData_;
+
 
 private:
 
 	void RootInit();
 	void RootUpdate();
+
+	void ChargeInit();
+	void ChargeUpdate();
 
 	void AttackInit();
 	void AttackUpdate();
@@ -50,26 +73,21 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
-	void AttackStart(const Vector3& startPos);
+	void AttackStart(const Vector3& startPos,const Vector3& direction);
 
 	bool IsLife() const { return isLife_; }
-	bool HitFlag() const { return !isLife_ && preIsLife_; }
-
-	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
-	Shapes::Sphere GetCollider() { return collider_; }
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
-	std::unique_ptr<GPUParticle> fireTrail_;
+	Vector3 direction_{};
 
-	Shapes::Sphere collider_;
+	Matrix4x4 rotateMat_ = MakeIdentity44();
+
+	Shapes::OBB collider_;
 
 	bool isLife_ = false;
 	bool preIsLife_ = false;
 
-	Vector3 velocity_{};
-
 
 };
-

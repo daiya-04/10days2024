@@ -17,16 +17,16 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 
 	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 50000));
 
-	float dict = 5.0f;
+	float range = 5.0f;
 
-	offset_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * dict;
-	offset_[1] = Vector3(1.0f, 0.0f, -1.0f).Normalize() * dict;
-	offset_[2] = Vector3(1.0f, 0.0f, 0.0f).Normalize() * dict;
-	offset_[3] = Vector3(1.0f, 0.0f, 1.0f).Normalize() * dict;
-	offset_[4] = Vector3(0.0f, 0.0f, 1.0f).Normalize() * dict;
-	offset_[5] = Vector3(-1.0f, 0.0f, 1.0f).Normalize() * dict;
-	offset_[6] = Vector3(-1.0f, 0.0f, 0.0f).Normalize() * dict;
-	offset_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * dict;
+	offsets_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * range;
+	offsets_[1] = Vector3(1.0f, 0.0f, -1.0f).Normalize() * range;
+	offsets_[2] = Vector3(1.0f, 0.0f, 0.0f).Normalize() * range;
+	offsets_[3] = Vector3(1.0f, 0.0f, 1.0f).Normalize() * range;
+	offsets_[4] = Vector3(0.0f, 0.0f, 1.0f).Normalize() * range;
+	offsets_[5] = Vector3(-1.0f, 0.0f, 1.0f).Normalize() * range;
+	offsets_[6] = Vector3(-1.0f, 0.0f, 0.0f).Normalize() * range;
+	offsets_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * range;
 
 
 	hitEff_->isLoop_ = false;
@@ -66,7 +66,7 @@ void MeteorManager::Update() {
 
 	if (!meteors_[meteorIndex_]->IsLife()) {
 		if (++count_ >= attackTime_) {
-			meteors_[meteorIndex_]->AttackStart(basePos_ + offset_[meteorIndex_]);
+			meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
 			meteorIndex_ = (meteorIndex_ + 1) % 8;
 			count_ = 0;
 		}
@@ -100,7 +100,7 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 	basePos_.y = startHight_;
 	meteorIndex_ = 0;
 
-	meteors_[meteorIndex_]->AttackStart(basePos_ + offset_[meteorIndex_]);
+	meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
 	meteorIndex_ = (meteorIndex_ + 1) % 8;
 
 }

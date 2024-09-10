@@ -137,7 +137,7 @@ void main(uint32_t3 DTid : SV_DispatchThreadID) {
 
             if((0 <= freeListIndex) && (freeListIndex < gMaxParticles.maxNum)) {
                 uint32_t particleIndex = gFreeList[freeListIndex];
-                gParticles[particleIndex].translate = gEmitter.translate + normalize((generator.Generate3d() - 0.5f) * (gEmitter.size)) * (generator.Generate1d() * gEmitter.size.x);
+                gParticles[particleIndex].translate = gEmitter.translate + normalize((generator.Generate3d() - 0.5f) * (gEmitter.size.x)) * (generator.Generate1d() * gEmitter.size.x);
                 gParticles[particleIndex].scale = float32_t3(gEmitter.scale, gEmitter.scale, gEmitter.scale);
                 gParticles[particleIndex].color = gEmitter.color;
                 gParticles[particleIndex].velocity = ShotDirection(generator) * (generator.Generate1d() * gEmitter.speed);

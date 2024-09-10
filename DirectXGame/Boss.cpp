@@ -1,6 +1,8 @@
 #include "Boss.h"
 
 #include "MeteorManager.h"
+#include "CannonManager.h"
+#include "StampManager.h"
 #include "ImGuiManager.h"
 
 void Boss::Init(const std::shared_ptr<Model>& model) {
@@ -44,6 +46,8 @@ void Boss::Draw(const Camera& camera) {
 void Boss::RootInit() {
 
 	MeteorManager::GetInstance()->AttackFinish();
+	CannonManager::GetInstance()->AttackFinish();
+	StampManager::GetInstance()->AttackFinish();
 
 }
 
@@ -55,7 +59,15 @@ void Boss::RootUpdate() {
 
 void Boss::AttackInit() {
 
-	MeteorManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+	if (attackMode_ == AttackMode::kHigh) {
+		MeteorManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+	}
+	else if (attackMode_ == AttackMode::kMiddle) {
+		CannonManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+	}else if (attackMode_ == AttackMode::kUnder) {
+		StampManager::GetInstance()->AttackStart(obj_->GetWorldPos());
+	}
+	
 
 }
 
@@ -94,12 +106,25 @@ void Boss::DebugGUI() {
 
 	ImGui::Begin("Boss");
 
+	
+	const char* attackModeNames[] = { "High", "Middle", "Under" };
+	int currentMode = static_cast<int>(attackMode_);
+
+	if (ImGui::Combo("Attack Mode", &currentMode, attackModeNames, IM_ARRAYSIZE(attackModeNames))) {
+		attackMode_ = static_cast<AttackMode>(currentMode);
+		behaviorRequest_ = Behavior::kRoot;
+	}
+
+
 	if (ImGui::Button("Attack")) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
 	if (ImGui::Button("Root")) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
+	
+
+
 
 	ImGui::End();
 

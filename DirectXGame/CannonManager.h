@@ -1,15 +1,15 @@
 #pragma once
-#include "Meteor.h"
+#include "Cannon.h"
 #include "Camera.h"
 #include "ModelManager.h"
-#include "GPUParticle.h"
 
 #include <array>
 
-class MeteorManager {
+
+class CannonManager {
 public:
 
-	static MeteorManager* GetInstance();
+	static CannonManager* GetInstance();
 
 	void Init(const std::shared_ptr<Model>& model);
 
@@ -24,24 +24,18 @@ public:
 
 private:
 
-	std::array<std::unique_ptr<Meteor>, 8> meteors_;
-	std::unique_ptr<GPUParticle> hitEff_;
+	std::array<std::unique_ptr<Cannon>, 8> cannons_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;
 
-	Vector3 basePos_{};
-	float startHight_ = 8.0f;
-
 	std::array<Vector3, 8> offsets_;
+	Vector3 basePos_ = {};
 
-	int32_t meteorIndex_ = 0;
+	int32_t cannonIndex_ = 0;
 
 	int32_t count_ = 0;
 	int32_t attackTime_ = 30;
-
-
-
 
 };
 

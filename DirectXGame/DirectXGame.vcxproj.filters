@@ -218,6 +218,10 @@
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
       <Filter>Game\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Cannon.cpp" />
+    <ClCompile Include="CannonManager.cpp" />
+    <ClCompile Include="Stamp.cpp" />
+    <ClCompile Include="StampManager.cpp" />
     <ClCompile Include="Game\Camera\FollowCamera.cpp">
       <Filter>Game\Camera</Filter>
     </ClCompile>
@@ -388,6 +392,10 @@
     <ClInclude Include="Game\Camera\DebugCamera.h">
       <Filter>Game\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Cannon.h" />
+    <ClInclude Include="CannonManager.h" />
+    <ClInclude Include="Stamp.h" />
+    <ClInclude Include="StampManager.h" />
     <ClInclude Include="Game\Camera\FollowCamera.h">
       <Filter>Game\Camera</Filter>
     </ClInclude>
