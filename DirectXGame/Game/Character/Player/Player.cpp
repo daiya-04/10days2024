@@ -600,6 +600,12 @@ void Player::BehaviorDashUpdate(){
 
 void Player::BehaviorFallingAttackInitialize(){
 	downVector_ = { 0.0f,jumpPowerAttack_,0.0f };
+	basePlayerRotateMatY_ = playerRotateMatY_;
+
+	xRadian_ = 0;
+	yRadian_ = 0;
+	fallingEaseT_ = 0.0f;
+	waitTime_ = waitTimeBase_;
 }
 
 void Player::BehaviorFallingAttackUpdate(){
@@ -607,9 +613,35 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
+
+	auto radian = 0.52f;
+	
+	if (downVector_.y <= 0.0f) {
+		fallingEaseT_ += 0.1f;
+	}
+
+	if (fallingEaseT_ > 1.0f) {
+		fallingEaseT_ = 1.0f;
+	}
+	
+	xRadian_ = Easing::Ease(Easing::EaseName::EaseInBack, -0.52f, 1.04f, fallingEaseT_);
+	yRadian_ = Easing::Ease(Easing::EaseName::EaseInBack, 0.52f, -0.52f, fallingEaseT_);
+
+	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0, 3.0f, fallingEaseT_);
+	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, -1.0f, fallingEaseT_);
+
+
+	playerRotateMatX_ = MakeRotateXMatrix(xRadian_);
+	playerRotateMatY_ = basePlayerRotateMatY_ * MakeRotateYMatrix(yRadian_);
+
 	if (PLTransform_.translation_.y <= 0.0f) {
 		OnFloorCollision();
+		waitTime_--;
+	}
+
+	if (waitTime_ < 0) {
 		behaviorRequest_ = Behavior::kRoot;
+		playerRotateMatY_ = basePlayerRotateMatY_;
 	}
 }
 

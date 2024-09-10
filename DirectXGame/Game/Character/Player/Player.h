@@ -204,6 +204,12 @@ private:
 	//チャージ攻撃中か
 	bool isCharge_ = false;
 
+	//落下攻撃用
+	float xRadian_;
+	float yRadian_;
+
+	float fallingEaseT_;
+
 private:
 	/*行動関連の変数*/
 	//Behaviorで操作する本体のトランスフォーム
@@ -227,6 +233,9 @@ private:
 	Vector3 move_;
 	//代入する回転行列Y軸
 	Matrix4x4 playerRotateMatY_;
+
+	//代入する回転行列Y軸
+	Matrix4x4 basePlayerRotateMatY_;
 
 	//代入する回転行列X軸
 	Matrix4x4 playerRotateMatX_;
