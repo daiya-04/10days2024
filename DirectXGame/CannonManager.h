@@ -24,18 +24,18 @@ public:
 
 private:
 
-	std::array<std::unique_ptr<Cannon>, 8> cannons_;
+	std::array<std::unique_ptr<Cannon>, 16> cannons_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;
 
-	std::array<Vector3, 8> offsets_;
+	std::array<Vector3, 16> offsets_;
 	Vector3 basePos_ = {};
 
 	int32_t cannonIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 30;
+	int32_t attackTime_ = 60;
 
 };
 

@@ -14,16 +14,13 @@ void CannonManager::Init(const std::shared_ptr<Model>& model) {
 		cannon->Init(model);
 	}
 
-	float range = 1.0f;
+	float range = 10.0f;
 
-	offsets_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * range;
-	offsets_[1] = Vector3(1.0f, 0.0f, -1.0f).Normalize() * range;
-	offsets_[2] = Vector3(1.0f, 0.0f, 0.0f).Normalize() * range;
-	offsets_[3] = Vector3(1.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[4] = Vector3(0.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[5] = Vector3(-1.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[6] = Vector3(-1.0f, 0.0f, 0.0f).Normalize() * range;
-	offsets_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * range;
+	for (int32_t index = 0; index < 16; index++) {
+		float angle = float(index) * (360.0f / 16.0f);
+		angle = (angle / 180.0f) * std::numbers::pi_v<float>;
+		offsets_[index] = Transform(Vector3(0.0f, 0.0f, -1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
+	}
 
 	isAttack_ = false;
 	preIsAttack_ = false;
@@ -41,7 +38,7 @@ void CannonManager::Update() {
 	if (!cannons_[cannonIndex_]->IsLife()) {
 		if (++count_ >= attackTime_) {
 			cannons_[cannonIndex_]->AttackStart(basePos_ + offsets_[cannonIndex_], offsets_[cannonIndex_].Normalize());
-			cannonIndex_ = (cannonIndex_ + 1) % 8;
+			cannonIndex_ = (cannonIndex_ + 1) % 16;
 			count_ = 0;
 		}
 	}

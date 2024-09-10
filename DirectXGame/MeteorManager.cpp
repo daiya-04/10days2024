@@ -20,19 +20,10 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 
 	float range = 23.0f;
 
-	/*offsets_[0] = Vector3(0.0f, 0.0f, -1.0f).Normalize() * range;
-	offsets_[1] = Vector3(1.0f, 0.0f, -1.0f).Normalize() * range;
-	offsets_[2] = Vector3(1.0f, 0.0f, 0.0f).Normalize() * range;
-	offsets_[3] = Vector3(1.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[4] = Vector3(0.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[5] = Vector3(-1.0f, 0.0f, 1.0f).Normalize() * range;
-	offsets_[6] = Vector3(-1.0f, 0.0f, 0.0f).Normalize() * range;
-	offsets_[7] = Vector3(-1.0f, 0.0f, -1.0f).Normalize() * range;*/
-
 	for (int32_t index = 0; index < 16; index++) {
 		float angle = float(index) * (360.0f / 16.0f);
 		angle = (angle / 180.0f) * std::numbers::pi_v<float>;
-		offsets_[index] = Transform(Vector3(0.0f, 0.0f, 1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
+		offsets_[index] = Transform(Vector3(0.0f, 0.0f, -1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
 	}
 
 
