@@ -96,6 +96,9 @@ private:
 private:
 	//落下復帰処理
 	void Respawn();
+	//丸影の処理
+	void Shadow();
+	
 	//重力関係の処理
 	void Gravity();
 	//床に当たったときの反応処理
@@ -152,6 +155,8 @@ private:
 	float gravityPowerAttack_ = -0.08f;
 	//ジャンプ攻撃時のジャンプの強さ
 	float jumpPowerAttack_ = 0.9f;
+
+	float groundLength_ = 1.7f;
 
 private:
 	/*攻撃関連変数*/

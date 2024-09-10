@@ -184,9 +184,7 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 	leftHandObj_->worldTransform_ = LHandTransform_;
 	leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
 
-	ShadowTransform_.translation_ = PLTransform_.translation_;
-
-	ShadowTransform_.translation_.y = shadowY_;
+	Shadow();
 
 	shadowObj_->worldTransform_ = ShadowTransform_;
 	shadowObj_->worldTransform_.UpdateMatrix();
@@ -765,6 +763,22 @@ void Player::Respawn(){
 	downVector_ = { 0.0f,0.0f,0.0f };
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
+}
+
+void Player::Shadow(){
+	//層によって値を変更しなければいけないので一旦保留
+
+	ShadowTransform_.translation_ = PLTransform_.translation_;
+
+	ShadowTransform_.translation_.y = shadowY_;
+
+	ShadowTransform_.scale_.x = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+	ShadowTransform_.scale_.z = 0.7f * (groundLength_ / (groundLength_ + PLTransform_.translation_.y));
+
+	if (ShadowTransform_.scale_.x < 0.0f) {
+		ShadowTransform_.scale_.x = 0.0f;
+		ShadowTransform_.scale_.z = 0.0f;
+	}
 }
 
 void Player::Gravity(){
