@@ -20,7 +20,9 @@ void Ground::ApplyGlobalVariables() {
 
 void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel, const std::string& layer) {
 	transform_ = transform;
-	transform_.scale_ = Vector3(30.0f, 30.0f, 30.0f);
+
+	transform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 38.0f;
+
 	transform_.UpdateMatrix();
 	layer_ = layer;
 
@@ -68,6 +70,7 @@ void Ground::Update() {
 		ImGui::TreePop();
 	}
 	transform_.scale_ = Vector3(transform_.scale_.x, transform_.scale_.x, transform_.scale_.x);
+
 	transform_.UpdateMatrix();
 
 	ImGui::End();

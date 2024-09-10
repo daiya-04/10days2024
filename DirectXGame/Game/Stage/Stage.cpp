@@ -24,6 +24,7 @@ void Stage::Update() {
 	ImGui::Begin("Stage");
 	
 	ImGui::DragFloat("Distance", &distance_, 0.1f);
+  
 	ImGui::End();
 	float lDist = 0.0f;
 	for (auto& ground : grounds_) {

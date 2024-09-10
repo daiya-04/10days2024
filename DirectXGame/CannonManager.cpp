@@ -14,7 +14,7 @@ void CannonManager::Init(const std::shared_ptr<Model>& model) {
 		cannon->Init(model);
 	}
 
-	float range = 10.0f;
+	float range = 14.0f;
 
 	for (int32_t index = 0; index < 16; index++) {
 		float angle = float(index) * (360.0f / 16.0f);
@@ -62,6 +62,7 @@ void CannonManager::DrawParticle(const Camera& camera) {
 void CannonManager::AttackStart(const Vector3& basePos) {
 
 	basePos_ = basePos;
+	basePos_.y += 1.0f;
 	isAttack_ = true;
 	cannonIndex_ = 0;
 
