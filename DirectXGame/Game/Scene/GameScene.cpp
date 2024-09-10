@@ -34,7 +34,7 @@ void GameScene::Init(){
 	Object3d::SetPointLight(&pointLight_);
 	Object3d::SetSpotLight(&spotLight_);
 
-	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Boss");
+	std::shared_ptr<Model> bossModel = ModelManager::LoadOBJ("Kagamimochi");
 	std::shared_ptr<Model> meteorModel = ModelManager::LoadOBJ("Meteor");
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
