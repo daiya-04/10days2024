@@ -126,6 +126,8 @@ private:
 	//床に当たったときの反応処理
 	void OnFloorCollision();
 
+	void ColliderReset(Sphere& collider);
+
 private:
 	//Stageとの衝突判定Clamp 中心点(原点)
 	bool StageClampCollision(const Vector3& worldTrans);
@@ -234,6 +236,15 @@ private:
 	float yRadian_;
 
 	float fallingEaseT_;
+	//攻撃時のコライダー
+	Sphere attackCollider_;
+
+	float attackRadius_ = 0.5f;
+
+	//反射判定のコライダー
+	Sphere reflectionCollider_;
+
+	float reflectionRadius_ = 0.5f;
 
 private:
 	/*行動関連の変数*/

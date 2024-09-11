@@ -221,6 +221,9 @@ void Player::Draw(const Camera& camera) {
 
 	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
+	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+
 #endif // _DEBUG
 
 	bodyObj_->Draw(camera);
@@ -451,12 +454,15 @@ void Player::BehaviorAttackUpdate(){
 			
 
 			if (workAttack_.comboIndex_ == 1) {
+				ColliderReset(attackCollider_);
 				BehaviorAttackInitialize();
 			}
 			else if (workAttack_.comboIndex_ == 2) {
+				ColliderReset(attackCollider_);
 				BehaviorSecondAttackInitialize();
 			}
 			else if (workAttack_.comboIndex_ == 3) {
+				ColliderReset(attackCollider_);
 				BehaviorThirdAttackInitialize();
 			}
 			
@@ -468,9 +474,10 @@ void Player::BehaviorAttackUpdate(){
 			}
 			 
 			if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
-
+				ColliderReset(attackCollider_);
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.attackParameter_ = 0;
+				return;
 			}
 			
 
@@ -775,6 +782,8 @@ void Player::BehaviorThirdAttackInitialize(){
 void Player::AttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = 0.5f;
+		attackCollider_.center = RHandTransform_.GetWorldPosition();
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -786,6 +795,10 @@ void Player::AttackMotion(){
 	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
 
+	RHandTransform_.UpdateMatrix();
+
+	
+
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
 
 	if (easeT_ >= 1.0f) {
@@ -796,6 +809,9 @@ void Player::AttackMotion(){
 void Player::secondAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = 0.5f;
+		attackCollider_.center = LHandTransform_.GetWorldPosition();
+
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -806,6 +822,8 @@ void Player::secondAttackMotion(){
 
 	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	LHandTransform_.UpdateMatrix();
 
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
 
@@ -938,6 +956,11 @@ void Player::OnFloorCollision(){
 	PLTransform_.translation_.y = floorPositionY_;
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
+}
+
+void Player::ColliderReset(Sphere& collider){
+	collider.center = { 0.0f,0.0f,0.0f };
+	collider.radius = 0.0f;
 }
 
 bool Player::StageClampCollision(const Vector3& worldTrans){
