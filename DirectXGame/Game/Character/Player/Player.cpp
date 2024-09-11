@@ -223,6 +223,8 @@ void Player::Draw(const Camera& camera) {
 
 	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
+	ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+
 
 #endif // _DEBUG
 
@@ -475,6 +477,7 @@ void Player::BehaviorAttackUpdate(){
 			 
 			if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
 				ColliderReset(attackCollider_);
+				ColliderReset(reflectionCollider_);
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.attackParameter_ = 0;
 				return;
@@ -876,6 +879,7 @@ void Player::BehaviorChargeAttackInitialize(){
 	isCharge_ = true;
 	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
+	ColliderReset(attackCollider_);
 
 	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
@@ -885,14 +889,15 @@ void Player::BehaviorChargeAttackUpdate(){
 	if (input_->PushButton(Input::Button::X)){
 		chargeRotateSpeed_ = (chargeTime_ / 30) + 1;
 		chargeRotate_ += beseRotateSpeed_ * chargeRotateSpeed_;
-
-
+		reflectionCollider_.center = bodyObj_->worldTransform_.GetWorldPosition();
+		reflectionCollider_.radius = 1.0f;
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
 		}
 	}
 	else {
+		ColliderReset(reflectionCollider_);
 		isCharge_ = false;
 		easeT_ += baseAttackSpeed_ * motionSpeed_;
 		if (easeT_ >= 1.0f) {
