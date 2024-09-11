@@ -40,6 +40,10 @@ public:
 
 	const Sphere& GetCollider() const { return collider_; }
 
+	const Sphere& GetAttackCollider() const { return attackCollider_; }
+
+	const Sphere& GetReflectionCollider() const { return reflectionCollider_; }
+
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
@@ -48,6 +52,8 @@ public:
 
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
+
+	
 
 
 private:
