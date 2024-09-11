@@ -56,6 +56,10 @@ void Boss::Draw(const Camera& camera) {
 	obj_->Draw(camera);
 }
 
+void Boss::HitPlayerAttackCollision(){
+	hp_ -= 5;
+}
+
 void Boss::RootInit() {
 
 	MeteorManager::GetInstance()->AttackFinish();

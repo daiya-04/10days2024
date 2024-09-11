@@ -27,7 +27,7 @@ public:
 	//ゲーム中での初期化
 	void Reset();
 
-	//ゲーム中での初期化
+	//敵の攻撃に当たったときの反応
 	void HitEnemyAttackCollision();
 
 	//描画処理

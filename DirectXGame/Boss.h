@@ -65,8 +65,12 @@ public:
 	void Update();
 
 	void Draw(const Camera& camera);
+	
+	void HitPlayerAttackCollision();
 
 	const WorldTransform& GetWorldTransform() { return obj_->worldTransform_; }
+
+	const Shapes::Sphere& GetCollider() { return collider_[attackMode_]; }
 
 	void SetAttackMode(uint32_t layer_) {
 		if (layer_ == 0) {
