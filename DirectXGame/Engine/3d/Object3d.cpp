@@ -360,6 +360,35 @@ void Object3d::Draw(const Camera& camera) {
 
 }
 
+void Object3d::Draw(const Camera& camera, const uint32_t& textureHandle) {
+	worldTransform_.Map();
+	for (auto& mesh : model_->meshes_) {
+
+		commandList_->IASetVertexBuffers(0, 1, mesh.GetVBV());
+		commandList_->IASetIndexBuffer(mesh.GetIVB());
+
+		const auto& material = mesh.GetMaterial();
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kMaterial, material.GetGPUVirtualAddress());
+		//wvp用のCBufferの場所の設定
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kWorldTransform, worldTransform_.GetGPUVirtualAddress());
+
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kCamera, camera.GetGPUVirtualAddress());
+
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, (UINT)RootParameter::kTexture, textureHandle);
+
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, (UINT)RootParameter::kEnvironmentTex, TextureManager::Load("skyBox.dds"));
+
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kDirectionLight, DirectionalLight::GetInstance()->GetGPUVirtualAddress());
+
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kPointLight, pointLight_->GetGPUVirtualAddress());
+
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kSpotLight, spotLight_->GetGPUVirtualAddress());
+
+		commandList_->DrawIndexedInstanced((UINT)mesh.indices_.size(), 1, 0, 0, 0);
+
+	}
+}
+
 Vector3 Object3d::GetWorldPos() const {
 	Vector3 worldPos;
 

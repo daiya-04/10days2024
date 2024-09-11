@@ -2,6 +2,7 @@
 #include "Hit.h"
 #include "Engine/DebugText/ImGuiManager.h"
 #include "Engine/DebugText/GlobalVariables.h"
+#include "TextureManager.h"
 
 void Ground::SetGlobalVariables() {
 	GlobalVariables* global = GlobalVariables::GetInstance();
@@ -89,7 +90,14 @@ void Ground::Draw(const Camera& camera) {
 	for (auto& piece : pieces_) {
 		piece->Draw(camera);
 	}
-	electricBoard_->Draw(camera);
+	
+	if (layer_ == "Center") {
+		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("CenterElectricBoard");
+		electricBoard_->Draw(camera, handle);
+	}
+	else {
+		electricBoard_->Draw(camera);
+	}
 }
 
 bool Ground::IsCollision(const float& angle, const float& damage) {

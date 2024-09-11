@@ -39,6 +39,8 @@ void GameScene::Init(){
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
+	TextureManager::GetInstance()->LoadTextureMap("CenterElectricBoard", "CenterElectricBoard.png");
+
 
 	boss_ = std::make_unique<Boss>();
 	boss_->Init(bossModel);

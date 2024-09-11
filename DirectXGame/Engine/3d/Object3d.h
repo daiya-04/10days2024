@@ -83,6 +83,7 @@ public: //メンバ関数
 	void Update();
 	//描画
 	void Draw(const Camera& camera);
+	void Draw(const Camera& camera, const uint32_t& textureHandle);
 
 	void SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 	
