@@ -19,7 +19,7 @@
 #include "OutLine.h"
 #include "HSVFilter.h"
 #include "SkyBox.h"
-#include "Player.h"
+#include "Character/Player/Player.h"
 
 #include "Boss.h"
 #include "MeteorManager.h"

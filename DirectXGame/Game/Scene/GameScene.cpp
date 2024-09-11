@@ -68,9 +68,11 @@ void GameScene::Init(){
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+	player_->SetScene(true);
 
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->SetTarget(&player_->GetWorldTrnas());
+	followCamera_->SetScene(true);
 
 	player_->SetCameraRotate(&followCamera_->GetCameraRotate());
 
@@ -114,6 +116,14 @@ void GameScene::Update() {
 	}
 
 #endif // _DEBUG
+
+#ifdef NDEBUG
+	followCamera_->Update();
+	camera_.translation_ = followCamera_->GetCameraTranslate();
+	camera_.rotation_ = followCamera_->GetCameraRotate();
+#endif // NDEBUG
+
+
 	floor_->worldTransform_.UpdateMatrix();
 
 	stage_->Update();

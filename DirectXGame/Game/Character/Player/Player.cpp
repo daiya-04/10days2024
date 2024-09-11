@@ -1047,6 +1047,10 @@ void Player::ColliderReset(Sphere& collider){
 }
 
 bool Player::StageClampCollision(const Vector3& worldTrans){
+	if (!isTitle_){
+		return false;
+	}
+
 	const float kMin = minAndMax_.x;
 	const float kMax = minAndMax_.y;
 

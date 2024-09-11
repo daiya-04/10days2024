@@ -50,6 +50,8 @@ public:
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
+	//ゲームシーンかどうか
+	void SetScene(const bool& scene) { isTitle_ = scene; };
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
 
@@ -304,6 +306,8 @@ private:
 	Sphere reflectionCollider_;
 
 	float reflectionRadius_ = 0.5f;
+
+	bool isTitle_ = false;
 
 private:
 	/*行動関連の変数*/
