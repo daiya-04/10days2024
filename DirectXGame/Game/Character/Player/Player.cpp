@@ -782,7 +782,7 @@ void Player::BehaviorThirdAttackInitialize(){
 void Player::AttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
-		attackCollider_.radius = 0.5f;
+		attackCollider_.radius = 0.7f;
 		attackCollider_.center = RHandTransform_.GetWorldPosition();
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
@@ -809,7 +809,7 @@ void Player::AttackMotion(){
 void Player::secondAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
-		attackCollider_.radius = 0.5f;
+		attackCollider_.radius = 0.7f;
 		attackCollider_.center = LHandTransform_.GetWorldPosition();
 
 		easeT_ = 1.0f;
@@ -836,6 +836,9 @@ void Player::secondAttackMotion(){
 void Player::thirdAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = 0.9f;
+		attackCollider_.center = (LHandTransform_.GetWorldPosition() + RHandTransform_.GetWorldPosition()) / 2.0f;
+
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -855,6 +858,9 @@ void Player::thirdAttackMotion(){
 	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
 	LHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
+
+	RHandTransform_.UpdateMatrix();
+	LHandTransform_.UpdateMatrix();
 
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
