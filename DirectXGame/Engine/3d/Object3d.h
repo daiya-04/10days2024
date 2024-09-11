@@ -30,6 +30,7 @@ private:
 		kDirectionLight,
 		kPointLight,
 		kSpotLight,
+		kUtilsParameter,
 		
 		kParamNum,
 	};
@@ -92,7 +93,27 @@ public: //メンバ関数
 	Vector3 GetWorldPos() const;
 	std::shared_ptr<Model> GetModel() const { return model_; }
 
-private:
+public: // 松井が追加する箇所
+	class Utils {
+	public:
+		Utils();
+		~Utils();
+
+		ComPtr<ID3D12Resource> cBuffer_;
+		struct UtilsParameter {
+			Vector4 color_ = Vector4(1.0f, 1.0f, 1.0, 1.0f);
+		};
+		UtilsParameter* cUtilsParam_;
+
+		void CreateConstantBuffer();
+		D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const {
+			return cBuffer_->GetGPUVirtualAddress();
+		}
+		void Map();
+	};
+	std::unique_ptr<Utils> utilsParam_;
+	
+
 	
 
 };

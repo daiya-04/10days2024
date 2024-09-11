@@ -7,6 +7,7 @@
 #include "TextureManager.h"
 #include "Log.h"
 #include "DirectionalLight.h"
+#include <DirectXCommon.h>
 
 #pragma comment(lib,"dxcompiler.lib")
 
@@ -104,6 +105,12 @@ void Object3d::StaticInitialize(ID3D12Device* device, ID3D12GraphicsCommandList*
 	rootParameters[(size_t)RootParameter::kSpotLight].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;  //CBVを使う
 	rootParameters[(size_t)RootParameter::kSpotLight].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;  //PixelShaderで使う
 	rootParameters[(size_t)RootParameter::kSpotLight].Descriptor.ShaderRegister = 5;  //レジスタ番号1を使う
+	
+	// UtilsParameter
+	rootParameters[(size_t)RootParameter::kUtilsParameter].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;  //CBVを使う
+	rootParameters[(size_t)RootParameter::kUtilsParameter].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;  //PixelShaderで使う
+	rootParameters[(size_t)RootParameter::kUtilsParameter].Descriptor.ShaderRegister = 6;  //レジスタ番号6を使う
+
 
 	descriptionRootSignature.pParameters = rootParameters;   //ルートパラメータ配列へのポインタ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);  //配列の長さ
@@ -313,7 +320,7 @@ ComPtr<IDxcBlob> Object3d::CompileShader(const std::wstring& filePath, const wch
 void Object3d::Initialize(std::shared_ptr<Model> model) {
 	model_ = model;
 	worldTransform_.Init();
-
+	utilsParam_ = std::make_unique<Utils>();
 }
 
 void Object3d::Update() {
@@ -354,6 +361,8 @@ void Object3d::Draw(const Camera& camera) {
 
 		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kSpotLight, spotLight_->GetGPUVirtualAddress());
 
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kUtilsParameter, utilsParam_->GetGPUVirtualAddress());
+
 		commandList_->DrawIndexedInstanced((UINT)mesh.indices_.size(), 1, 0, 0, 0);
 
 	}
@@ -384,6 +393,8 @@ void Object3d::Draw(const Camera& camera, const uint32_t& textureHandle) {
 
 		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kSpotLight, spotLight_->GetGPUVirtualAddress());
 
+		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kUtilsParameter, utilsParam_->GetGPUVirtualAddress());
+
 		commandList_->DrawIndexedInstanced((UINT)mesh.indices_.size(), 1, 0, 0, 0);
 
 	}
@@ -397,4 +408,43 @@ Vector3 Object3d::GetWorldPos() const {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
+}
+
+Object3d::Utils::Utils() {
+	CreateConstantBuffer();
+	Map();
+}
+
+Object3d::Utils::~Utils() {
+	if (cBuffer_) {
+		cBuffer_->Release();
+		cBuffer_.Reset();
+	}
+}
+
+void Object3d::Utils::CreateConstantBuffer() {
+	//リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapproperties{};
+	uploadHeapproperties.Type = D3D12_HEAP_TYPE_UPLOAD;//UploadHeapを使う
+	//リソースの設定
+	D3D12_RESOURCE_DESC ResourceDesc{};
+	//バッファリソース。テクスチャの場合はまた別の設定をする
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResourceDesc.Width = sizeof(CBufferDataSpotLight); //リソースのサイズ。
+	//バッファの場合はこれにする決まり
+	ResourceDesc.Height = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+	//バッファの場合はこれらにする決まり
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//実際に頂点リソースを作る
+	ID3D12Device* device = DirectXCommon::GetInstance()->GetDevice();
+	HRESULT hr = device->CreateCommittedResource(&uploadHeapproperties, D3D12_HEAP_FLAG_NONE, &ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&cBuffer_));
+	assert(SUCCEEDED(hr));
+}
+
+void Object3d::Utils::Map() {
+	cBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&cUtilsParam_));
+	cUtilsParam_->color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }

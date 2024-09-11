@@ -93,7 +93,11 @@ void Ground::Draw(const Camera& camera) {
 	
 	if (layer_ == "Center") {
 		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("CenterElectricBoard");
+		electricBoard_->utilsParam_->cUtilsParam_->color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 		electricBoard_->Draw(camera, handle);
+	}else if (layer_ == "Down") {
+		electricBoard_->utilsParam_->cUtilsParam_->color_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+		electricBoard_->Draw(camera);
 	}
 	else {
 		electricBoard_->Draw(camera);
