@@ -45,6 +45,8 @@ public:
 
 	const Sphere& GetReflectionCollider() const { return reflectionCollider_; }
 
+	const int32_t GetAttackPower() const { return attackPower_; }
+
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
@@ -55,13 +57,8 @@ public:
 
 	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
 
-
-
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
-
-	
-
 
 private:
 	/*振る舞い系*/
@@ -176,6 +173,13 @@ private:
 	Vector2 minAndMax_;
 
 	Vector3 centerPos_;
+
+	//体力
+	int32_t maxHp_ = 20;
+	int32_t hp_ = maxHp_;
+
+	//攻撃力
+	int32_t attackPower_;
 
 	//コライダー
 	Sphere collider_;

@@ -58,8 +58,8 @@ void Boss::Draw(const Camera& camera) {
 	
 }
 
-void Boss::HitPlayerAttackCollision(){
-	hp_ -= 5;
+void Boss::HitPlayerAttackCollision(const int32_t power){
+	hp_ -= power;
 }
 
 void Boss::RootInit() {

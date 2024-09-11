@@ -303,7 +303,7 @@ void Player::BehaviorRootInitialize(){
 	ColliderReset(attackCollider_);
 	ColliderReset(reflectionCollider_);
 	
-
+	attackPower_ = 0;
 }
 
 void Player::BehaviorRootUpdate(){
@@ -438,6 +438,7 @@ void Player::BehaviorAttackInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 
 	basePlayerRotateMatY_ = playerRotateMatY_;
+	attackPower_ = 5;
 	yRadian_ = 0;
 	hitRecord_.Clear();
 }
@@ -685,6 +686,7 @@ void Player::BehaviorFallingAttackInitialize(){
 	yRadian_ = 0;
 	fallingEaseT_ = 0.0f;
 	waitTime_ = waitTimeBase_;
+	attackPower_ = 10;
 	hitRecord_.Clear();
 }
 
@@ -783,6 +785,8 @@ void Player::BehaviorSecondAttackInitialize(){
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
 	hitRecord_.Clear();
+	attackPower_ = 5;
+
 }
 
 void Player::BehaviorThirdAttackInitialize(){
@@ -799,6 +803,8 @@ void Player::BehaviorThirdAttackInitialize(){
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
 	hitRecord_.Clear();
+	attackPower_ = 10;
+
 }
 
 void Player::AttackMotion(){
@@ -911,10 +917,13 @@ void Player::BehaviorChargeAttackUpdate(){
 		chargeRotate_ += beseRotateSpeed_ * chargeRotateSpeed_;
 		reflectionCollider_.center = bodyObj_->worldTransform_.GetWorldPosition();
 		reflectionCollider_.radius = 1.0f;
+		
+
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
 		}
+		attackPower_ = 5 + (int32_t)(20 * (float)((float)(chargeTime_) / 180.0f));
 	}
 	else {
 		ColliderReset(reflectionCollider_);

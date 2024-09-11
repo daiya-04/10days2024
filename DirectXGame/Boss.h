@@ -66,7 +66,7 @@ public:
 
 	void Draw(const Camera& camera);
 	
-	void HitPlayerAttackCollision();
+	void HitPlayerAttackCollision(const int32_t power);
 
 	const WorldTransform& GetWorldTransform() { return obj_->worldTransform_; }
 
