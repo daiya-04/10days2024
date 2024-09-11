@@ -533,6 +533,8 @@ void Player::BehaviorAvoidInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
+	ColliderReset(collider_);
+
 }
 
 void Player::BehaviorAvoidUpdate(){
@@ -553,6 +555,7 @@ void Player::BehaviorAvoidUpdate(){
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
+		collider_.radius = 0.4f;
 		if (input_->PushButton(Input::Button::RIGHT_SHOULDER)){
 			behaviorRequest_ = Behavior::kDash;
 		}
@@ -972,13 +975,13 @@ void Player::Gravity(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
-	if (PLTransform_.translation_.y < /*floorPositionY_*/0.0f){
+	if (PLTransform_.translation_.y < floorPositionY_){
 		OnFloorCollision();
 	}
 }
 
 void Player::OnFloorCollision(){
-	PLTransform_.translation_.y = /*floorPositionY_*/0.0f;
+	PLTransform_.translation_.y = floorPositionY_;
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
 }
