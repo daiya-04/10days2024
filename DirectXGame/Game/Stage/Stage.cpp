@@ -67,9 +67,14 @@ bool Stage::IsPlayerCollision(const Vector3& position) {
 	if (LayerCheck(position.y) == "None") {
 		assert(true);
 	}
-
+	static bool fall = false;
+	ImGui::Checkbox("fall", &fall);
+	float damage = 0.0f;
+	if (fall) {
+		damage = 1.0f;
+	}
 	// playerと同じ階層が更新される
-	return grounds_.at(nowLayerNumber_)->IsCollision(angle, 1.0f);
+	return grounds_.at(nowLayerNumber_)->IsCollision(angle, damage);
 }
 
 bool Stage::ResetCheck(const Vector3& position) {
