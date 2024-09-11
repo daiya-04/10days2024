@@ -76,6 +76,9 @@ void GameScene::Init(){
 
 	modelManager_ = ModelManager::GetInstance();
 
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize(player_.get(), boss_.get());
+
 	floor_ = std::make_unique<Object3d>();
 
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
@@ -140,6 +143,8 @@ void GameScene::Update() {
 		// 床があった場合
 		player_->SetFloorPosition(stage_->GetGroundPosition().y);
 	}
+
+	collisionManager_->AllCollision();
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();

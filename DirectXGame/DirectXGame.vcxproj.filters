@@ -231,6 +231,9 @@
     <ClCompile Include="Game\HitRecord\HitRecord.cpp">
       <Filter>Game\HitRecord</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Collision\CollisionManager.cpp">
+      <Filter>Engine\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="RandomEngine.h" />
     <ClInclude Include="Game\HitRecord\HitRecord.h">
       <Filter>Game\HitRecord</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\CollisionManager.h">
+      <Filter>Engine\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -73,6 +73,10 @@ void Player::Initialize(){
 
 	collider_.radius = 0.4f;
 
+	attackCollider_.center.y = 100.0f;
+	reflectionCollider_.center.y = 100.0f;
+
+
 	PLTransform_.translation_ = Vector3(1.0f, 8.0f, -30.0f);
 
 	RHandTransform_.Init();
@@ -435,6 +439,7 @@ void Player::BehaviorAttackInitialize(){
 
 	basePlayerRotateMatY_ = playerRotateMatY_;
 	yRadian_ = 0;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -680,6 +685,7 @@ void Player::BehaviorFallingAttackInitialize(){
 	yRadian_ = 0;
 	fallingEaseT_ = 0.0f;
 	waitTime_ = waitTimeBase_;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorFallingAttackUpdate(){
@@ -776,6 +782,7 @@ void Player::BehaviorSecondAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorThirdAttackInitialize(){
@@ -791,6 +798,7 @@ void Player::BehaviorThirdAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+	hitRecord_.Clear();
 }
 
 void Player::AttackMotion(){
@@ -894,6 +902,7 @@ void Player::BehaviorChargeAttackInitialize(){
 
 	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorChargeAttackUpdate(){
@@ -987,7 +996,7 @@ void Player::OnFloorCollision(){
 }
 
 void Player::ColliderReset(Sphere& collider){
-	collider.center = { 0.0f,0.0f,0.0f };
+	collider.center = { 0.0f,100.0f,0.0f };
 	collider.radius = 0.0f;
 }
 

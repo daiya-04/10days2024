@@ -28,6 +28,7 @@
 #include "Stage/Stage.h"
 #include "Camera/DebugCamera.h"
 #include "Camera/FollowCamera.h"
+#include "CollisionManager.h"
 
 class GameScene : public IScene {
 public:
@@ -80,6 +81,9 @@ private:
 private:
 	//モデルマネージャー
 	ModelManager* modelManager_;
+
+	//コリジョンマネージャー
+	std::unique_ptr<CollisionManager> collisionManager_;
 	//体のモデル
 	std::unique_ptr<Object3d> floor_;
 	//プレイヤー

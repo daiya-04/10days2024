@@ -9,6 +9,7 @@
 #include"Engine/Easing/Easing.h"
 #include"Engine/DebugText/GlobalVariables.h"
 #include"CollisionShapes.h"
+#include"HitRecord/HitRecord.h"
 
 class Player {
 public:
@@ -49,6 +50,12 @@ public:
 	void SetFloorPosition(const float& positionY);
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
+
+	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
+
+	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
+
+
 
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
@@ -172,6 +179,9 @@ private:
 
 	//コライダー
 	Sphere collider_;
+	//あたりの記録
+	HitRecord hitRecord_;
+
 private:
 	/*重力関係*/
 
