@@ -166,6 +166,10 @@ private:
 
 	const char* groupName_ = "Player";
 
+	const char* groupNameAttack_ = "PlayerAttackDamege";
+
+	const char* groupNameColliderRange_ = "PlayerColliderRange";
+
 	//カメラの回転
 	const Vector3* cameraRotate_ = nullptr;
 
@@ -180,6 +184,26 @@ private:
 
 	//攻撃力
 	int32_t attackPower_;
+
+	//攻撃力
+	struct  ColliderRange {
+		//通常時の範囲
+		float body = 0.4f;
+		//反射の範囲
+		float reflect = 1.0f;
+		//一段目の範囲
+		float firstAttack = 0.7f;
+		//二段目の範囲
+		float secondAttack = 0.7f;
+		//三段目の範囲
+		float thirdAttack = 1.0f;
+		//落下攻撃の範囲
+		float fallingAttack = 1.2f;
+		//溜め攻撃のの最大範囲
+		float chargeAttack = 1.4f;
+	};
+
+	ColliderRange colliderRange_;
 
 	//コライダー
 	Sphere collider_;
@@ -219,6 +243,21 @@ private:
 		//チャージ攻撃に派生するための時間
 		int32_t chargeFlugTime_ = 0;
 	};
+	//攻撃力
+	struct  AttackPower {
+		//一段目の攻撃力
+		int32_t firstAttack = 5;
+		//二段目の攻撃力
+		int32_t secondAttack = 5;
+		//三段目の攻撃力
+		int32_t thirdAttack = 10;
+		//落下攻撃の攻撃力
+		int32_t fallingAttack = 10;
+		//溜め攻撃のの最大攻撃力
+		int32_t chargeAttack = 20;
+	};
+
+	AttackPower basePower_;
 
 	WorkAttack workAttack_;
 	//現時点でのコンボが終了したかどうか
