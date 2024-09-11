@@ -295,6 +295,9 @@ void Player::BehaviorRootInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 
 	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
+
+	ColliderReset(attackCollider_);
+	ColliderReset(reflectionCollider_);
 	
 
 }
@@ -686,9 +689,13 @@ void Player::BehaviorFallingAttackUpdate(){
 	
 	if (downVector_.y <= 0.0f) {
 		fallingEaseT_ += 0.1f;
+		attackCollider_.radius = 1.2f;
+		attackCollider_.center = (bodyObj_->worldTransform_.GetWorldPosition() + RHandTransform_.GetWorldPosition()) / 2.0f;
+
 	}
 
 	if (fallingEaseT_ > 1.0f) {
+
 		fallingEaseT_ = 1.0f;
 	}
 	
@@ -698,6 +705,7 @@ void Player::BehaviorFallingAttackUpdate(){
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0, 3.0f, fallingEaseT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, -1.0f, fallingEaseT_);
 
+	RHandTransform_.UpdateMatrix();
 
 	playerRotateMatX_ = MakeRotateXMatrix(xRadian_);
 	playerRotateMatY_ = basePlayerRotateMatY_ * MakeRotateYMatrix(yRadian_);
@@ -901,6 +909,9 @@ void Player::BehaviorChargeAttackUpdate(){
 		isCharge_ = false;
 		easeT_ += baseAttackSpeed_ * motionSpeed_;
 		if (easeT_ >= 1.0f) {
+			attackCollider_.radius = 0.7f + (1.4f * (float)((float)(chargeTime_) / 180.0f));
+			attackCollider_.center = RHandTransform_.GetWorldPosition();
+
 			easeT_ = 1.0f;
 			waitTime_ -= 1;
 		}
@@ -912,12 +923,15 @@ void Player::BehaviorChargeAttackUpdate(){
 		RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 		RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, 6.0f, easeT_);
 
+		RHandTransform_.UpdateMatrix();
+
 		if (easeT_ >= 1.0f) {
 			easeT_ = 1.0f;
 		}
 
 		
 	}
+	Gravity();
 }
 
 
@@ -958,13 +972,13 @@ void Player::Gravity(){
 
 	PLTransform_.translation_.y += downVector_.y;
 
-	if (PLTransform_.translation_.y < floorPositionY_){
+	if (PLTransform_.translation_.y < /*floorPositionY_*/0.0f){
 		OnFloorCollision();
 	}
 }
 
 void Player::OnFloorCollision(){
-	PLTransform_.translation_.y = floorPositionY_;
+	PLTransform_.translation_.y = /*floorPositionY_*/0.0f;
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
 }
