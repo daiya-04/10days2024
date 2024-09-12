@@ -141,6 +141,7 @@ void Player::Initialize(){
 	frontVec_ = { 0.0f,0.0f,1.0f };
 
 	isDown_ = true;
+	isShadowDraw_ = true;
 
 }
 
@@ -272,7 +273,9 @@ void Player::Draw(const Camera& camera) {
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
-	shadowObj_->Draw(camera);
+	if (isShadowDraw_){
+		shadowObj_->Draw(camera);
+	}
 }
 
 void Player::Reset(){
@@ -280,6 +283,8 @@ void Player::Reset(){
 	playerRotateMatY_ = MakeRotateYMatrix(0.0f);
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
+
+	isShadowDraw_ = true;
 
 	behaviorRequest_ = Behavior::kRoot;
 

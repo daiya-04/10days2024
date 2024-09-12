@@ -1,4 +1,5 @@
 #include "Sandbag.h"
+#include"Engine/Collision/ShapesDraw.h"
 
 void Sandbag::Initialize(){
 	modelManager_ = ModelManager::GetInstance();
@@ -11,7 +12,7 @@ void Sandbag::Initialize(){
 	bodyObj_->worldTransform_.scale_ = { 0.1f,0.1f,0.1f };
 
 	collider_.center = bodyObj_->worldTransform_.translation_;
-	collider_.radius = 5.0f;
+	collider_.radius = 6.0f;
 
 }
 
@@ -19,11 +20,16 @@ void Sandbag::Update(){
 	if (hp_ < 0) {
 		isDead_ = true;
 	}
+	collider_.center = bodyObj_->worldTransform_.translation_;
 
 	bodyObj_->worldTransform_.UpdateMatrix();
 }
 
 void Sandbag::Draw(const Camera& camera){
+	if (isDead_){
+		return;
+	}
+
 	bodyObj_->Draw(camera);
 }
 

@@ -99,14 +99,16 @@ Vector3 Stage::GetGroundPosition() const {
 	return grounds_.at(nowLayerNumber_)->GetTransform().GetWorldPosition();
 }
 
-Vector3 Stage::GetNextGroundPosition() const {
+Vector3 Stage::GetNextGroundPosition()  {
 	uint32_t index = nowLayerNumber_ + 1u;
 	if (index >= layer.size()) {
 		index = static_cast<uint32_t>(layer.size()) - 1u;
 		Vector3 result = grounds_.at(index)->GetTransform().GetWorldPosition();
 		result.y -= distance_;
+		isEnd_ = true;
 		return result;
 	}
+	isEnd_ = false;
 	return grounds_.at(index)->GetTransform().GetWorldPosition();
 }
 

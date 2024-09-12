@@ -143,6 +143,12 @@ void GameScene::Update() {
 	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
 		// 床がなかった場合
 		player_->SetFloorPosition(stage_->GetNextGroundPosition().y);
+		if (stage_->GetIsEnd()) {
+			player_->SetShadowDraw(false);
+		}
+		else {
+			player_->SetShadowDraw(true);
+		}
 		player_->SetFall(true);
 		// playerが下層より下に行った場合
 		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {

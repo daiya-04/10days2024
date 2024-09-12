@@ -109,6 +109,13 @@ void TitleScene::Update(){
 	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
 		// 床がなかった場合
 		player_->SetFloorPosition(stage_->GetNextGroundPosition().y);
+		if (stage_->GetIsEnd()) {
+			player_->SetShadowDraw(false);
+		}
+		else {
+			player_->SetShadowDraw(true);
+		}
+
 		player_->SetFall(true);
 		// playerが下層より下に行った場合
 		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {
@@ -127,13 +134,13 @@ void TitleScene::Update(){
 
 	sandbag_->Update();
 	if (sandbag_->GetIsDead() and killCount_ == 0 ){
-		sandbag_->SetPosition(Vector3(0.0f, -5.5f, -20.0f));
-		shelfobj_->worldTransform_.translation_ = { 0.0f,-6.0f, -20.0f };
+		sandbag_->SetPosition(Vector3(0.0f, -12.0f, -20.0f));
+		shelfobj_->worldTransform_.translation_ = { 0.0f,-12.5f, -20.0f };
 		killCount_++;
 	}
 	if (sandbag_->GetIsDead() and killCount_ == 1) {
-		sandbag_->SetPosition(Vector3(0.0f, -10.5f, 20.0f));
-		shelfobj_->worldTransform_.translation_ = { 0.0f,-11.0f, 20.0f };
+		sandbag_->SetPosition(Vector3(0.0f, -22.5f, 20.0f));
+		shelfobj_->worldTransform_.translation_ = { 0.0f,-23.0f, 20.0f };
 		killCount_++;
 	}
 
