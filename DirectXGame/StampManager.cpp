@@ -60,18 +60,31 @@ void StampManager::Update() {
 
 	if (!isAttack_) { return; }
 
+	for (int32_t index : indexList_) {
+		if (!pieceAlives_[index]) {
+			indexList_.remove(index);
+			break;
+		}
+	}
+
 	if (++count_ >= attackTime_) {
 		while (true) {
-			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
-			if (nextIndex != stampIndex_ && !stamps_[nextIndex]->IsLife()) {
-				stampIndex_ = nextIndex;
+			if (indexList_.empty()) { break; }
+
+			int32_t itNum = RandomEngine::GetIntRandom(0, (int)indexList_.size() - 1);
+			indexIt_ = indexList_.begin();
+			std::advance(indexIt_, itNum);
+			int32_t nextIndex = *indexIt_;
+
+			if (!stamps_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
+				stamps_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex], offsets_[nextIndex].Normalize());
 				indexCount_ = 0;
 				break;
 			}
+
 			indexCount_++;
-			if (indexCount_ >= 16) { break; }
+			if (indexCount_ >= indexList_.size()) { break; }
 		}
-		stamps_[stampIndex_]->AttackStart(basePos_ + offsets_[stampIndex_], offsets_[stampIndex_].Normalize());
 		count_ = 0;
 	}
 
@@ -99,6 +112,8 @@ void StampManager::AttackStart(const Vector3& basePos) {
 	isAttack_ = true;
 	basePos_ = basePos;
 	basePos_.y += startHeight_;
+
+	indexList_.assign({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
 
 }
 

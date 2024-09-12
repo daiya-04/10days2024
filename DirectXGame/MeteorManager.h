@@ -5,6 +5,7 @@
 #include "GPUParticle.h"
 
 #include <array>
+#include <list>
 
 class MeteorManager {
 public:
@@ -28,6 +29,8 @@ public:
 	void AttackFinish();
 
 	void SetTargetPos(const Vector3& targetPos);
+	
+	void SetPieceAlives(const std::array<bool,16> pieceAlives) { pieceAlives_ = pieceAlives; }
 
 	bool IsAttack()const { return isAttack_; }
 
@@ -45,17 +48,19 @@ private:
 	bool preIsAttack_ = false;
 
 	Vector3 basePos_{};
-	float startHight_ = 10.0f;
+	float startHight_ = 15.0f;
 
 	std::array<Vector3, 16> offsets_;
 
-	int32_t meteorIndex_ = 0;
-
 	int32_t count_ = 0;
-	int32_t attackTime_ = 35;
+	int32_t attackTime_ = 40;
 
 	int32_t indexCount_ = 0;
 
+	std::array<bool, 16> pieceAlives_;
+
+	std::list<int32_t> indexList_;
+	std::list<int32_t>::iterator indexIt_;
 
 };
 

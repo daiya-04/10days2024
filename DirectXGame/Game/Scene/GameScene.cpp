@@ -139,6 +139,10 @@ void GameScene::Update() {
 
 	stage_->Update();
 
+	meteor_->SetPieceAlives(stage_->GetPieceAlive());
+	cannon_->SetPieceAlives(stage_->GetPieceAlive());
+	stamp_->SetPieceAlives(stage_->GetPieceAlive());
+
 	boss_->Update();
 	meteor_->Update();
 	cannon_->Update();
@@ -326,6 +330,7 @@ void GameScene::DrawUI(){
 		playerLifeTex_[i]->Draw();
 	}
 	player_->DrawUI();
+	boss_->DrawUI();
 	
 }
 
