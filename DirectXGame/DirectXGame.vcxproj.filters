@@ -77,6 +77,9 @@
     <Filter Include="Game\Camera">
       <UniqueIdentifier>{c94986aa-751e-4664-8eab-6cb797677a22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\HitRecord">
+      <UniqueIdentifier>{43d28687-5158-45cf-9b91-7d9742be5e9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -224,6 +227,15 @@
     <ClCompile Include="StampManager.cpp" />
     <ClCompile Include="Game\Camera\FollowCamera.cpp">
       <Filter>Game\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\HitRecord\HitRecord.cpp">
+      <Filter>Game\HitRecord</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\CollisionManager.cpp">
+      <Filter>Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Character\Sandbag\Sandbag.cpp">
+      <Filter>Game\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -400,5 +412,14 @@
       <Filter>Game\Camera</Filter>
     </ClInclude>
     <ClInclude Include="RandomEngine.h" />
+    <ClInclude Include="Game\HitRecord\HitRecord.h">
+      <Filter>Game\HitRecord</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\CollisionManager.h">
+      <Filter>Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Character\Sandbag\Sandbag.h">
+      <Filter>Game\Character</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

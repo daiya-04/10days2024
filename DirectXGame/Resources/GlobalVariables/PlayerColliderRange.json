@@ -1,0 +1,11 @@
+{
+    "PlayerColliderRange": {
+        "body": 0.4000000059604645,
+        "chargeAttack": 1.399999976158142,
+        "fallingAttack": 1.2000000476837158,
+        "firstAttack": 0.699999988079071,
+        "reflect": 1.0,
+        "secondAttack": 0.699999988079071,
+        "thirdAttack": 1.0
+    }
+}

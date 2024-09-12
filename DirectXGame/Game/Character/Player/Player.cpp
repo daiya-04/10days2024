@@ -20,6 +20,27 @@ void Player::SetGlobalVariables(){
 	global->AddItem(groupName_, "motionDistance", motionDistance_);
 	global->AddItem(groupName_, "motionSpeed", motionSpeed_);
 	global->AddItem(groupName_, "beseRotateSpeed", beseRotateSpeed_);
+	//グループの追加
+	global->CreateGroup(groupNameAttack_);
+	//項目の追加
+	
+	global->AddItem(groupNameAttack_, "firstAttack", basePower_.firstAttack);
+	global->AddItem(groupNameAttack_, "secondAttack", basePower_.secondAttack);
+	global->AddItem(groupNameAttack_, "thirdAttack", basePower_.thirdAttack);
+	global->AddItem(groupNameAttack_, "fallingAttack", basePower_.fallingAttack);
+	global->AddItem(groupNameAttack_, "chargeAttack", basePower_.chargeAttack);
+
+	//グループの追加
+	global->CreateGroup(groupNameColliderRange_);
+	//項目の追加
+
+	global->AddItem(groupNameColliderRange_, "body", colliderRange_.body);
+	global->AddItem(groupNameColliderRange_, "reflect", colliderRange_.reflect);
+	global->AddItem(groupNameColliderRange_, "firstAttack", colliderRange_.firstAttack);
+	global->AddItem(groupNameColliderRange_, "secondAttack", colliderRange_.secondAttack);
+	global->AddItem(groupNameColliderRange_, "thirdAttack", colliderRange_.thirdAttack);
+	global->AddItem(groupNameColliderRange_, "fallingAttack", colliderRange_.fallingAttack);
+	global->AddItem(groupNameColliderRange_, "chargeAttack", colliderRange_.chargeAttack);
 
 }
 
@@ -40,6 +61,22 @@ void Player::ApplyGlobalVariables(){
 	motionDistance_ = global->GetIntValue(groupName_, "motionDistance");
 	motionSpeed_ = global->GetFloatValue(groupName_, "motionSpeed");
 	beseRotateSpeed_ = global->GetFloatValue(groupName_, "beseRotateSpeed");
+
+	//項目の追加
+
+	basePower_.firstAttack = global->GetIntValue(groupNameAttack_, "firstAttack");
+	basePower_.secondAttack = global->GetIntValue(groupNameAttack_, "secondAttack");
+	basePower_.thirdAttack = global->GetIntValue(groupNameAttack_, "thirdAttack");
+	basePower_.chargeAttack = global->GetIntValue(groupNameAttack_, "chargeAttack");
+	basePower_.fallingAttack = global->GetIntValue(groupNameAttack_, "fallingAttack");
+
+	colliderRange_.body = global->GetFloatValue(groupNameColliderRange_, "body");
+	colliderRange_.reflect = global->GetFloatValue(groupNameColliderRange_, "reflect");
+	colliderRange_.firstAttack = global->GetFloatValue(groupNameColliderRange_, "firstAttack");
+	colliderRange_.secondAttack = global->GetFloatValue(groupNameColliderRange_, "secondAttack");
+	colliderRange_.thirdAttack = global->GetFloatValue(groupNameColliderRange_, "thirdAttack");
+	colliderRange_.fallingAttack = global->GetFloatValue(groupNameColliderRange_, "fallingAttack");
+	colliderRange_.chargeAttack = global->GetFloatValue(groupNameColliderRange_, "chargeAttack");
 
 }
 
@@ -71,7 +108,11 @@ void Player::Initialize(){
 
 	PLTransform_.scale_ = { 0.3f,0.3f,0.3f };
 
-	collider_.radius = 0.4f;
+	collider_.radius = colliderRange_.body;
+
+	attackCollider_.center.y = 100.0f;
+	reflectionCollider_.center.y = 100.0f;
+
 
 	PLTransform_.translation_ = Vector3(1.0f, 8.0f, -30.0f);
 
@@ -221,6 +262,11 @@ void Player::Draw(const Camera& camera) {
 
 	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
+	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+	ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+
+
 #endif // _DEBUG
 
 	bodyObj_->Draw(camera);
@@ -290,8 +336,11 @@ void Player::BehaviorRootInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 
 	playerRotateMatX_ = MakeRotateXMatrix(0.0f);
-	
 
+	ColliderReset(attackCollider_);
+	ColliderReset(reflectionCollider_);
+	
+	attackPower_ = 0;
 }
 
 void Player::BehaviorRootUpdate(){
@@ -426,7 +475,9 @@ void Player::BehaviorAttackInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 
 	basePlayerRotateMatY_ = playerRotateMatY_;
+	attackPower_ = basePower_.firstAttack;
 	yRadian_ = 0;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -451,12 +502,15 @@ void Player::BehaviorAttackUpdate(){
 			
 
 			if (workAttack_.comboIndex_ == 1) {
+				ColliderReset(attackCollider_);
 				BehaviorAttackInitialize();
 			}
 			else if (workAttack_.comboIndex_ == 2) {
+				ColliderReset(attackCollider_);
 				BehaviorSecondAttackInitialize();
 			}
 			else if (workAttack_.comboIndex_ == 3) {
+				ColliderReset(attackCollider_);
 				BehaviorThirdAttackInitialize();
 			}
 			
@@ -468,9 +522,11 @@ void Player::BehaviorAttackUpdate(){
 			}
 			 
 			if (++workAttack_.attackParameter_ >= ((float)(motionDistance_) / motionSpeed_)) {
-
+				ColliderReset(attackCollider_);
+				ColliderReset(reflectionCollider_);
 				behaviorRequest_ = Behavior::kRoot;
 				workAttack_.attackParameter_ = 0;
+				return;
 			}
 			
 
@@ -520,6 +576,8 @@ void Player::BehaviorAvoidInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
+	ColliderReset(collider_);
+
 }
 
 void Player::BehaviorAvoidUpdate(){
@@ -540,6 +598,7 @@ void Player::BehaviorAvoidUpdate(){
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
+		collider_.radius = colliderRange_.body;
 		if (input_->PushButton(Input::Button::RIGHT_SHOULDER)){
 			behaviorRequest_ = Behavior::kDash;
 		}
@@ -664,6 +723,8 @@ void Player::BehaviorFallingAttackInitialize(){
 	yRadian_ = 0;
 	fallingEaseT_ = 0.0f;
 	waitTime_ = waitTimeBase_;
+	attackPower_ = basePower_.fallingAttack;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorFallingAttackUpdate(){
@@ -676,9 +737,13 @@ void Player::BehaviorFallingAttackUpdate(){
 	
 	if (downVector_.y <= 0.0f) {
 		fallingEaseT_ += 0.1f;
+		attackCollider_.radius = colliderRange_.fallingAttack;
+		attackCollider_.center = (bodyObj_->worldTransform_.GetWorldPosition() + RHandTransform_.GetWorldPosition()) / 2.0f;
+
 	}
 
 	if (fallingEaseT_ > 1.0f) {
+
 		fallingEaseT_ = 1.0f;
 	}
 	
@@ -688,6 +753,7 @@ void Player::BehaviorFallingAttackUpdate(){
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0, 3.0f, fallingEaseT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, -1.0f, fallingEaseT_);
 
+	RHandTransform_.UpdateMatrix();
 
 	playerRotateMatX_ = MakeRotateXMatrix(xRadian_);
 	playerRotateMatY_ = basePlayerRotateMatY_ * MakeRotateYMatrix(yRadian_);
@@ -755,6 +821,9 @@ void Player::BehaviorSecondAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+	hitRecord_.Clear();
+	attackPower_ = basePower_.secondAttack;
+
 }
 
 void Player::BehaviorThirdAttackInitialize(){
@@ -770,11 +839,16 @@ void Player::BehaviorThirdAttackInitialize(){
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
+	hitRecord_.Clear();
+	attackPower_ = basePower_.thirdAttack;
+
 }
 
 void Player::AttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = colliderRange_.firstAttack;
+		attackCollider_.center = RHandTransform_.GetWorldPosition();
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -786,6 +860,10 @@ void Player::AttackMotion(){
 	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
 
+	RHandTransform_.UpdateMatrix();
+
+	
+
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
 
 	if (easeT_ >= 1.0f) {
@@ -796,6 +874,9 @@ void Player::AttackMotion(){
 void Player::secondAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = colliderRange_.secondAttack;
+		attackCollider_.center = LHandTransform_.GetWorldPosition();
+
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -806,6 +887,8 @@ void Player::secondAttackMotion(){
 
 	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 6.0f, easeT_);
+
+	LHandTransform_.UpdateMatrix();
 
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 3.0f, -2.0f, easeT_);
 
@@ -818,6 +901,9 @@ void Player::secondAttackMotion(){
 void Player::thirdAttackMotion(){
 	easeT_ += baseAttackSpeed_ * motionSpeed_;
 	if (easeT_ >= 1.0f) {
+		attackCollider_.radius = colliderRange_.thirdAttack;
+		attackCollider_.center = (LHandTransform_.GetWorldPosition() + RHandTransform_.GetWorldPosition()) / 2.0f;
+
 		easeT_ = 1.0f;
 		waitTime_ -= 1;
 	}
@@ -838,6 +924,9 @@ void Player::thirdAttackMotion(){
 	LHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
 
+	RHandTransform_.UpdateMatrix();
+	LHandTransform_.UpdateMatrix();
+
 	if (easeT_ >= 1.0f) {
 		easeT_ = 1.0f;
 	}
@@ -852,26 +941,35 @@ void Player::BehaviorChargeAttackInitialize(){
 	isCharge_ = true;
 	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
+	ColliderReset(attackCollider_);
 
 	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
+	hitRecord_.Clear();
 }
 
 void Player::BehaviorChargeAttackUpdate(){
 	if (input_->PushButton(Input::Button::X)){
 		chargeRotateSpeed_ = (chargeTime_ / 30) + 1;
 		chargeRotate_ += beseRotateSpeed_ * chargeRotateSpeed_;
-
+		reflectionCollider_.center = bodyObj_->worldTransform_.GetWorldPosition();
+		reflectionCollider_.radius = colliderRange_.reflect;
+		
 
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
 		}
+		attackPower_ = 5 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
 	}
 	else {
+		ColliderReset(reflectionCollider_);
 		isCharge_ = false;
 		easeT_ += baseAttackSpeed_ * motionSpeed_;
 		if (easeT_ >= 1.0f) {
+			attackCollider_.radius = 0.7f + (colliderRange_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
+			attackCollider_.center = RHandTransform_.GetWorldPosition();
+
 			easeT_ = 1.0f;
 			waitTime_ -= 1;
 		}
@@ -883,12 +981,15 @@ void Player::BehaviorChargeAttackUpdate(){
 		RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
 		RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, 6.0f, easeT_);
 
+		RHandTransform_.UpdateMatrix();
+
 		if (easeT_ >= 1.0f) {
 			easeT_ = 1.0f;
 		}
 
 		
 	}
+	Gravity();
 }
 
 
@@ -940,7 +1041,16 @@ void Player::OnFloorCollision(){
 	isDown_ = false;
 }
 
+void Player::ColliderReset(Sphere& collider){
+	collider.center = { 0.0f,100.0f,0.0f };
+	collider.radius = 0.0f;
+}
+
 bool Player::StageClampCollision(const Vector3& worldTrans){
+	if (!isTitle_){
+		return false;
+	}
+
 	const float kMin = minAndMax_.x;
 	const float kMax = minAndMax_.y;
 
