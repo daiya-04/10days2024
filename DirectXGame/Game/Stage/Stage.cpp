@@ -48,7 +48,7 @@ void Stage::Draw(const Camera& camera) {
 }
 
 bool Stage::IsCollision(const Vector3& position, const int32_t& damage) {
-	float angle = GetRadianVectorToVector(Vector3(0.0f, 0.0f, 1.0f), position.Normalize());
+	float angle = GetRadianVectorToVector(Vector3(0.0f, 0.0f, 1.0f), Vector3(position.x, 0.0f, position.z).Normalize());
 	if (position.x < 0.0f) {
 		angle = -angle;
 	}
