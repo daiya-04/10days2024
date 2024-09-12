@@ -90,6 +90,8 @@ public: //メンバ関数
 	
 	void SetModelHandle(std::shared_ptr<Model> model) { model_ = model; }
 
+	void SetColor(const Vector4& color) { utilsParam_->cUtilsParam_->color_ = color; }
+
 	Vector3 GetWorldPos() const;
 	std::shared_ptr<Model> GetModel() const { return model_; }
 

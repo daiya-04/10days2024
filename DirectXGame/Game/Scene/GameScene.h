@@ -20,6 +20,7 @@
 #include "HSVFilter.h"
 #include "SkyBox.h"
 #include "Character/Player/Player.h"
+#include"controlUI.h"
 
 #include "Boss.h"
 #include "MeteorManager.h"
@@ -91,6 +92,9 @@ private:
 	std::unique_ptr<Player> player_;
 
 	bool oldFallAttack_ = false;
+
+	std::unique_ptr<ControlUI> controlUI_;
+
 
 };
 
