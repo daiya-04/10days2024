@@ -64,6 +64,23 @@ ComPtr<ID3D12Resource> TextureManager::CreateBufferResource(ComPtr<ID3D12Device>
 	return Resource;
 }
 
+void TextureManager::LoadTextureMap(std::string name, std::string textureName) {
+	
+	// 既に名前が登録されていた場合早期リターン
+	if (handleContainer_.find(name) != handleContainer_.end()) {
+		return;
+	}
+	uint32_t handle = LoadInternal(textureName);
+	handleContainer_.emplace(std::make_pair(name, handle));
+}
+
+uint32_t TextureManager::FindTextureHandle(const std::string& name) const {
+	if (handleContainer_.find(name) != handleContainer_.end()) {
+		return handleContainer_.at(name);
+	}
+	return 0;
+}
+
 uint32_t TextureManager::LoadInternal(const std::string& fileName){
 
 	assert(useTextureNum_ < kNumTextures);
