@@ -32,7 +32,7 @@ void TitleScene::Init(){
 
 	stage_ = std::make_unique<Stage>();
 	stage_->Initialize(levelData_);
-	//stage_->Update();
+	stage_->TitleInitialize();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
@@ -110,6 +110,7 @@ void TitleScene::Update(){
 	camera_.rotation_ = followCamera_->GetCameraRotate();
 #endif // NDEBUG
 
+	stage_->TitleUpdate();
 	stage_->Update();
 
 	static Vector2 minmax = Vector2(26.2f, 37.0f);

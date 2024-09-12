@@ -140,6 +140,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Line\Line.cpp" />
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp" />
     <ClCompile Include="Game\Scene\ResultScene.cpp" />
+    <ClCompile Include="Game\Stage\Board.cpp" />
     <ClCompile Include="Game\Stage\Ground.cpp" />
     <ClCompile Include="Game\Stage\GroundPiece.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
@@ -230,6 +231,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\PostEffect\OutLine.h" />
     <ClInclude Include="Engine\PostEffect\HSVFilter.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Stage\Board.h" />
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="MeteorManager.h" />
     <ClInclude Include="Game\Stage\Ground.h" />

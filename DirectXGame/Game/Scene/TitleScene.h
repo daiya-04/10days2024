@@ -15,7 +15,6 @@
 #include"CollisionManager.h"
 #include"Character/Sandbag/Sandbag.h"
 
-
 class TitleScene : public IScene {
 public:
 	void Init()override;
