@@ -324,8 +324,20 @@ private:
 	//Behaviorで操作する右手のトランスフォーム
 	WorldTransform RHandTransform_;
 
+	Vector3 baseRHandPos_;
+
+	Vector3 nowRHandPos_;
+
 	//Behaviorで操作する左手のトランスフォーム
 	WorldTransform LHandTransform_;
+
+	Vector3 baseLHandPos_;
+
+	Vector3 nowLHandPos_;
+
+	float handT_ = 0.0f;
+
+	float addHandT_ = 0.1f;
 
 	//溜め攻撃をするときの右手のトランスフォーム
 	WorldTransform RRotateHandTransform_;

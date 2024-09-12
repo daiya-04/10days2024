@@ -122,6 +122,10 @@ void Player::Initialize(){
 	RHandTransform_.translation_.x = 2.0f;
 	RHandTransform_.parent_ = &bodyObj_->worldTransform_;
 
+	baseRHandPos_ = { 2.0f,0.0f,0.0f };
+
+	nowRHandPos_;
+
 	RRotateHandTransform_.Init();
 
 	RRotateHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
@@ -133,6 +137,10 @@ void Player::Initialize(){
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.translation_.x = -2.0f;
 	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
+
+	baseLHandPos_ = { -2.0f,0.0f,0.0f };
+
+	nowLHandPos_;
 
 	ShadowTransform_.Init();
 	ShadowTransform_.scale_ = { 0.5f,0.005f,0.5f };
@@ -338,8 +346,9 @@ void Player::SetFloorPosition(const float& positionY) {
 void Player::BehaviorRootInitialize(){
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	nowRHandPos_ = RHandTransform_.translation_;
+	nowLHandPos_ = LHandTransform_.translation_;
+	handT_ = 0.0f;
 
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
@@ -350,6 +359,8 @@ void Player::BehaviorRootInitialize(){
 	ColliderReset(attackCollider_);
 	ColliderReset(reflectionCollider_);
 	
+
+
 	attackPower_ = 0;
 }
 
@@ -418,7 +429,15 @@ void Player::BehaviorRootUpdate(){
 	if (!StageClampCollision(PLTransfromNext)){
 		PLTransform_.translation_ += move_;
 	}	
+	handT_ += addHandT_;
+
+	if (handT_ > 1.0f) {
+		handT_ = 1.0f;
+	}
+	RHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowRHandPos_, baseRHandPos_, handT_);
+	LHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowLHandPos_, baseLHandPos_, handT_);
 	
+
 	//Aボタンでジャンプ
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
@@ -563,8 +582,8 @@ void Player::BehaviorAttackUpdate(){
 
 void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	RHandTransform_.translation_ = { 2.0f,0.0f,-2.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
 	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
 
@@ -604,8 +623,9 @@ void Player::BehaviorAvoidUpdate(){
 void Player::BehaviorDashInitialize(){
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	nowRHandPos_ = RHandTransform_.translation_;
+	nowLHandPos_ = LHandTransform_.translation_;
+	handT_ = 0.0f;
 
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
@@ -686,6 +706,15 @@ void Player::BehaviorDashUpdate(){
 	if (!StageClampCollision(PLTransfromNext)) {
 		PLTransform_.translation_ += move_;
 	}
+
+	handT_ += addHandT_;
+
+	if (handT_ > 1.0f) {
+		handT_ = 1.0f;
+	}
+	RHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowRHandPos_, baseRHandPos_, handT_);
+	LHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowLHandPos_, baseLHandPos_, handT_);
+
 
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
