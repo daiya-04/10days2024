@@ -260,6 +260,9 @@ void GameScene::Update() {
 		
 	}
 
+	if (player_->GetIsDead()){
+		SceneManager::GetInstance()->ChangeScene("Result");
+	}
 
 	collisionManager_->AllCollision();
 	oldFallAttack_ = player_->GetFallingAttack();

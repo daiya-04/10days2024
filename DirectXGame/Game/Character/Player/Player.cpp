@@ -275,6 +275,10 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 		frontVec_ = postureVec_;
 	}
 
+	if (hp_ <= 0) {
+		isDead_ = true;
+	}
+
 	//行列更新
 	PLTransform_.UpdateMatrix();
 	bodyObj_->worldTransform_ = PLTransform_;

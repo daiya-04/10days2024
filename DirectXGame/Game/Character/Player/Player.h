@@ -53,6 +53,8 @@ public:
 
 	bool GetFallingAttack() const;
 
+	bool GetIsDead() const { return isDead_; }
+
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
@@ -198,6 +200,8 @@ private:
 	//体力
 	int32_t maxHp_ = 6;
 	int32_t hp_ = maxHp_;
+
+	bool isDead_ = false;
 
 
 	//攻撃力
