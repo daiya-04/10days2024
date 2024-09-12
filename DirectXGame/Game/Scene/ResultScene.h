@@ -2,7 +2,6 @@
 #include "IScene.h"
 #include <memory>
 #include <list>
-#include "Stage/Stage.h"
 
 #include "Sprite.h"
 #include "Object3d.h"
@@ -15,8 +14,7 @@
 #include"CollisionManager.h"
 #include"Character/Sandbag/Sandbag.h"
 
-
-class TitleScene : public IScene {
+class ResultScene : public IScene {
 public:
 	void Init()override;
 
@@ -38,7 +36,7 @@ public:
 
 	void DebugGUI()override;
 
-	~TitleScene()override;
+	~ResultScene()override;
 
 private:
 	Camera camera_;
@@ -55,25 +53,10 @@ private:
 	//モデルマネージャー
 	ModelManager* modelManager_;
 
-	LevelData* levelData_;
-
-	std::unique_ptr<Stage> stage_;
-
-	//コリジョンマネージャー
-	std::unique_ptr<CollisionManager> collisionManager_;
-	//プレイヤー
-	std::unique_ptr<Player> player_;
-
 	//鏡餅
 	std::unique_ptr<Sandbag> sandbag_;
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
 
-	//鏡餅置くよう用
-	std::unique_ptr<Object3d> titleobj_;
-
-	bool oldFallAttack_ = false;
-
-	int32_t killCount_ = 0;
 };
 

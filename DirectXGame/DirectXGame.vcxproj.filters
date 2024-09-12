@@ -240,6 +240,9 @@
     <ClCompile Include="Engine\Audio\AudioManager.cpp">
       <Filter>Engine\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\ResultScene.cpp">
+      <Filter>Game\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -426,6 +429,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Audio\AudioManager.h">
       <Filter>Engine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\ResultScene.h">
+      <Filter>Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

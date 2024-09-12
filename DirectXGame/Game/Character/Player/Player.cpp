@@ -141,6 +141,7 @@ void Player::Initialize(){
 	frontVec_ = { 0.0f,0.0f,1.0f };
 
 	isDown_ = true;
+	isShadowDraw_ = true;
 
 }
 
@@ -272,7 +273,9 @@ void Player::Draw(const Camera& camera) {
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
-	shadowObj_->Draw(camera);
+	if (isShadowDraw_){
+		shadowObj_->Draw(camera);
+	}
 }
 
 void Player::Reset(){
@@ -280,6 +283,8 @@ void Player::Reset(){
 	playerRotateMatY_ = MakeRotateYMatrix(0.0f);
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
+
+	isShadowDraw_ = true;
 
 	behaviorRequest_ = Behavior::kRoot;
 
@@ -433,9 +438,14 @@ void Player::BehaviorRootUpdate(){
 	}
 
 	//RBボタンで回避ダッシュ
-	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_){
-		behaviorRequest_ = Behavior::kAvoid;
-
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER)){
+		if (!isDown_){
+			behaviorRequest_ = Behavior::kAvoid;
+		}
+		else if (isSkyDash_){
+			behaviorRequest_ = Behavior::kAvoid;
+			isSkyDash_ = false;
+		}
 	}
 
 }
@@ -555,7 +565,7 @@ void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
-
+	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
 
 }
@@ -689,9 +699,14 @@ void Player::BehaviorDashUpdate(){
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
-	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_) {
-		behaviorRequest_ = Behavior::kAvoid;
-
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER)) {
+		if (!isDown_) {
+			behaviorRequest_ = Behavior::kAvoid;
+		}
+		else if (isSkyDash_) {
+			behaviorRequest_ = Behavior::kAvoid;
+			isSkyDash_ = false;
+		}
 	}
 }
 
@@ -741,6 +756,7 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	if (PLTransform_.translation_.y <= floorPositionY_) {
 		OnFloorCollision();
+		isSkyDash_ = true;
 		isFallingAttacked_ = true;
 		waitTime_--;
 	}
@@ -1013,6 +1029,7 @@ void Player::Gravity(){
 	PLTransform_.translation_.y += downVector_.y;
 
 	if (PLTransform_.translation_.y < floorPositionY_){
+		isSkyDash_ = true;
 		OnFloorCollision();
 	}
 }

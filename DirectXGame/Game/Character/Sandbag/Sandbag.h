@@ -26,6 +26,12 @@ public:
 	//敵の攻撃に当たったときの反応
 	void OnCollision(const int32_t power);
 
+	void SetPosition(const Vector3& position) { 
+		bodyObj_->worldTransform_.translation_ = position;
+		isDead_ = false;
+		hp_ = 25;
+	}
+
 	const Sphere& GetCollider() const { return collider_; }
 
 	const bool GetIsDead()const { return isDead_; }

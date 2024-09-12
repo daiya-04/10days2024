@@ -57,6 +57,8 @@ public:
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
 
+	void SetShadowDraw(const bool& flag) { isShadowDraw_ = flag; }
+
 	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
 
 	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
@@ -110,6 +112,7 @@ private:
 	void BehaviorHitCollosionInitialize();
 	//ダッシュ行動更新
 	void BehaviorHitCollisionUpdate();
+
 
 private:
 	/*攻撃処理の初期化、更新*/
@@ -365,6 +368,10 @@ private:
 	float hitRotateX_;
 	// 地面に攻撃した瞬間を取るフラグ
 	bool isFallingAttacked_ = false;
+
+	bool isShadowDraw_ = true;
+
+	bool isSkyDash_ = true;
 };
 
 
