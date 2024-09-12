@@ -138,6 +138,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3d\Particle\GPUParticle.cpp" />
     <ClCompile Include="Engine\Line\Line.cpp" />
     <ClCompile Include="Engine\PostEffect\HSVFilter.cpp" />
+    <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Stage\Ground.cpp" />
     <ClCompile Include="Game\Stage\GroundPiece.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
@@ -209,6 +210,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\MyGame.h" />
     <ClInclude Include="Engine\BaseScene\IScene.h" />
+    <ClInclude Include="Game\Scene\ResultScene.h" />
     <ClInclude Include="Game\Scene\SceneFactory.h" />
     <ClInclude Include="Engine\BaseScene\SceneManager.h" />
     <ClInclude Include="Engine\Collision\Hit.h" />
