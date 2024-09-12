@@ -202,8 +202,8 @@ void TitleScene::DrawParticleModel(){
 }
 
 void TitleScene::DrawParticle(){
-
-
+	GPUParticle::preDraw();
+	player_->ParticleDraw(camera_);
 
 }
 
