@@ -38,6 +38,7 @@ void ControlUI::Draw(){
 }
 
 void ControlUI::DrawGUI(){
+#ifdef _DEBUG
 	ImGui::Begin("UI");
 
 	ImGui::DragFloat2("Atex", &Atex_->position_.x, 1.0f);
@@ -55,4 +56,5 @@ void ControlUI::DrawGUI(){
 	ImGui::DragFloat2("dashtexScale", &dashtex_->size_.x, 0.1f);
 
 	ImGui::End();
+#endif // _DEBUG
 }

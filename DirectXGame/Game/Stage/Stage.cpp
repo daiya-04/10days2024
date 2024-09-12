@@ -18,6 +18,13 @@ void Stage::Initialize(const LevelData* data) {
 		transform.translation_.y -= 15.0f;
 		transform.UpdateMatrix();
 	}
+
+	float lDist = 0.0f;
+	for (auto& ground : grounds_) {
+		ground->transform_.translation_.y = lDist;
+		ground->transform_.UpdateMatrix();
+		lDist -= distance_;
+	}
 }
 
 void Stage::Update() {
@@ -27,19 +34,10 @@ void Stage::Update() {
 	ImGui::DragFloat("Distance", &distance_, 0.1f);
   
 	ImGui::End();
-	float lDist = 0.0f;
-	for (auto& ground : grounds_) {
-		ground->transform_.translation_.y = lDist;
-		lDist -= distance_;
-	}
-
 #endif // _DEBUG
 
 	preLayerNumber_ = nowLayerNumber_;
 
-	for (auto& ground : grounds_) {
-		ground->Update();
-	}
 	for (uint32_t index = 0; index < layer.size(); index++) {
 		if (index < nowLayerNumber_) {
 			grounds_.at(index)->isAlive_ = false;
@@ -87,14 +85,9 @@ bool Stage::IsPlayerCollision(const Vector3& position) {
 	if (LayerCheck(position.y) == "None") {
 		assert(true);
 	}
-	static bool fall = false;
-	ImGui::Checkbox("fall", &fall);
-	int32_t damage = 0;
-	if (fall) {
-		damage = 1;
-	}
+	
 	// playerと同じ階層が更新される
-	return grounds_.at(nowLayerNumber_)->IsCollision(angle, damage);
+	return grounds_.at(nowLayerNumber_)->IsCollision(angle);
 }
 
 bool Stage::ResetCheck(const Vector3& position) {

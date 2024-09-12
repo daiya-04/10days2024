@@ -9,46 +9,11 @@ DebugCamera::DebugCamera() {
 bool DebugCamera::Update() {
 	auto input = Input::GetInstance();
 
-	if (input->TriggerKey(DIK_1)) {
+	if (input->TriggerKey(DIK_1) && input->PushKey(DIK_RSHIFT)) {
 		isUse_ = !isUse_;
 	}
 	if (!isUse_) { return false; }
-
-	float rad = 1.0f/* * (std::numbers::pi_v<float>)*/;
-	bool angle = false;
 	
-	if (input->PushKey(DIK_LCONTROL)) {
-		angle = true;
-	}
-
-	if (input->PushKey(DIK_LEFTARROW) && angle) {
-		rotation_.y -= rad * rotSpeed_;
-	}
-	else if (input->PushKey(DIK_LEFTARROW)) {
-		translate_.x -= moveSpeed_;
-	}
-
-	if (input->PushKey(DIK_RIGHTARROW) && angle) {
-		rotation_.y += rad * rotSpeed_;
-	}
-	else if (input->PushKey(DIK_RIGHTARROW)) {
-		translate_.x += moveSpeed_;
-	}
-
-	if (input->PushKey(DIK_UPARROW) && angle) {
-		rotation_.x += rad * rotSpeed_;
-	}
-	else if (input->PushKey(DIK_UPARROW)) {
-		translate_.y += moveSpeed_;
-	}
-
-
-	if (input->PushKey(DIK_DOWNARROW) && angle) {
-		rotation_.x -= rad * rotSpeed_;
-	}
-	else if (input->PushKey(DIK_DOWNARROW)) {
-		translate_.y -= moveSpeed_;
-	}
 #ifdef _DEBUG
 	ImGui::Begin("DebugCamera");
 	if (ImGui::TreeNode("Transform")) {

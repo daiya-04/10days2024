@@ -53,6 +53,8 @@ void Ground::Initialize(const LevelData* data, const std::vector<std::shared_ptr
 	electricBoard_ = std::make_unique<Object3d>();
 	electricBoard_->Initialize(boardModel);
 	electricBoard_->worldTransform_.parent_ = &transform_;
+	electricBoard_->worldTransform_.scale_ = Vector3(0.866f, 0.866f, 0.866f);
+	electricBoard_->worldTransform_.translation_.y = -0.036f;
 	electricBoard_->worldTransform_.UpdateMatrix();
 }
 
@@ -69,6 +71,7 @@ void Ground::Update() {
 	ImGui::Begin("Stage");
 	if (ImGui::TreeNode(layer_.c_str())) {
 		ImGui::DragFloat("MasterScale", &transform_.scale_.x, 0.1f, 0.1f);
+		ImGui::DragFloat("Translate", &electricBoard_->worldTransform_.translation_.y, 0.001f);
 		ImGui::TreePop();
 	}
 	transform_.scale_ = Vector3(transform_.scale_.x, transform_.scale_.x, transform_.scale_.x);
@@ -82,8 +85,8 @@ void Ground::Update() {
 		piece->Update();
 	}
 	CheckAlive();
-	// 適当に1度ずつ回転
-	electricBoard_->worldTransform_.rotation_.y += 0.01f;
+
+	electricBoard_->worldTransform_.rotation_.y += 0.005f;
 	electricBoard_->worldTransform_.UpdateMatrix();
 }
 

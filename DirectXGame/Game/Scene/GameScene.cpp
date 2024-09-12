@@ -115,11 +115,11 @@ void GameScene::Update() {
 	}
 
 	// debugCamera
-	/*if (debugCamera_->Update()) {
+	if (debugCamera_->Update()) {
 		camera_.translation_ = debugCamera_->GetCameraTranslate();
 		camera_.rotation_ = debugCamera_->GetCameraRotate();
 	}
-	else */{
+	else {
 		followCamera_->Update();
 		camera_.translation_ = followCamera_->GetCameraTranslate();
 		camera_.rotation_ = followCamera_->GetCameraRotate();
