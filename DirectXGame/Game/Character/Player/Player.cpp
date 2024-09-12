@@ -277,11 +277,12 @@ void Player::Draw(const Camera& camera) {
 
 
 #endif // _DEBUG
-
+	
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
 	if (isShadowDraw_){
+		shadowObj_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		shadowObj_->Draw(camera);
 	}
 }
