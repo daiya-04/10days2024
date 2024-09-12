@@ -307,7 +307,7 @@ void GameScene::DrawParticle(){
 void GameScene::DrawUI(){
 
 	
-	controlUI_->Draw();
+	player_->DrawUI();
 	
 }
 

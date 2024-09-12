@@ -312,12 +312,40 @@ void Player::Draw(const Camera& camera) {
 }
 
 void Player::DrawUI(){
-	Atex_->Draw();
-	Xtex_->Draw();
-	RBtex_->Draw();
-	jumptex_->Draw();
-	attacktex_->Draw();
-	dashtex_->Draw();
+	if (isDown_){
+		Xtex_->Draw();
+		attacktex_->Draw();
+		if (isSkyDash_) {
+			RBtex_->Draw();
+			dashtex_->Draw();
+		}
+	}
+	else if (isCharge_) {
+		Xtex_->Draw();
+		attacktex_->Draw();
+	}
+	else if (isAvoid_) {
+		RBtex_->Draw();
+		dashtex_->Draw();
+	}
+	else if (isAttack_) {
+		Xtex_->Draw();
+		attacktex_->Draw();
+		RBtex_->Draw();
+		dashtex_->Draw();
+	}
+	else if (isOnCollision_) {
+
+	}
+	else {
+		Atex_->Draw();
+		jumptex_->Draw();
+		Xtex_->Draw();
+		attacktex_->Draw();
+		RBtex_->Draw();
+		dashtex_->Draw();
+	}
+	
 }
 
 void Player::Reset(){
@@ -385,6 +413,11 @@ void Player::BehaviorRootInitialize(){
 	handT_ = 0.0f;
 
 	isCharge_ = false;
+	isOnCollision_ = false;
+	isAvoid_ = false;
+	isAttack_ = false;
+
+
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
 
@@ -393,8 +426,6 @@ void Player::BehaviorRootInitialize(){
 	ColliderReset(attackCollider_);
 	ColliderReset(reflectionCollider_);
 	
-
-
 	attackPower_ = 0;
 }
 
@@ -520,6 +551,7 @@ void Player::BehaviorAttackInitialize(){
 	basePlayerRotateMatY_ = playerRotateMatY_;
 	attackPower_ = basePower_.firstAttack;
 	yRadian_ = 0;
+	isAttack_ = true;
 	hitRecord_.Clear();
 }
 
@@ -620,7 +652,7 @@ void Player::BehaviorAvoidInitialize(){
 	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
 	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
-
+	isAvoid_ = true;
 }
 
 void Player::BehaviorAvoidUpdate(){
@@ -642,6 +674,7 @@ void Player::BehaviorAvoidUpdate(){
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
 		collider_.radius = colliderRange_.body;
+		isAvoid_ = false;
 		if (input_->PushButton(Input::Button::RIGHT_SHOULDER)){
 			behaviorRequest_ = Behavior::kDash;
 		}
@@ -836,6 +869,7 @@ void Player::BehaviorHitCollosionInitialize(){
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 	downVector_.y += jumpPower_ / 2.0f;
 	hitRotateX_ = 0;
+	isOnCollision_ = true;
 	isDown_ = true;
 }
 
@@ -863,7 +897,7 @@ void Player::BehaviorHitCollisionUpdate(){
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
-		
+		isOnCollision_ = false;
 		behaviorRequest_ = Behavior::kRoot;
 		
 	}
@@ -878,7 +912,7 @@ void Player::BehaviorSecondAttackInitialize(){
 
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
-
+	isAttack_ = true;
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
@@ -896,7 +930,7 @@ void Player::BehaviorThirdAttackInitialize(){
 
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
-
+	isAttack_ = true;
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;

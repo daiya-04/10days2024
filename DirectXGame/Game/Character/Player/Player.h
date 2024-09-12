@@ -394,6 +394,12 @@ private:
 
 	bool isSkyDash_ = true;
 
+	bool isAvoid_ = false;
+
+	bool isAttack_ = false;
+
+	bool isOnCollision_ = false;
+
 private:
 	TextureManager* texManager_;
 

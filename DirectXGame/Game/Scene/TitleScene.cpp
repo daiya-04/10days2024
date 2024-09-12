@@ -208,7 +208,7 @@ void TitleScene::DrawParticle(){
 
 void TitleScene::DrawUI(){
 
-	controlUI_->Draw();
+	player_->DrawUI();
 
 }
 
