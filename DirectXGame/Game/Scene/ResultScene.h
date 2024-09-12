@@ -38,6 +38,10 @@ public:
 
 	~ResultScene()override;
 
+
+public:
+
+	static bool isLose_;
 private:
 	Camera camera_;
 

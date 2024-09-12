@@ -10,6 +10,7 @@
 #include "Hit.h"
 #include <random>
 #include <algorithm>
+#include"ResultScene.h"
 
 GameScene::GameScene() {
 	
@@ -261,6 +262,7 @@ void GameScene::Update() {
 	}
 
 	if (player_->GetIsDead()){
+		ResultScene::isLose_ = true;
 		SceneManager::GetInstance()->ChangeScene("Result");
 	}
 

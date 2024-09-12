@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "Input.h"
 
+bool ResultScene::isLose_ = false;
 
 ResultScene::~ResultScene() {}
 
@@ -82,9 +83,10 @@ void ResultScene::DrawBackGround() {
 }
 
 void ResultScene::DrawModel() {
-	sandbag_->Draw(camera_);
-	shelfobj_->Draw(camera_);
-
+	if (!isLose_) {
+		sandbag_->Draw(camera_);
+		shelfobj_->Draw(camera_);
+	}
 }
 
 void ResultScene::DrawParticleModel() {
