@@ -58,19 +58,32 @@ void CannonManager::Update() {
 	hitEff_->Update();
 
 	if (!isAttack_) { return; }
+
+	for (int32_t index : indexList_) {
+		if (!pieceAlives_[index]) {
+			indexList_.remove(index);
+			break;
+		}
+	}
 	
 	if (++count_ >= attackTime_) {
 		while (true) {
-			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
-			if (nextIndex != cannonIndex_ && !cannons_[nextIndex]->IsLife()) {
-				cannonIndex_ = nextIndex;
+			if (indexList_.empty()) { break; }
+
+			int32_t itNum = RandomEngine::GetIntRandom(0, (int)indexList_.size() - 1);
+			indexIt_ = indexList_.begin();
+			std::advance(indexIt_, itNum);
+			int32_t nextIndex = *indexIt_;
+
+			if (!cannons_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
+				cannons_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex], offsets_[nextIndex].Normalize());
 				indexCount_ = 0;
 				break;
 			}
+
 			indexCount_++;
-			if (indexCount_ >= 16) { break; }
+			if (indexCount_ >= indexList_.size()) { break; }
 		}
-		cannons_[cannonIndex_]->AttackStart(basePos_ + offsets_[cannonIndex_], offsets_[cannonIndex_].Normalize());
 		count_ = 0;
 	}
 
@@ -96,6 +109,8 @@ void CannonManager::AttackStart(const Vector3& basePos) {
 	basePos_.y += 1.0f;
 	isAttack_ = true;
 	cannonIndex_ = 0;
+
+	indexList_.assign({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
 
 }
 

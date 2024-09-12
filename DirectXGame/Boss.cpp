@@ -5,10 +5,15 @@
 #include "StampManager.h"
 #include "ImGuiManager.h"
 #include "ShapesDraw.h"
+#include "TextureManager.h"
+#include "RandomEngine.h"
 
 void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
+
+	hpBer_.reset(Sprite::Create(TextureManager::Load("Boss_HP.png"), {340.0f,30.0f},1.0f));
+	hpBer_->SetAnchorpoint({ 0.0f,0.5f });
 
 	hp_ = maxHp_;
 
@@ -28,6 +33,8 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 	obj_->worldTransform_.translation_ = { 0.0f,-32.0f,0.0f };
 	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 
+	basePos_ = obj_->worldTransform_.translation_;
+
 }
 
 void Boss::Update() {
@@ -45,6 +52,15 @@ void Boss::Update() {
 
 	behaviorUpdateTable_[behavior_]();
 
+	Shakeing();
+	
+	if (hp_ <= 0) {
+		behaviorRequest_ = Behavior::kDead;
+	}
+
+	float percent = float(hp_) / (float)maxHp_;
+
+	hpBer_->SetSize({ 25.0f * percent, 5.0f });
 
 	obj_->worldTransform_.UpdateMatrixRotate(rotateMat_);
 }
@@ -64,15 +80,49 @@ void Boss::Draw(const Camera& camera) {
 
 void Boss::HitPlayerAttackCollision(const int32_t power){
 	hp_ -= power;
+	hp_ = std::clamp(hp_, 0, maxHp_);
+	ShakeInit();
 }
 
 void Boss::DrawUI() {
-
+	hpBer_->Draw();
 
 }
 
 void Boss::AttackHit() {
 	hp_ -= 15;
+	hp_ = std::clamp(hp_, 0, maxHp_);
+	ShakeInit();
+}
+
+void Boss::ShakeInit() {
+
+	shakeCount_ = 0;
+	isShake_ = true;
+	basePos_ = obj_->GetWorldPos();
+
+}
+
+void Boss::Shakeing() {
+
+	if (isShake_) {
+
+		shakeCount_++;
+		shakeCount_ = std::clamp(shakeCount_, 0, shakeTime_);
+
+		shakePos_.x = RandomEngine::GetFloatRandom(0.0f, 1.0f);
+		shakePos_.y = RandomEngine::GetFloatRandom(0.0f, 1.0f);
+		shakePos_.z = RandomEngine::GetFloatRandom(0.0f, 1.0f);
+		
+		if (shakeCount_ >= shakeTime_) {
+			isShake_ = false;
+			shakePos_ = {};
+		}
+
+	}
+
+	obj_->worldTransform_.translation_ = basePos_ + shakePos_;
+
 }
 
 void Boss::RootInit() {
@@ -111,7 +161,9 @@ void Boss::AttackUpdate() {
 
 void Boss::DeadInit() {
 
-
+	MeteorManager::GetInstance()->AttackFinish();
+	CannonManager::GetInstance()->AttackFinish();
+	StampManager::GetInstance()->AttackFinish();
 
 }
 
@@ -123,7 +175,9 @@ void Boss::DeadUpdate() {
 
 void Boss::DownInit() {
 
-
+	MeteorManager::GetInstance()->AttackFinish();
+	CannonManager::GetInstance()->AttackFinish();
+	StampManager::GetInstance()->AttackFinish();
 
 }
 

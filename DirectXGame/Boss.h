@@ -95,6 +95,9 @@ public:
 
 	void DebugGUI();
 
+	void ShakeInit();
+	void Shakeing();
+
 private:
 
 	std::unique_ptr<Object3d> obj_;
@@ -117,6 +120,13 @@ private:
 
 	int32_t count_ = 0;
 	int32_t coolTime_ = 120;
+
+	Vector3 shakePos_{};
+	Vector3 basePos_{};
+	int32_t shakeCount_ = 0;
+	int32_t shakeTime_ = 10;
+
+	bool isShake_ = false;
 
 };
 

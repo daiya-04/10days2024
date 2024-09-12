@@ -48,14 +48,12 @@ private:
 	bool preIsAttack_ = false;
 
 	Vector3 basePos_{};
-	float startHight_ = 10.0f;
+	float startHight_ = 15.0f;
 
 	std::array<Vector3, 16> offsets_;
 
-	int32_t meteorIndex_ = 0;
-
 	int32_t count_ = 0;
-	int32_t attackTime_ = 30;
+	int32_t attackTime_ = 40;
 
 	int32_t indexCount_ = 0;
 
@@ -63,8 +61,6 @@ private:
 
 	std::list<int32_t> indexList_;
 	std::list<int32_t>::iterator indexIt_;
-
-	int32_t num_ = 0;
 
 };
 

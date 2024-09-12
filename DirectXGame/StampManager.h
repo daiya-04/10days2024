@@ -26,7 +26,7 @@ public:
 	void AttackStart(const Vector3& basePos);
 	void AttackFinish();
 
-	
+	void SetPieceAlives(const std::array<bool, 16>& pieceAlives) { pieceAlives_ = pieceAlives; }
 
 	Shapes::OBB GetCollider(uint32_t index) { return stamps_[index]->GetCollider(); }
 	bool IsLife(uint32_t index) { return stamps_[index]->IsLife(); }
@@ -53,7 +53,10 @@ private:
 
 	int32_t indexCount_ = 0;
 
+	std::array<bool, 16> pieceAlives_;
 
+	std::list<int32_t> indexList_;
+	std::list<int32_t>::iterator indexIt_;
 
 };
 

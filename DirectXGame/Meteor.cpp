@@ -21,9 +21,9 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 	fireTrail_->emitter_.angle = 360.0f;
 	fireTrail_->emitter_.frequency = 1.0f / 60.0f;
 	fireTrail_->emitter_.lifeTime = 60.0f / 60.0f;
-	fireTrail_->emitter_.scale = 0.5f;
-	fireTrail_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 3.5f;
-	fireTrail_->emitter_.speed = 0.0f;
+	fireTrail_->emitter_.scale = 2.0f;
+	fireTrail_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 3.0f;
+	fireTrail_->emitter_.speed = 3.0f;
 	fireTrail_->emitter_.count = 1000;
 	fireTrail_->emitter_.isHalf = 0;
 

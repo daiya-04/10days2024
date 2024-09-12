@@ -47,8 +47,6 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 	isAttack_ = false;
 	preIsAttack_ = false;
 
-	meteorIndex_ = 0;
-
 }
 
 void MeteorManager::Update() {
@@ -88,28 +86,10 @@ void MeteorManager::Update() {
 				indexCount_ = 0;
 				break;
 			}
-			
-			/*if (num_ == 8 || num_ == 9) {
-				int a = 0;
-			}
 
-			if (!meteors_[num_]->IsLife() && pieceAlives_[num_]) {
-				meteors_[num_]->AttackStart(basePos_ + offsets_[num_]);
-				indexCount_ = 0;
-				num_++;
-				num_ = std::clamp(num_, 0, 15);
-				break;
-			}*/
-			/*if (nextIndex != meteorIndex_ && !meteors_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
-				meteorIndex_ = nextIndex;
-				indexCount_ = 0;
-				meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-				break;
-			}*/
 			indexCount_++;
-			if (indexCount_ >= 32) { break; }
+			if (indexCount_ >= indexList_.size()) { break; }
 		}
-		//meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
 		count_ = 0;
 	}
 	
@@ -149,9 +129,6 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 	isAttack_ = true;
 	basePos_ = basePos;
 	basePos_.y += startHight_;
-
-	/*meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-	meteorIndex_ = (meteorIndex_ + 1) % 16;*/
 
 	indexList_.assign({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
 
