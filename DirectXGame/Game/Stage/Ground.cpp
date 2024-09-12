@@ -60,6 +60,7 @@ void Ground::Initialize() {
 	for (auto& piece : pieces_) {
 		piece->Initialize();
 	}
+	isAlive_ = true;
 }
 
 void Ground::Update() {
@@ -87,6 +88,8 @@ void Ground::Update() {
 }
 
 void Ground::Draw(const Camera& camera) {
+	if (!isAlive_) { return; }
+
 	for (auto& piece : pieces_) {
 		piece->Draw(camera);
 	}

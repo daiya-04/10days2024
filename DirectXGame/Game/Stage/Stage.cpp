@@ -34,9 +34,18 @@ void Stage::Update() {
 
 #endif // _DEBUG
 
+	preLayerNumber_ = nowLayerNumber_;
 
 	for (auto& ground : grounds_) {
 		ground->Update();
+	}
+	for (uint32_t index = 0; index < layer.size(); index++) {
+		if (index < nowLayerNumber_) {
+			grounds_.at(index)->isAlive_ = false;
+		}
+		else {
+			grounds_.at(index)->Update();
+		}
 	}
 	pieceAlives_ = grounds_.at(nowLayerNumber_)->GetPieceAlive();
 }
@@ -90,6 +99,7 @@ bool Stage::ResetCheck(const Vector3& position) {
 		for (auto& ground : grounds_) {
 			ground->Initialize();
 		}
+		nowLayerNumber_ = 0;
 		return true;
 	}
 	return false;

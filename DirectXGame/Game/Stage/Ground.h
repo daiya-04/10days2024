@@ -11,7 +11,7 @@ public:
 	void ApplyGlobalVariables();
 
 	void Initialize(const LevelData* data, const std::vector<std::shared_ptr<Model>>& models, WorldTransform transform, const std::shared_ptr<Model>& boardModel, const std::string& layer);
-	void Initialize();
+	void Initialize(); // reset用
 
 	void Update();
 
@@ -24,6 +24,7 @@ public:
 	std::array<bool, 16u> GetPieceAlive() const { return pieceAlives_; }
 
 	WorldTransform transform_; // 地面の親world座標
+	bool isAlive_ = true;
 private:
 	void CheckAlive();
 

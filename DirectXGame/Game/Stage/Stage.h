@@ -36,6 +36,7 @@ public:
 	Vector3 GetNextGroundPosition() ;
 	uint32_t GetLayerNumber() const { return nowLayerNumber_; } // 現在の階層番号の取得 012 = 上中下
 	std::array<bool, 16u> GetPieceAlive() const { return pieceAlives_; } // 現在のLayerのpieceの生存状況をフラグで取得
+	bool GetChangeLayer() const { return nowLayerNumber_ != preLayerNumber_; } // layerが切替わったタイミングのフラグを取得
 
 private:
 	std::string LayerCheck(const float& playerPositionY);
@@ -43,6 +44,7 @@ private:
 private:
 	std::array<std::unique_ptr<Ground>, 3> grounds_;
 	uint32_t nowLayerNumber_ = 0u;
+	uint32_t preLayerNumber_ = 0u;
 	std::array<bool, 16u> pieceAlives_;
 	float distance_ = 10.0f;
 

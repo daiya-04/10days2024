@@ -251,6 +251,11 @@ void GameScene::Update() {
 		}
 	}
 
+	// stageのlayerが切り替わった時に全て初期化する
+	if (stage_->GetChangeLayer()) {
+		
+	}
+
 
 	collisionManager_->AllCollision();
 	oldFallAttack_ = player_->GetFallingAttack();
