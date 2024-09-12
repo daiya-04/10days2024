@@ -90,6 +90,10 @@ void GameScene::Init(){
 
 	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
 
+	controlUI_ = std::make_unique<ControlUI>();
+	controlUI_->Initialize();
+
+
 	Update();
 }
 
@@ -108,11 +112,11 @@ void GameScene::Update() {
 	}
 
 	// debugCamera
-	if (debugCamera_->Update()) {
+	/*if (debugCamera_->Update()) {
 		camera_.translation_ = debugCamera_->GetCameraTranslate();
 		camera_.rotation_ = debugCamera_->GetCameraRotate();
 	}
-	else {
+	else */{
 		followCamera_->Update();
 		camera_.translation_ = followCamera_->GetCameraTranslate();
 		camera_.rotation_ = followCamera_->GetCameraRotate();
@@ -311,7 +315,7 @@ void GameScene::DrawParticle(){
 void GameScene::DrawUI(){
 
 	
-
+	player_->DrawUI();
 	
 }
 
@@ -331,6 +335,8 @@ void GameScene::DebugGUI(){
 #ifdef _DEBUG
   
 	player_->Imgui();
+
+	controlUI_->DrawGUI();
 
 	ImGui::Begin("camera");
 

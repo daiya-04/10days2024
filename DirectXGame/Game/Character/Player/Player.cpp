@@ -152,6 +152,27 @@ void Player::Initialize(){
 	isDown_ = true;
 	isShadowDraw_ = true;
 
+	texManager_ = TextureManager::GetInstance();
+
+	Atex_ = Sprite::Create(texManager_->Load("A.png"), Vector2(0.0f, 0.0f), 0.1f);
+	Atex_->size_ = { scale_,scale_ };
+	Atex_->position_ = { 924,504 };
+	Xtex_ = Sprite::Create(texManager_->Load("X.png"), Vector2(0.0f, 0.0f), 0.1f);
+	Xtex_->size_ = { scale_,scale_ };
+	Xtex_->position_ = { 924,584 };
+	RBtex_ = Sprite::Create(texManager_->Load("RB.png"), Vector2(0.0f, 0.0f), 0.1f);
+	RBtex_->size_ = { scale_,scale_ };
+	RBtex_->position_ = { 924,664 };
+	jumptex_ = Sprite::Create(texManager_->Load("jump.png"), Vector2(0.0f, 0.0f), 0.1f);
+	jumptex_->size_ = { scale_,scale_ };
+	jumptex_->position_ = { 1130,504 };
+	attacktex_ = Sprite::Create(texManager_->Load("Attack.png"), Vector2(0.0f, 0.0f), 0.1f);
+	attacktex_->size_ = { scale_,scale_ };
+	attacktex_->position_ = { 1130,584 };
+	dashtex_ = Sprite::Create(texManager_->Load("dash.png"), Vector2(0.0f, 0.0f), 0.1f);
+	dashtex_->size_ = { scale_,scale_ };
+	dashtex_->position_ = { 1130,664 };
+
 	trail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 10000));
 	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 30000));
 
@@ -304,21 +325,90 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 void Player::Draw(const Camera& camera) {
 #ifdef _DEBUG
 
-	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+	//ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+	//ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-	ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+	//ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
 
 
 #endif // _DEBUG
+	bodyObj_->SetColor(chargeColor_);
+	rightHandObj_->SetColor(chargeColor_);
+	leftHandObj_->SetColor(chargeColor_);
 
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
 	if (isShadowDraw_){
+		shadowObj_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		shadowObj_->Draw(camera);
 	}
+}
+
+void Player::DrawUI(){
+	if (isDown_){
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		if (isSkyDash_) {
+			RBtex_->color_.w = 1.0f;
+			dashtex_->color_.w = 1.0f;
+		}
+		else {
+			RBtex_->color_.w = alpha_;
+			dashtex_->color_.w = alpha_;
+		}
+	}
+	else if (isCharge_) {
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = alpha_;
+		dashtex_->color_.w = alpha_;
+	}
+	else if (isAvoid_) {
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = alpha_;
+		attacktex_->color_.w = alpha_;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
+	}
+	else if (isAttack_) {
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
+	}
+	else if (isOnCollision_) {
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = alpha_;
+		attacktex_->color_.w = alpha_;
+		RBtex_->color_.w = alpha_;
+		dashtex_->color_.w = alpha_;
+	}
+	else {
+		Atex_->color_.w = 1.0f;
+		jumptex_->color_.w = 1.0f;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
+	}
+
+	Atex_->Draw();
+	jumptex_->Draw();
+	Xtex_->Draw();
+	attacktex_->Draw();
+	RBtex_->Draw();
+	dashtex_->Draw();
+	
 }
 
 void Player::Reset(){
@@ -396,6 +486,11 @@ void Player::BehaviorRootInitialize(){
 	handT_ = 0.0f;
 
 	isCharge_ = false;
+	isOnCollision_ = false;
+	isAvoid_ = false;
+	isAttack_ = false;
+
+
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
 
@@ -404,8 +499,6 @@ void Player::BehaviorRootInitialize(){
 	ColliderReset(attackCollider_);
 	ColliderReset(reflectionCollider_);
 	
-
-
 	attackPower_ = 0;
 }
 
@@ -531,6 +624,7 @@ void Player::BehaviorAttackInitialize(){
 	basePlayerRotateMatY_ = playerRotateMatY_;
 	attackPower_ = basePower_.firstAttack;
 	yRadian_ = 0;
+	isAttack_ = true;
 	hitRecord_.Clear();
 }
 
@@ -631,7 +725,7 @@ void Player::BehaviorAvoidInitialize(){
 	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
 	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
-
+	isAvoid_ = true;
 }
 
 void Player::BehaviorAvoidUpdate(){
@@ -653,6 +747,7 @@ void Player::BehaviorAvoidUpdate(){
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
 		collider_.radius = colliderRange_.body;
+		isAvoid_ = false;
 		if (input_->PushButton(Input::Button::RIGHT_SHOULDER)){
 			behaviorRequest_ = Behavior::kDash;
 		}
@@ -858,6 +953,7 @@ void Player::BehaviorHitCollosionInitialize(){
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 	downVector_.y += jumpPower_ / 2.0f;
 	hitRotateX_ = 0;
+	isOnCollision_ = true;
 	isDown_ = true;
 }
 
@@ -885,7 +981,7 @@ void Player::BehaviorHitCollisionUpdate(){
 
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
-		
+		isOnCollision_ = false;
 		behaviorRequest_ = Behavior::kRoot;
 		
 	}
@@ -900,7 +996,7 @@ void Player::BehaviorSecondAttackInitialize(){
 
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
-
+	isAttack_ = true;
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
@@ -918,7 +1014,7 @@ void Player::BehaviorThirdAttackInitialize(){
 
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
-
+	isAttack_ = true;
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
@@ -1042,10 +1138,25 @@ void Player::BehaviorChargeAttackUpdate(){
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
+
+			if (isChargeMax_){
+				chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
+				isChargeMax_ = false;
+			}
+			else {
+				chargeColor_ = { 1.0f,0.2f,0.2f,1.0f };
+				isChargeMax_ = true;
+			}
+			
+		}
+		else {
+			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
+			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
 		}
 		attackPower_ = 5 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
 	}
 	else {
+		chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 		ColliderReset(reflectionCollider_);
 		isCharge_ = false;
 		easeT_ += baseAttackSpeed_ * motionSpeed_;

@@ -10,6 +10,8 @@
 #include"Engine/DebugText/GlobalVariables.h"
 #include"CollisionShapes.h"
 #include"HitRecord/HitRecord.h"
+#include"TextureManager.h"
+#include"Sprite.h"
 
 class Player {
 public:
@@ -24,6 +26,8 @@ public:
 	void Update(const Vector3& centerTarget, const Vector2& minAndMax);
 	//描画処理
 	void Draw(const Camera& camera);
+
+	void DrawUI();
 
 	//ゲーム中での初期化
 	void Reset();
@@ -195,8 +199,6 @@ private:
 	int32_t maxHp_ = 20;
 	int32_t hp_ = maxHp_;
 
-	//攻撃力
-	int32_t attackPower_;
 
 	//攻撃力
 	struct  ColliderRange {
@@ -318,6 +320,13 @@ private:
 
 	float reflectionRadius_ = 0.5f;
 
+	//攻撃力
+	int32_t attackPower_;
+
+	Vector4 chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	bool isChargeMax_ = false;
+
 	bool isTitle_ = false;
 
 private:
@@ -388,6 +397,26 @@ private:
 	bool isShadowDraw_ = true;
 
 	bool isSkyDash_ = true;
+
+	bool isAvoid_ = false;
+
+	bool isAttack_ = false;
+
+	bool isOnCollision_ = false;
+
+private:
+	TextureManager* texManager_;
+
+	Sprite* Atex_;
+	Sprite* Xtex_;
+	Sprite* RBtex_;
+	Sprite* jumptex_;
+	Sprite* attacktex_;
+	Sprite* dashtex_;
+
+	float scale_ = 10.0f;
+
+	float alpha_ = 0.3f;
 };
 
 
