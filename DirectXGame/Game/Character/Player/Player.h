@@ -411,6 +411,8 @@ private:
 	Sprite* dashtex_;
 
 	float scale_ = 10.0f;
+
+	float alpha_ = 0.3f;
 };
 
 

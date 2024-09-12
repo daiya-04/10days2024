@@ -313,38 +313,66 @@ void Player::Draw(const Camera& camera) {
 
 void Player::DrawUI(){
 	if (isDown_){
-		Xtex_->Draw();
-		attacktex_->Draw();
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
 		if (isSkyDash_) {
-			RBtex_->Draw();
-			dashtex_->Draw();
+			RBtex_->color_.w = 1.0f;
+			dashtex_->color_.w = 1.0f;
+		}
+		else {
+			RBtex_->color_.w = alpha_;
+			dashtex_->color_.w = alpha_;
 		}
 	}
 	else if (isCharge_) {
-		Xtex_->Draw();
-		attacktex_->Draw();
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = alpha_;
+		dashtex_->color_.w = alpha_;
 	}
 	else if (isAvoid_) {
-		RBtex_->Draw();
-		dashtex_->Draw();
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = alpha_;
+		attacktex_->color_.w = alpha_;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
 	}
 	else if (isAttack_) {
-		Xtex_->Draw();
-		attacktex_->Draw();
-		RBtex_->Draw();
-		dashtex_->Draw();
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
 	}
 	else if (isOnCollision_) {
-
+		Atex_->color_.w = alpha_;
+		jumptex_->color_.w = alpha_;
+		Xtex_->color_.w = alpha_;
+		attacktex_->color_.w = alpha_;
+		RBtex_->color_.w = alpha_;
+		dashtex_->color_.w = alpha_;
 	}
 	else {
-		Atex_->Draw();
-		jumptex_->Draw();
-		Xtex_->Draw();
-		attacktex_->Draw();
-		RBtex_->Draw();
-		dashtex_->Draw();
+		Atex_->color_.w = 1.0f;
+		jumptex_->color_.w = 1.0f;
+		Xtex_->color_.w = 1.0f;
+		attacktex_->color_.w = 1.0f;
+		RBtex_->color_.w = 1.0f;
+		dashtex_->color_.w = 1.0f;
 	}
+
+	Atex_->Draw();
+	jumptex_->Draw();
+	Xtex_->Draw();
+	attacktex_->Draw();
+	RBtex_->Draw();
+	dashtex_->Draw();
 	
 }
 

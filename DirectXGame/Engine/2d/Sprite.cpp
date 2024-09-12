@@ -265,11 +265,14 @@ void Sprite::Initialize() {
 
 	//マテリアル用のリソースを作る
 	matrialResource_ = CreateBufferResource(device_, sizeof(MaterialData));
+	
 	//マテリアルにデータを書き込む
 	MaterialData* materialData = nullptr;
 	//書き込むためのアドレスを取得
 	matrialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData));
 	materialData->color_ = color_;
+	
+
 
 	wvpResource_ = CreateBufferResource(device_, sizeof(Matrix4x4));
 	Matrix4x4* wvpData = nullptr;
@@ -279,7 +282,7 @@ void Sprite::Initialize() {
 }
 
 void Sprite::Draw(){
-
+	SetColor(color_);
 	
 	Matrix4x4 worldMatrix = MakeAffineMatrix({ size_.x,size_.y,1.0f }, { 0.0f,0.0f,rotate_ }, { position_.x,position_.y,0.0f });
 	Matrix4x4 viewMatrix = MakeIdentity44();
