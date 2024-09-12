@@ -74,6 +74,10 @@ void TitleScene::Init(){
 	oldFallAttack_ = false;
 
 	killCount_ = 0;
+
+	controlUI_ = std::make_unique<ControlUI>();
+	controlUI_->Initialize();
+
 	Update();
 }
 
@@ -204,7 +208,7 @@ void TitleScene::DrawParticle(){
 
 void TitleScene::DrawUI(){
 
-
+	controlUI_->Draw();
 
 }
 
@@ -222,7 +226,7 @@ void TitleScene::DrawRenderTexture() {
 
 void TitleScene::DebugGUI(){
 #ifdef _DEBUG
-
+	controlUI_->DrawGUI();
 	ImGui::Begin("title");
 	ImGui::DragFloat3("transform", &titleobj_->worldTransform_.translation_.x, 0.1f);
 	ImGui::DragFloat3("rotate", &titleobj_->worldTransform_.rotation_.x, 0.01f);

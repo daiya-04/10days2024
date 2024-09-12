@@ -281,7 +281,7 @@ void Sprite::Initialize() {
 void Sprite::Draw(){
 
 	
-	Matrix4x4 worldMatrix = MakeAffineMatrix({ 1.0f,1.0f,1.0f }, { 0.0f,0.0f,rotate_ }, { position_.x,position_.y,0.0f });
+	Matrix4x4 worldMatrix = MakeAffineMatrix({ size_.x,size_.y,1.0f }, { 0.0f,0.0f,rotate_ }, { position_.x,position_.y,0.0f });
 	Matrix4x4 viewMatrix = MakeIdentity44();
 	Matrix4x4 wvpMatrix = worldMatrix * viewMatrix * projectionMatrix_;
 	Matrix4x4* wvpData = nullptr;

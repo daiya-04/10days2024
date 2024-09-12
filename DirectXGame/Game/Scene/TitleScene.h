@@ -13,6 +13,7 @@
 #include"Camera/DebugCamera.h"
 #include"Camera/FollowCamera.h"
 #include"CollisionManager.h"
+#include"ControlUI.h"
 #include"Character/Sandbag/Sandbag.h"
 
 
@@ -75,5 +76,7 @@ private:
 	bool oldFallAttack_ = false;
 
 	int32_t killCount_ = 0;
+
+	std::unique_ptr<ControlUI> controlUI_;
 };
 

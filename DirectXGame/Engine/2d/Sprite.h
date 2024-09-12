@@ -72,10 +72,7 @@ protected: //メンバ変数
 	ComPtr<ID3D12Resource> indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
 	D3D12_RESOURCE_DESC resourceDesc_;
-	//座標
-	Vector2 position_{};
-	//サイズ
-	Vector2 size_ = { 100.0f,100.0f };
+	
 	//回転
 	float rotate_{};
 	//アンカーポイント
@@ -90,6 +87,11 @@ protected: //メンバ変数
 	Vector2 texSize_ = { 100.0f,100.0f };
 
 public: //メンバ関数
+
+	//座標
+	Vector2 position_{};
+	//サイズ
+	Vector2 size_ = { 100.0f,100.0f };
 	
 	Sprite(uint32_t textureHandle, Vector2 position, float scale = 1.0f, Vector2 anchorpoint = {0.5f,0.5f}, Vector4 color = {1.0f,1.0f,1.0f,1.0f}, float rotate = 0.0f);
 
