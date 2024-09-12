@@ -269,15 +269,18 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 void Player::Draw(const Camera& camera) {
 #ifdef _DEBUG
 
-	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+	//ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+	//ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-	ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+	//ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
 
 
 #endif // _DEBUG
-	
+	bodyObj_->SetColor(chargeColor_);
+	rightHandObj_->SetColor(chargeColor_);
+	leftHandObj_->SetColor(chargeColor_);
+
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
@@ -987,10 +990,25 @@ void Player::BehaviorChargeAttackUpdate(){
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
+
+			if (isChargeMax_){
+				chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
+				isChargeMax_ = false;
+			}
+			else {
+				chargeColor_ = { 1.0f,0.2f,0.2f,1.0f };
+				isChargeMax_ = true;
+			}
+			
+		}
+		else {
+			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
+			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
 		}
 		attackPower_ = 5 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
 	}
 	else {
+		chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 		ColliderReset(reflectionCollider_);
 		isCharge_ = false;
 		easeT_ += baseAttackSpeed_ * motionSpeed_;

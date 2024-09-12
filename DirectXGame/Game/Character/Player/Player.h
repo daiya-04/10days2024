@@ -191,8 +191,6 @@ private:
 	int32_t maxHp_ = 20;
 	int32_t hp_ = maxHp_;
 
-	//攻撃力
-	int32_t attackPower_;
 
 	//攻撃力
 	struct  ColliderRange {
@@ -313,6 +311,13 @@ private:
 	Sphere reflectionCollider_;
 
 	float reflectionRadius_ = 0.5f;
+
+	//攻撃力
+	int32_t attackPower_;
+
+	Vector4 chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
+
+	bool isChargeMax_ = false;
 
 	bool isTitle_ = false;
 
