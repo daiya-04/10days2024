@@ -31,6 +31,8 @@ public:
 
 	Shapes::Sphere GetCollider(uint32_t index) { return meteors_[index]->GetCollider(); }
 	bool IsLife(uint32_t index) { return meteors_[index]->IsLife(); }
+	bool GetIsHit(uint32_t index) const { return meteors_[index]->HitFlag(); } // 当たった瞬間
+	uint32_t GetDamage(uint32_t index) const { return meteors_[index]->GetDamage(); }
 
 private:
 
