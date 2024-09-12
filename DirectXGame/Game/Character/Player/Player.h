@@ -10,6 +10,8 @@
 #include"Engine/DebugText/GlobalVariables.h"
 #include"CollisionShapes.h"
 #include"HitRecord/HitRecord.h"
+#include"TextureManager.h"
+#include"Sprite.h"
 
 class Player {
 public:
@@ -24,6 +26,8 @@ public:
 	void Update(const Vector3& centerTarget, const Vector2& minAndMax);
 	//描画処理
 	void Draw(const Camera& camera);
+
+	void DrawUI();
 
 	//ゲーム中での初期化
 	void Reset();
@@ -389,6 +393,18 @@ private:
 	bool isShadowDraw_ = true;
 
 	bool isSkyDash_ = true;
+
+private:
+	TextureManager* texManager_;
+
+	Sprite* Atex_;
+	Sprite* Xtex_;
+	Sprite* RBtex_;
+	Sprite* jumptex_;
+	Sprite* attacktex_;
+	Sprite* dashtex_;
+
+	float scale_ = 10.0f;
 };
 
 
