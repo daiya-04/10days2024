@@ -51,7 +51,11 @@ public:
 
 	const int32_t GetAttackPower() const { return attackPower_; }
 
+	const int32_t GetLife() const { return hp_; }
+
 	bool GetFallingAttack() const;
+
+	bool GetIsDead() const { return isDead_; }
 
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
@@ -196,8 +200,10 @@ private:
 	Vector3 centerPos_;
 
 	//体力
-	int32_t maxHp_ = 20;
+	int32_t maxHp_ = 6;
 	int32_t hp_ = maxHp_;
+
+	bool isDead_ = false;
 
 
 	//攻撃力

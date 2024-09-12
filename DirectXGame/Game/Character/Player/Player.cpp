@@ -202,7 +202,7 @@ void Player::Initialize(){
 	hitEff_->emitter_.isHalf = 0;
 	hitEff_->emitter_.emit = 0;
 
-
+	hp_ = maxHp_;
 }
 
 void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
@@ -275,6 +275,10 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 		frontVec_ = postureVec_;
 	}
 
+	if (hp_ <= 0) {
+		isDead_ = true;
+	}
+
 	//行列更新
 	PLTransform_.UpdateMatrix();
 	bodyObj_->worldTransform_ = PLTransform_;
@@ -341,7 +345,7 @@ void Player::Draw(const Camera& camera) {
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
 	if (isShadowDraw_){
-		shadowObj_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+		shadowObj_->SetColor(Vector4(0.0f, 0.0f, 0.0f, 0.7f));
 		shadowObj_->Draw(camera);
 	}
 }
@@ -953,7 +957,9 @@ void Player::BehaviorHitCollosionInitialize(){
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 	downVector_.y += jumpPower_ / 2.0f;
 	hitRotateX_ = 0;
+	hp_--;
 	isOnCollision_ = true;
+	ColliderReset(collider_);
 	isDown_ = true;
 }
 
@@ -982,6 +988,7 @@ void Player::BehaviorHitCollisionUpdate(){
 	//既定の時間経過で通常状態に戻る
 	if (++avoidTime_ >= behaviorDashTime) {
 		isOnCollision_ = false;
+		collider_.radius = colliderRange_.body;
 		behaviorRequest_ = Behavior::kRoot;
 		
 	}

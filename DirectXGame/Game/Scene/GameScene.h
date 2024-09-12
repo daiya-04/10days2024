@@ -93,8 +93,14 @@ private:
 
 	bool oldFallAttack_ = false;
 
-	std::unique_ptr<ControlUI> controlUI_;
+	TextureManager* texManager_;
 
+	std::array<Sprite*, 6> playerLifeTex_;
 
+	float lifeScale_ = 0.7f;
+
+	Vector2 lifeTexBasePos_ = { 530,640 };
+
+	float lifeTexLength_ = 43.0f;
 };
 

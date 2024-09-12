@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "Input.h"
 
+bool ResultScene::isLose_ = false;
 
 ResultScene::~ResultScene() {}
 
@@ -25,7 +26,6 @@ void ResultScene::Init() {
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
 
 #ifdef _DEBUG
-	debugCamera_ = std::make_unique<DebugCamera>();
 #endif // _DEBUG
 
 	modelManager_ = ModelManager::GetInstance();
@@ -41,7 +41,7 @@ void ResultScene::Init() {
 	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, -20.0f };
 	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
 
-
+	Update();
 
 }
 
@@ -58,9 +58,9 @@ void ResultScene::Update() {
 
 #endif // _DEBUG
 
-	followCamera_->Update();
-	camera_.translation_ = followCamera_->GetCameraTranslate();
-	camera_.rotation_ = followCamera_->GetCameraRotate();
+	//followCamera_->Update();
+	//camera_.translation_ = followCamera_->GetCameraTranslate();
+	//camera_.rotation_ = followCamera_->GetCameraRotate();
 
 	sandbag_->Update();
 	if (sandbag_->GetIsDead()) {
@@ -83,9 +83,10 @@ void ResultScene::DrawBackGround() {
 }
 
 void ResultScene::DrawModel() {
-	sandbag_->Draw(camera_);
-	shelfobj_->Draw(camera_);
-
+	if (!isLose_) {
+		sandbag_->Draw(camera_);
+		shelfobj_->Draw(camera_);
+	}
 }
 
 void ResultScene::DrawParticleModel() {

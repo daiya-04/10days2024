@@ -38,15 +38,16 @@ public:
 
 	~ResultScene()override;
 
+
+public:
+
+	static bool isLose_;
 private:
 	Camera camera_;
 
 	PointLight pointLight_;
 	SpotLight spotLight_;
 private:
-
-	std::unique_ptr<DebugCamera> debugCamera_;
-	std::unique_ptr<FollowCamera> followCamera_;
 
 
 private:
