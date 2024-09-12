@@ -77,6 +77,7 @@ private:
 	std::unique_ptr<DebugCamera> debugCamera_;
 	std::unique_ptr<FollowCamera> followCamera_;
 
+	std::unique_ptr<SkyBox> skyBox_;
 
 private:
 	//モデルマネージャー

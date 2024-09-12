@@ -88,6 +88,8 @@ void GameScene::Init(){
 	floor_->worldTransform_.translation_.y = -2.0f;
 	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
+	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
+
 }
 
 void GameScene::Update() {
@@ -271,6 +273,8 @@ void GameScene::DrawModel(){
 	stage_->Draw(camera_);
 	//floor_->Draw(camera_);
 	player_->Draw(camera_);
+
+	skyBox_->Draw(camera_);
 
 }
 
