@@ -30,7 +30,8 @@ void Meteor::Init(const std::shared_ptr<Model>& model) {
 
 	isLife_ = false;
 	preIsLife_ = false;
-
+	
+	damage_ = 10;
 }
 
 void Meteor::Update() {

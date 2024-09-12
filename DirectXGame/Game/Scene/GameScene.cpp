@@ -160,14 +160,18 @@ void GameScene::Update() {
 		}
 	}
 
-
+	// 隕石の衝突判定
 	for (uint32_t index = 0; index < 16; index++) {
-		if (!meteor_->IsLife(index)) { continue; }
+		
+		if (!meteor_->IsLife(index) && !meteor_->GetIsHit(index)) { continue; }
+
+		// 跳ね返した時用 ボスとの衝突判定
 		if (IsCollision(meteor_->GetCollider(index), boss_->GetCollider(Boss::AttackMode::kHigh))) {
 			boss_->AttackHit();
 			meteor_->Hit(index);
 		}
 		else if (IsCollision(player_->GetReflectionCollider(), meteor_->GetCollider(index))) {
+			// playerと当たって跳ね返した瞬間
 			if (player_->IsCharge()) {
 				meteor_->Reflection(index);
 			}
@@ -175,7 +179,13 @@ void GameScene::Update() {
 				meteor_->Hit(index);
 				player_->HitEnemyAttackCollision();
 			}
-
+		}
+		// そのまま床に当たった時の衝突判定
+		else if (meteor_->GetIsHit(index)) {
+			if (stage_->IsCollision(meteor_->GetCollider(index).center, meteor_->GetDamage(index))) {
+				// メテオのAttackUpdate内で消えているから正直意味はない
+				//meteor_->Hit(index);
+			}
 		}
 		else if (IsCollision(player_->GetCollider(), meteor_->GetCollider(index))) {
 			 {
