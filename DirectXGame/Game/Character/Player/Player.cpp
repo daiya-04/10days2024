@@ -356,12 +356,6 @@ void Player::BehaviorRootUpdate(){
 	if (input_->GetMoveXZ().z != 0) {
 		move_.z = (input_->GetMoveXZ().z / 32767.0f) * moveSpeed_;
 	}
-	/*else if (input_->PushKey(DIK_UP)){
-		move_.z += moveSpeed_;
-	}
-	else if (input_->PushKey(DIK_DOWN)) {
-		move_.z -= moveSpeed_;
-	}*/
 	else {
 
 		if (move_.z > 0.0f) {
@@ -379,12 +373,6 @@ void Player::BehaviorRootUpdate(){
 	if (input_->GetMoveXZ().x != 0) {
 		move_.x = (input_->GetMoveXZ().x / 32767.0f) * moveSpeed_;
 	}
-	/*else if (input_->PushKey(DIK_RIGHT)) {
-		move_.x += moveSpeed_;
-	}
-	else if (input_->PushKey(DIK_LEFT)) {
-		move_.x -= moveSpeed_;
-	}*/
 	else {
 		if (move_.x > 0.0f) {
 			move_.x -= 0.01f;
@@ -419,19 +407,6 @@ void Player::BehaviorRootUpdate(){
 		playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
 
 	}
-	/*else {
-		if (input_->PushKey(DIK_UP) or input_->PushKey(DIK_DOWN) or input_->PushKey(DIK_RIGHT) or input_->PushKey(DIK_LEFT)){
-			postureVec_ = move_;
-			postureVec_.y = 0;
-			postureVec_.Normalize();
-			postureVec_.y = 0;
-
-			Matrix4x4 directionTodirection;
-			directionTodirection = DirectionToDirection(frontVec_, postureVec_);
-
-			playerRotateMatY_ = playerRotateMatY_ * directionTodirection;
-		}
-	}*/
 
 	auto PLTransfromNext = PLTransform_.translation_ + move_;
 
