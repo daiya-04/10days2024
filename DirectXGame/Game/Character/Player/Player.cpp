@@ -321,6 +321,11 @@ void Player::Imgui(){
 	ImGui::End();
 }
 
+bool Player::GetFallingAttack() const {
+	if (behavior_ != Behavior::kFallingAttack) { return false; }
+	return isFallingAttacked_;
+}
+
 void Player::SetFloorPosition(const float& positionY) {
 	floorPositionY_ = positionY;
 }
@@ -725,6 +730,7 @@ void Player::BehaviorFallingAttackInitialize(){
 	waitTime_ = waitTimeBase_;
 	attackPower_ = basePower_.fallingAttack;
 	hitRecord_.Clear();
+	isFallingAttacked_ = false;
 }
 
 void Player::BehaviorFallingAttackUpdate(){
@@ -760,6 +766,7 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	if (PLTransform_.translation_.y <= floorPositionY_) {
 		OnFloorCollision();
+		isFallingAttacked_ = true;
 		waitTime_--;
 	}
 

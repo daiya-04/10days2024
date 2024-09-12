@@ -20,7 +20,7 @@ public:
 
 	void Draw(const Camera& camera);
 
-	bool IsCollision(const Vector3& position, const float& damage = 0.0f);
+	bool IsCollision(const Vector3& position, const int32_t& damage = 0);
 
 	/// <summary>
 	/// playerの足元に床が存在するか否か

@@ -15,7 +15,7 @@ void Ground::SetGlobalVariables() {
 void Ground::ApplyGlobalVariables() {
 	GlobalVariables* global = GlobalVariables::GetInstance();
 	
-	endurancePower_ = global->GetFloatValue(groupName_, "EndurancePower");
+	endurancePower_ = global->GetIntValue(groupName_, "EndurancePower");
 	groundScale_ = global->GetFloatValue(groupName_, "GroundScale");
 }
 
@@ -102,7 +102,7 @@ void Ground::Draw(const Camera& camera) {
 	}
 }
 
-bool Ground::IsCollision(const float& angle, const float& damage) {
+bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 
 	std::string tag;
 	float oneRad = std::numbers::pi_v<float> / 2.0f; // 90度
@@ -135,7 +135,7 @@ bool Ground::IsCollision(const float& angle, const float& damage) {
 				// angleがrotよりも大きく、maxRadよりも小さい
 				if (maxRad >= angle && angle >= rot.y) {
 					// ダメージが0なら通らない
-					if (damage != 0.0f) {
+					if (damage != 0) {
 						ground->OnCollision(damage);
 					}
 					return true;
@@ -143,7 +143,7 @@ bool Ground::IsCollision(const float& angle, const float& damage) {
 			}
 			else if (rot.y <= angle && angle < maxRad) {
 				// ダメージが0なら通らない
-				if (damage != 0.0f) {
+				if (damage != 0) {
 					ground->OnCollision(damage);
 				}
 				return true;

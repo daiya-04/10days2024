@@ -153,6 +153,11 @@ void GameScene::Update() {
 	else {
 		// 床があった場合
 		player_->SetFloorPosition(stage_->GetGroundPosition().y);
+
+		bool nowFallAttack = player_->GetFallingAttack();
+		if (nowFallAttack && !oldFallAttack_) {
+			stage_->IsCollision(player_->GetTransform().GetWorldPosition(), player_->GetAttackPower());
+		}
 	}
 
 
@@ -200,7 +205,9 @@ void GameScene::Update() {
 		}
 	}
 
+
 	collisionManager_->AllCollision();
+	oldFallAttack_ = player_->GetFallingAttack();
 
 
 	camera_.UpdateMatrix();

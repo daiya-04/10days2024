@@ -47,7 +47,7 @@ void Stage::Draw(const Camera& camera) {
 	}
 }
 
-bool Stage::IsCollision(const Vector3& position, const float& damage) {
+bool Stage::IsCollision(const Vector3& position, const int32_t& damage) {
 	float angle = GetRadianVectorToVector(Vector3(0.0f, 0.0f, 1.0f), position.Normalize());
 	if (position.x < 0.0f) {
 		angle = -angle;
@@ -69,9 +69,9 @@ bool Stage::IsPlayerCollision(const Vector3& position) {
 	}
 	static bool fall = false;
 	ImGui::Checkbox("fall", &fall);
-	float damage = 0.0f;
+	int32_t damage = 0;
 	if (fall) {
-		damage = 1.0f;
+		damage = 1;
 	}
 	// playerと同じ階層が更新される
 	return grounds_.at(nowLayerNumber_)->IsCollision(angle, damage);
