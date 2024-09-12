@@ -196,7 +196,7 @@ private:
 	Vector3 centerPos_;
 
 	//体力
-	int32_t maxHp_ = 20;
+	int32_t maxHp_ = 6;
 	int32_t hp_ = maxHp_;
 
 

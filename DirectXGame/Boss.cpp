@@ -72,7 +72,7 @@ void Boss::DrawUI() {
 }
 
 void Boss::AttackHit() {
-	hp_--;
+	hp_ -= 15;
 }
 
 void Boss::RootInit() {
