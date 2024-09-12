@@ -69,6 +69,7 @@ public:
 
 	bool IsLife() const { return isLife_; }
 	bool HitFlag() const { return !isLife_ && preIsLife_; }
+	const uint32_t& GetDamage() const { return damage_; }
 
 	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
 	Shapes::Sphere GetCollider() { return collider_; }
@@ -91,6 +92,7 @@ private:
 
 	float zoneParam_ = 0.0f;
 
+	uint32_t damage_ = 10;
 
 };
 
