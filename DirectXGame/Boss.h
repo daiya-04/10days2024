@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Animation.h"
 #include "CollisionShapes.h"
+#include "Sprite.h"
 
 #include <map>
 #include <functional>
@@ -65,6 +66,7 @@ public:
 	void Update();
 
 	void Draw(const Camera& camera);
+	void DrawUI();
 	
 	void HitPlayerAttackCollision(const int32_t power);
 
@@ -82,17 +84,26 @@ public:
 		else if (layer_ == 2) {
 			attackMode_ = AttackMode::kUnder;
 		}
+		if (attackMode_ != preAttackMode_) {
+			behaviorRequest_ = Behavior::kRoot;
+		}
 	}
+
+	Shapes::Sphere GetCollider(AttackMode attackMode) { return collider_[attackMode]; }
+
+	void AttackHit();
 
 	void DebugGUI();
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
+	std::unique_ptr<Sprite> hpBer_;
 
 	std::map<AttackMode, Shapes::Sphere> collider_;
 
 	AttackMode attackMode_ = AttackMode::kHigh;
+	AttackMode preAttackMode_ = AttackMode::kHigh;
 
 	int32_t maxHp_ = 100;
 	int32_t hp_ = maxHp_;

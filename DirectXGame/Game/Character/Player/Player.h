@@ -62,6 +62,8 @@ public:
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
 
+	bool IsCharge() const { return isCharge_; }
+
 private:
 	/*振る舞い系*/
 	enum class Behavior {

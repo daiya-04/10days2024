@@ -70,18 +70,23 @@ public:
 	void Init(const std::shared_ptr<Model>& model);
 
 	void Update();
+	void UpdateCollider();
 
 	void Draw(const Camera& camera);
 
 	void DrawParticle(const Camera& camera);
 
+	void Hit();
+
 	void AttackStart(const Vector3& startPos,const Vector3& direction);
 
 	bool IsLife() const { return isLife_; }
+	Shapes::OBB GetCollider() { return collider_; }
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
+	std::unique_ptr<Object3d> warningZone_;
 	Vector3 direction_{};
 
 	Matrix4x4 rotateMat_ = MakeIdentity44();

@@ -1,5 +1,6 @@
 #include "CannonManager.h"
 
+#include "RandomEngine.h"
 
 CannonManager* CannonManager::GetInstance() {
 	static CannonManager instance;
@@ -34,13 +35,20 @@ void CannonManager::Update() {
 	}
 
 	if (!isAttack_) { return; }
-
-	if (!cannons_[cannonIndex_]->IsLife()) {
-		if (++count_ >= attackTime_) {
-			cannons_[cannonIndex_]->AttackStart(basePos_ + offsets_[cannonIndex_], offsets_[cannonIndex_].Normalize());
-			cannonIndex_ = (cannonIndex_ + 1) % 16;
-			count_ = 0;
+	
+	if (++count_ >= attackTime_) {
+		while (true) {
+			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
+			if (nextIndex != cannonIndex_ && !cannons_[nextIndex]->IsLife()) {
+				cannonIndex_ = nextIndex;
+				indexCount_ = 0;
+				break;
+			}
+			indexCount_++;
+			if (indexCount_ >= 16) { break; }
 		}
+		cannons_[cannonIndex_]->AttackStart(basePos_ + offsets_[cannonIndex_], offsets_[cannonIndex_].Normalize());
+		count_ = 0;
 	}
 
 }
@@ -71,4 +79,10 @@ void CannonManager::AttackStart(const Vector3& basePos) {
 void CannonManager::AttackFinish() {
 	isAttack_ = false;
 	count_ = 0;
+}
+
+void CannonManager::SetTargetPos(const Vector3& targetPos) {
+	for (auto& cannon : cannons_) {
+		cannon->SetTargetPos(targetPos);
+	}
 }
