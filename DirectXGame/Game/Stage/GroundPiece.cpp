@@ -29,7 +29,7 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::strin
 
 void GroundPiece::Initialize() {
 	isAlive_ = true;
-	hp_ = 100.0f;
+	hp_ = 10;
 }
 
 void GroundPiece::Update() {
@@ -47,9 +47,9 @@ void GroundPiece::Draw(const Camera& camera) {
 	}
 }
 
-void GroundPiece::OnCollision(const float& damage) {
+void GroundPiece::OnCollision(const int32_t& damage) {
 	hp_ -= damage;
-	if (hp_ <= 0.0f) {
+	if (hp_ <= 0) {
 		isAlive_ = false;
 	}
 }

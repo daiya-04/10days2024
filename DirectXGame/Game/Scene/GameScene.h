@@ -89,5 +89,7 @@ private:
 	//プレイヤー
 	std::unique_ptr<Player> player_;
 
+	bool oldFallAttack_ = false;
+
 };
 

@@ -47,6 +47,8 @@ public:
 
 	const int32_t GetAttackPower() const { return attackPower_; }
 
+	bool GetFallingAttack() const;
+
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
@@ -361,6 +363,8 @@ private:
 private:
 	//当たったときに回転する用
 	float hitRotateX_;
+	// 地面に攻撃した瞬間を取るフラグ
+	bool isFallingAttacked_ = false;
 };
 
 

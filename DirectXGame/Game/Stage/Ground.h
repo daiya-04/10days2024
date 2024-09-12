@@ -17,7 +17,7 @@ public:
 
 	void Draw(const Camera& camera);
 
-	bool IsCollision(const float& angle, const float& damage = 0.0f);
+	bool IsCollision(const float& angle, const int32_t& damage = 0.0f);
 
 	const std::string& GetLayer() const { return layer_; }
 	WorldTransform GetTransform() const { return transform_; }
@@ -31,7 +31,7 @@ private:
 	std::vector<std::unique_ptr<GroundPiece>> pieces_;
 	std::array<bool, 16u> pieceAlives_;
 
-	float endurancePower_ = 100.0f; // 耐久力
+	int32_t endurancePower_ = 10; // 耐久力
 	float groundScale_ = 1.0f; // マスターscale
 	std::string groupName_ = "Ground";
 	std::string layer_;

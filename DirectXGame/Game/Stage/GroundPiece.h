@@ -21,7 +21,7 @@ public:
 
 	void Draw(const Camera& camera);
 
-	void OnCollision(const float& damage); // ダメージを追った処理
+	void OnCollision(const int32_t& damage); // ダメージを追った処理
 
 	const std::string& GetTag() const { return tag_; }
 
@@ -36,6 +36,6 @@ private:
 	std::vector<std::shared_ptr<Object3d>> models_;
 	WorldTransform transform_;
 	bool isAlive_ = true; // 生存フラグ
-	float hp_ = 100.0f; // 耐久力
+	int32_t hp_ = 10; // 耐久力
 
 };
