@@ -370,6 +370,8 @@ private:
 	bool isFallingAttacked_ = false;
 
 	bool isShadowDraw_ = true;
+
+	bool isSkyDash_ = true;
 };
 
 
