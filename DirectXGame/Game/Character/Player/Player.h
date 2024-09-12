@@ -51,6 +51,8 @@ public:
 
 	const int32_t GetAttackPower() const { return attackPower_; }
 
+	const int32_t GetLife() const { return hp_; }
+
 	bool GetFallingAttack() const;
 
 	bool GetIsDead() const { return isDead_; }

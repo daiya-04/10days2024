@@ -91,8 +91,10 @@ void GameScene::Init(){
 
 	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
 
-	controlUI_ = std::make_unique<ControlUI>();
-	controlUI_->Initialize();
+	for (size_t i = 0; i < playerLifeTex_.size(); i++){
+		playerLifeTex_[i] = Sprite::Create(TextureManager::GetInstance()->Load("plaeyrLife.png"), Vector2(0.0f, 0.0f), 0.1f);
+		playerLifeTex_[i]->size_ = { lifeScale_,lifeScale_ };
+	}
 
 
 	Update();
@@ -317,7 +319,10 @@ void GameScene::DrawParticle(){
 
 void GameScene::DrawUI(){
 
-	
+	for (size_t i = 0; i < player_->GetLife(); i++) {
+		playerLifeTex_[i]->position_ = { lifeTexBasePos_.x + lifeTexLength_ * i,lifeTexBasePos_.y };
+		playerLifeTex_[i]->Draw();
+	}
 	player_->DrawUI();
 	
 }
@@ -339,7 +344,11 @@ void GameScene::DebugGUI(){
   
 	player_->Imgui();
 
-	controlUI_->DrawGUI();
+	ImGui::Begin("playerLife");
+	ImGui::DragFloat("length", &lifeTexLength_, 0.1f, 0.0f, 1000.0f);
+	ImGui::DragFloat2("basePos", &lifeTexBasePos_.x, 1.0f);
+	ImGui::End();
+
 
 	ImGui::Begin("camera");
 
