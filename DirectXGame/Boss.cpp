@@ -165,6 +165,11 @@ void Boss::DeadInit() {
 	CannonManager::GetInstance()->AttackFinish();
 	StampManager::GetInstance()->AttackFinish();
 
+	MeteorManager::GetInstance()->Reset();
+	CannonManager::GetInstance()->Reset();
+	StampManager::GetInstance()->Reset();
+
+
 }
 
 void Boss::DeadUpdate() {
