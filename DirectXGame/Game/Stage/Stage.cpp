@@ -62,6 +62,13 @@ bool Stage::IsPlayerCollision(const Vector3& position) {
 	if (position.x < 0.0f) {
 		angle = -angle;
 	}
+	if (angle >= 3.14f) {
+		angle = 3.13f;
+	}
+	else if (angle <= -3.14f) {
+		angle = -3.13f;
+	}
+
 	float oneRad = 16.0f / 360.0f;
 
 	if (LayerCheck(position.y) == "None") {

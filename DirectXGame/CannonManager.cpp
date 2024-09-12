@@ -16,11 +16,12 @@ void CannonManager::Init(const std::shared_ptr<Model>& model) {
 	}
 
 	float range = 14.0f;
+	Vector3 startAxis = Transform(Vector3(0.0f, 0.0f, 1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), (11.25 / 180.0f) * std::numbers::pi_v<float>));
 
 	for (int32_t index = 0; index < 16; index++) {
 		float angle = float(index) * (360.0f / 16.0f);
 		angle = (angle / 180.0f) * std::numbers::pi_v<float>;
-		offsets_[index] = Transform(Vector3(0.0f, 0.0f, -1.0f), MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
+		offsets_[index] = Transform(startAxis, MakeRotateAxisAngle(Vector3(0.0f, 1.0f, 0.0f), angle)).Normalize() * range;
 	}
 
 	isAttack_ = false;
