@@ -1,5 +1,6 @@
 #include "StampManager.h"
 
+#include "RandomEngine.h"
 
 StampManager* StampManager::GetInstance() {
 	static StampManager instance;
@@ -36,12 +37,19 @@ void StampManager::Update() {
 
 	if (!isAttack_) { return; }
 
-	if (!stamps_[stampIndex_]->IsLife()) {
-		if (++count_ >= attackTime_) {
-			stamps_[stampIndex_]->AttackStart(basePos_ + offsets_[stampIndex_],offsets_[stampIndex_].Normalize());
-			stampIndex_ = (stampIndex_ + 1) % 16;
-			count_ = 0;
+	if (++count_ >= attackTime_) {
+		while (true) {
+			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
+			if (nextIndex != stampIndex_ && !stamps_[nextIndex]->IsLife()) {
+				stampIndex_ = nextIndex;
+				indexCount_ = 0;
+				break;
+			}
+			indexCount_++;
+			if (indexCount_ >= 16) { break; }
 		}
+		stamps_[stampIndex_]->AttackStart(basePos_ + offsets_[stampIndex_], offsets_[stampIndex_].Normalize());
+		count_ = 0;
 	}
 
 }

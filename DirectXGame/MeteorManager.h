@@ -19,10 +19,18 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	void Hit(uint32_t index) { meteors_[index]->Hit(); }
+	void Reflection(uint32_t index) { return meteors_[index]->Reflection(); }
+
 	void AttackStart(const Vector3& basePos);
 	void AttackFinish();
 
+	void SetTargetPos(const Vector3& targetPos);
+
+	bool IsAttack()const { return isAttack_; }
+
 	Shapes::Sphere GetCollider(uint32_t index) { return meteors_[index]->GetCollider(); }
+	bool IsLife(uint32_t index) { return meteors_[index]->IsLife(); }
 
 private:
 
@@ -40,9 +48,9 @@ private:
 	int32_t meteorIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 60;
+	int32_t attackTime_ = 20;
 
-
+	int32_t indexCount_ = 0;
 
 
 };

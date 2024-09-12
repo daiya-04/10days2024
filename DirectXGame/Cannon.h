@@ -19,6 +19,7 @@ public:
 		kRoot,
 		kCharge,
 		kShoot,
+		kReflected,
 	};
 
 	Phase phase_ = Phase::kRoot;
@@ -28,12 +29,14 @@ public:
 		{Phase::kRoot,[this]() { RootInit(); }},
 		{Phase::kCharge,[this]() {ChargeInit(); }},
 		{Phase::kShoot,[this]() {ShootInit(); }},
+		{Phase::kReflected,[this]() {ReflectedInit(); }},
 	};
 
 	std::map<Phase, std::function<void()>> phaseUpdateTable_{
 		{Phase::kRoot,[this]() {RootUpdate(); }},
 		{Phase::kCharge,[this]() {ChargeUpdate(); }},
 		{Phase::kShoot,[this]() {ShootUpdate(); }},
+		{Phase::kReflected,[this]() {ReflectedUpdate(); }}
 	};
 
 	struct ChargeData {
@@ -67,6 +70,9 @@ private:
 	void ShootInit();
 	void ShootUpdate();
 
+	void ReflectedInit();
+	void ReflectedUpdate();
+
 	
 public:
 
@@ -81,23 +87,34 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	void Hit();
+
+	void Reflection();
+
 	void AttackStart(const Vector3& pos, const Vector3& direction);
+
+	void SetTargetPos(const Vector3& targetPos) { targetPos_ = targetPos; }
 
 	bool IsLife() const { return isLife_; }
 	bool HitFlag() const { return !isLife_ && preIsLife_; }
+	bool IsBossHit() const { return phase_ == Phase::kReflected; }
 
 	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
-	Shapes::Sphere GEtCollider() { return collider_; }
+	Shapes::Sphere GetCollider() { return collider_; }
 
 private:
 
 	std::unique_ptr<Object3d> obj_;
+	std::unique_ptr<Object3d> warningZone_;
 	std::unique_ptr<GPUParticle> trail_;
 
 	Shapes::Sphere collider_;
 
 	bool isLife_ = false;
 	bool preIsLife_ = false;
+
+	Vector3 targetPos_{};
+	Vector3 reflectDict_{};
 
 };
 

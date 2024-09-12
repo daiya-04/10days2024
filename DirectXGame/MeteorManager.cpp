@@ -1,7 +1,9 @@
 #include "MeteorManager.h"
 #include "TextureManager.h"
+#include "RandomEngine.h"
 
 #include <numbers>
+
 
 MeteorManager* MeteorManager::GetInstance() {
 	static MeteorManager instance;
@@ -60,14 +62,24 @@ void MeteorManager::Update() {
 
 	hitEff_->Update();
 
+
+
+
 	if (!isAttack_) { return; }
 
-	if (!meteors_[meteorIndex_]->IsLife()) {
-		if (++count_ >= attackTime_) {
-			meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-			meteorIndex_ = (meteorIndex_ + 1) % 16;
-			count_ = 0;
+	if (++count_ >= attackTime_) {
+		while (true) {
+			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
+			if (nextIndex != meteorIndex_ && !meteors_[nextIndex]->IsLife()) {
+				meteorIndex_ = nextIndex;
+				indexCount_ = 0;
+				break;
+			}
+			indexCount_++;
+			if (indexCount_ >= 16) { break; }
 		}
+		meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
+		count_ = 0;
 	}
 	
 
@@ -96,7 +108,6 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 	isAttack_ = true;
 	basePos_ = basePos;
 	basePos_.y += startHight_;
-	meteorIndex_ = 0;
 
 	meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
 	meteorIndex_ = (meteorIndex_ + 1) % 16;
@@ -106,4 +117,10 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 void MeteorManager::AttackFinish() {
 	isAttack_ = false;
 	count_ = 0;
+}
+
+void MeteorManager::SetTargetPos(const Vector3& targetPos) {
+	for (auto& meteor : meteors_) {
+		meteor->SetTargetPos(targetPos);
+	}
 }

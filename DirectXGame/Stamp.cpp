@@ -1,11 +1,14 @@
 #include "Stamp.h"
 
 #include "Easing.h"
+#include "ModelManager.h"
 
 void Stamp::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
+	warningZone_.reset(Object3d::Create(ModelManager::LoadOBJ("WarningZone")));
 
+	collider_.size = { 3.0f,0.5f,2.0f };
 
 	isLife_ = false;
 	preIsLife_ = false;
@@ -27,18 +30,35 @@ void Stamp::Update() {
 	phaseUpdateTable_[phase_]();
 
 	obj_->worldTransform_.UpdateMatrixRotate(rotateMat_);
+	warningZone_->worldTransform_.UpdateMatrixRotate(rotateMat_);
+	UpdateCollider();
+}
+
+void Stamp::UpdateCollider() {
+
+	collider_.orientation[0] = { rotateMat_.m[0][0], rotateMat_.m[0][1], rotateMat_.m[0][2] };
+	collider_.orientation[1] = { rotateMat_.m[1][0], rotateMat_.m[1][1], rotateMat_.m[1][2] };
+	collider_.orientation[2] = { rotateMat_.m[2][0], rotateMat_.m[2][1], rotateMat_.m[2][2] };
+
+	collider_.center = obj_->GetWorldPos();
+
 }
 
 void Stamp::Draw(const Camera& camera) {
-
+	if (!isLife_) { return; }
 	obj_->Draw(camera);
-
+	warningZone_->Draw(camera);
 }
 
 void Stamp::DrawParticle(const Camera& camera) {
 
 
 
+}
+
+void Stamp::Hit() {
+	phaseRequest_ = Phase::kRoot;
+	isLife_ = false;
 }
 
 void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
@@ -51,9 +71,14 @@ void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
 	phaseRequest_ = Phase::kCharge;
 	isLife_ = true;
 
+	warningZone_->worldTransform_.translation_ = attackData_.impactPoint_;
+	warningZone_->worldTransform_.translation_.y += 0.1f;
+	warningZone_->worldTransform_.scale_ = {};
+
 	rotateMat_ = DirectionToDirection(Vector3(0.0f, 0.0f, 1.0f), direction_);
 
 	obj_->worldTransform_.UpdateMatrixRotate(rotateMat_);
+	UpdateCollider();
 }
 
 void Stamp::RootInit() {
@@ -80,6 +105,7 @@ void Stamp::ChargeUpdate() {
 	chargeData_.param_ = std::clamp(chargeData_.param_, 0.0f, 1.0f);
 
 	obj_->worldTransform_.scale_ = Lerp(chargeData_.param_, chargeData_.minScale_, chargeData_.maxScale_);
+	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(3.0f, 1.0f, 2.0f));
 
 	if (chargeData_.param_ >= 1.0f) {
 		phaseRequest_ = Phase::kAttack;
@@ -102,8 +128,7 @@ void Stamp::AttackUpdate() {
 
 	if (attackData_.param_ >= 1.0f) {
 		if (++attackData_.count_ >= attackData_.coolTime_) {
-			phaseRequest_ = Phase::kRoot;
-			isLife_ = false;
+			Hit();
 		}
 	}
 

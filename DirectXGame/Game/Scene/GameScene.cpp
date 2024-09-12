@@ -39,10 +39,6 @@ void GameScene::Init(){
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
-
-	boss_ = std::make_unique<Boss>();
-	boss_->Init(bossModel);
-
 	meteor_ = MeteorManager::GetInstance();
 	meteor_->Init(meteorModel);
 
@@ -51,6 +47,9 @@ void GameScene::Init(){
 
 	stamp_ = StampManager::GetInstance();
 	stamp_->Init(stampModel);
+
+	boss_ = std::make_unique<Boss>();
+	boss_->Init(bossModel);
 	
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
@@ -139,6 +138,51 @@ void GameScene::Update() {
 	else {
 		// 床があった場合
 		player_->SetFloorPosition(stage_->GetGroundPosition().y);
+	}
+
+	
+	for (uint32_t index = 0; index < 16; index++) {
+		if (!meteor_->IsLife(index)) { continue; }
+		if (IsCollision(meteor_->GetCollider(index), boss_->GetCollider(Boss::AttackMode::kHigh))) {
+			boss_->AttackHit();
+			meteor_->Hit(index);
+		}
+		else if (IsCollision(player_->GetCollider(), meteor_->GetCollider(index))) {
+			if (player_->IsCharge()) {
+				meteor_->Reflection(index);
+			}
+			else {
+				meteor_->Hit(index);
+				player_->HitEnemyAttackCollision();
+			}
+
+		}
+	}
+	//餅弾とボスの衝突判定
+	for (uint32_t index = 0; index < 16; index++) {
+		if (!cannon_->IsLife(index)) { continue; }
+		if (IsCollision(player_->GetCollider(), cannon_->GetCollider(index))) {
+			if (player_->IsCharge()) {
+				cannon_->Reflection(index);
+			}
+			else {
+				player_->HitEnemyAttackCollision();
+				cannon_->Hit(index);
+			}
+		}
+		if (!cannon_->IsBossHit(index)) { continue; }
+		if (IsCollision(boss_->GetCollider(Boss::AttackMode::kMiddle), cannon_->GetCollider(index))) {
+			boss_->AttackHit();
+			cannon_->Hit(index);
+		}
+	}
+
+	for (uint32_t index = 0; index < 16; index++) {
+		if (!stamp_->IsLife(index)) { continue; }
+		if (IsCollision(stamp_->GetCollider(index), player_->GetCollider())) {
+			player_->HitEnemyAttackCollision();
+			stamp_->Hit(index);
+		}
 	}
 
 	camera_.UpdateMatrix();

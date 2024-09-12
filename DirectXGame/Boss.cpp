@@ -22,6 +22,9 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 	collider_[AttackMode::kMiddle] = { Vector3(0.0f,-10.0f,0.0f),15.0f };
 	collider_[AttackMode::kUnder] = { Vector3(0.0f,-22.0f,0.0f),23.0f };
 
+	MeteorManager::GetInstance()->SetTargetPos(collider_[AttackMode::kHigh].center);
+	CannonManager::GetInstance()->SetTargetPos(collider_[AttackMode::kMiddle].center);
+
 	obj_->worldTransform_.translation_ = { 0.0f,-32.0f,0.0f };
 	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 
@@ -29,6 +32,7 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 void Boss::Update() {
 	DebugGUI();
+	preAttackMode_ = attackMode_;
 
 	if (behaviorRequest_) {
 
@@ -54,6 +58,15 @@ void Boss::Draw(const Camera& camera) {
 
 
 	obj_->Draw(camera);
+}
+
+void Boss::DrawUI() {
+
+
+}
+
+void Boss::AttackHit() {
+	hp_--;
 }
 
 void Boss::RootInit() {
@@ -83,15 +96,10 @@ void Boss::AttackInit() {
 	}else if (attackMode_ == AttackMode::kUnder) {
 		StampManager::GetInstance()->AttackStart(collider_[AttackMode::kUnder].center);
 	}
-	count_ = 0;
 
 }
 
 void Boss::AttackUpdate() {
-
-	if (++count_ >= coolTime_) {
-		behaviorRequest_ = Behavior::kRoot;
-	}
 
 }
 
