@@ -21,6 +21,8 @@ public:
 	
 
 	void SetTarget(const WorldTransform* target);
+	//ゲームシーンかどうか
+	void SetScene(const bool scene) { isGame_ = scene; }
 
 private:
 	//調整項目の代入
@@ -61,6 +63,6 @@ private:
 
 	Vector3 translate_;
 	Vector3 rotation_;
-	bool isUse_ = false;
+	bool isGame_ =true;
 };
 

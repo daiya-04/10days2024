@@ -39,6 +39,8 @@ void GameScene::Init(){
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
+	TextureManager::GetInstance()->LoadTextureMap("CenterElectricBoard", "CenterElectricBoard.png");
+
 	meteor_ = MeteorManager::GetInstance();
 	meteor_->Init(meteorModel);
 
@@ -67,13 +69,18 @@ void GameScene::Init(){
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+	player_->SetScene(true);
 
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->SetTarget(&player_->GetWorldTrnas());
+	followCamera_->SetScene(true);
 
 	player_->SetCameraRotate(&followCamera_->GetCameraRotate());
 
 	modelManager_ = ModelManager::GetInstance();
+
+	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize(player_.get(), boss_.get());
 
 	floor_ = std::make_unique<Object3d>();
 
@@ -110,6 +117,14 @@ void GameScene::Update() {
 	}
 
 #endif // _DEBUG
+
+#ifdef NDEBUG
+	followCamera_->Update();
+	camera_.translation_ = followCamera_->GetCameraTranslate();
+	camera_.rotation_ = followCamera_->GetCameraRotate();
+#endif // NDEBUG
+
+
 	floor_->worldTransform_.UpdateMatrix();
 
 	stage_->Update();
@@ -140,7 +155,7 @@ void GameScene::Update() {
 		player_->SetFloorPosition(stage_->GetGroundPosition().y);
 	}
 
-	
+
 	for (uint32_t index = 0; index < 16; index++) {
 		if (!meteor_->IsLife(index)) { continue; }
 		if (IsCollision(meteor_->GetCollider(index), boss_->GetCollider(Boss::AttackMode::kHigh))) {
@@ -184,6 +199,9 @@ void GameScene::Update() {
 			stamp_->Hit(index);
 		}
 	}
+
+	collisionManager_->AllCollision();
+
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();

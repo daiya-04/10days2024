@@ -45,6 +45,11 @@ struct SpotLight{
 
 ConstantBuffer<SpotLight> gSpotLight : register(b5);
 
+struct UtilsParameter {
+	float32_t4 color;
+};
+ConstantBuffer<UtilsParameter> gUtilsParam : register(b6);
+
 struct PixelShaderOutput {
 	float32_t4 color : SV_TARGET0;
 };
@@ -57,7 +62,7 @@ SamplerState gSampler : register(s0);
 PixelShaderOutput main(VertexShaderOutput input){
 	PixelShaderOutput output;
 	//float4 transformedUV = mul(float32_t4(input.texcoord,0.0f,1.0f),gMaterial.uvTransform);
-	float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord);
+	float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord) * gUtilsParam.color;
 	
 
 	if(textureColor.a <= 0.5){
@@ -79,7 +84,7 @@ PixelShaderOutput main(VertexShaderOutput input){
 	    float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	    float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
 
-		float32_t3 diffuseDL = gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
+		float32_t3 diffuseDL = textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
 		float32_t3 specularDL = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float32_t3(1.0f,1.0f,1.0f);
 
 		//pointLight
@@ -97,7 +102,7 @@ PixelShaderOutput main(VertexShaderOutput input){
 		float distance = length(gPointLight.position - input.worldPosition);
 		float factor = pow(saturate(-distance / gPointLight.radius + 1.0f), gPointLight.decay);
 
-		float32_t3 diffusePL = gMaterial.color.rgb * textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity * factor;
+		float32_t3 diffusePL = textureColor.rgb * gPointLight.color.rgb * cos * gPointLight.intensity * factor;
 		float32_t3 specularPL = gPointLight.color.rgb * gPointLight.intensity * factor * specularPow * float32_t3(1.0f,1.0f,1.0f);
 
 		//SpotLight
@@ -122,11 +127,11 @@ PixelShaderOutput main(VertexShaderOutput input){
 		float32_t3 reflectedVector = reflect(cameraToPosition,normalize(input.normal));
 		float32_t4 environmentColor = gEnvironmentTex.Sample(gSampler,reflectedVector);
 
-		float32_t3 diffuseSL = gMaterial.color.rgb * textureColor.rgb * gSpotLight.color.rgb * cos * gSpotLight.intensity * attenuationFactor * falloffFactor;
+		float32_t3 diffuseSL = textureColor.rgb * gSpotLight.color.rgb * cos * gSpotLight.intensity * attenuationFactor * falloffFactor;
 		float32_t3 specularSL = gSpotLight.color.rgb * gSpotLight.intensity * attenuationFactor * falloffFactor * specularPow * float32_t3(1.0f,1.0f,1.0f);
 		
 		//合計
-		output.color.rgb = diffuseDL + specularDL + diffusePL + specularPL + diffuseSL + specularSL + (environmentColor.rgb * 0.1f);
+		output.color.rgb = gUtilsParam.color.rgb * (diffuseDL + specularDL + diffusePL + specularPL + diffuseSL + specularSL + (environmentColor.rgb * 0.1f));
         output.color.a = gMaterial.color.a * textureColor.a;
 	} else {
 	    output.color = gMaterial.color * textureColor;

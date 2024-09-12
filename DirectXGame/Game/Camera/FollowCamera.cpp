@@ -36,15 +36,18 @@ void FollowCamera::Update(){
 
 	ApplyGlobalVariables();
 
-	Vector3 lockOnPos = { 0.0f,0.0f,0.0f };
-	Vector3 sub = lockOnPos - target_->translation_;
-	sub.y = 0;
-	postureVec_ = sub;
+	if (isGame_) {
 
-	Matrix4x4 newMatrix;
-	newMatrix = DirectionToDirection((Vector3(0.0f,0.0f,1.0f)), (postureVec_.Normalize()));
-	rotation_.y = RotateAngleYFromMatrix(newMatrix);
-	rotation_.x = cameraRotateX_;
+		Vector3 lockOnPos = { 0.0f,0.0f,0.0f };
+		Vector3 sub = lockOnPos - target_->translation_;
+		sub.y = 0;
+		postureVec_ = sub;
+
+		Matrix4x4 newMatrix;
+		newMatrix = DirectionToDirection((Vector3(0.0f, 0.0f, 1.0f)), (postureVec_.Normalize()));
+		rotation_.y = RotateAngleYFromMatrix(newMatrix);
+		rotation_.x = cameraRotateX_;
+	}
 	
 	rootOffset_ = { 0.0f, height_, distance_ };
 	baseOffset_ = rootOffset_;

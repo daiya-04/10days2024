@@ -9,6 +9,7 @@
 #include"Engine/Easing/Easing.h"
 #include"Engine/DebugText/GlobalVariables.h"
 #include"CollisionShapes.h"
+#include"HitRecord/HitRecord.h"
 
 class Player {
 public:
@@ -27,7 +28,7 @@ public:
 	//ゲーム中での初期化
 	void Reset();
 
-	//ゲーム中での初期化
+	//敵の攻撃に当たったときの反応
 	void HitEnemyAttackCollision();
 
 	//描画処理
@@ -40,17 +41,28 @@ public:
 
 	const Sphere& GetCollider() const { return collider_; }
 
+	const Sphere& GetAttackCollider() const { return attackCollider_; }
+
+	const Sphere& GetReflectionCollider() const { return reflectionCollider_; }
+
+	const int32_t GetAttackPower() const { return attackPower_; }
+
 	void SetCameraRotate(const Vector3* rotate) { cameraRotate_ = rotate; }
 
 	void SetFloorPosition(const float& positionY);
+	//ゲームシーンかどうか
+	void SetScene(const bool& scene) { isTitle_ = scene; };
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
+
+	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
+
+	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
 
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
 
 	bool IsCharge() const { return isCharge_; }
-
 
 private:
 	/*振る舞い系*/
@@ -128,6 +140,8 @@ private:
 	//床に当たったときの反応処理
 	void OnFloorCollision();
 
+	void ColliderReset(Sphere& collider);
+
 private:
 	//Stageとの衝突判定Clamp 中心点(原点)
 	bool StageClampCollision(const Vector3& worldTrans);
@@ -156,6 +170,10 @@ private:
 
 	const char* groupName_ = "Player";
 
+	const char* groupNameAttack_ = "PlayerAttackDamege";
+
+	const char* groupNameColliderRange_ = "PlayerColliderRange";
+
 	//カメラの回転
 	const Vector3* cameraRotate_ = nullptr;
 
@@ -164,8 +182,38 @@ private:
 
 	Vector3 centerPos_;
 
+	//体力
+	int32_t maxHp_ = 20;
+	int32_t hp_ = maxHp_;
+
+	//攻撃力
+	int32_t attackPower_;
+
+	//攻撃力
+	struct  ColliderRange {
+		//通常時の範囲
+		float body = 0.4f;
+		//反射の範囲
+		float reflect = 1.0f;
+		//一段目の範囲
+		float firstAttack = 0.7f;
+		//二段目の範囲
+		float secondAttack = 0.7f;
+		//三段目の範囲
+		float thirdAttack = 1.0f;
+		//落下攻撃の範囲
+		float fallingAttack = 1.2f;
+		//溜め攻撃のの最大範囲
+		float chargeAttack = 1.4f;
+	};
+
+	ColliderRange colliderRange_;
+
 	//コライダー
 	Sphere collider_;
+	//あたりの記録
+	HitRecord hitRecord_;
+
 private:
 	/*重力関係*/
 
@@ -199,6 +247,21 @@ private:
 		//チャージ攻撃に派生するための時間
 		int32_t chargeFlugTime_ = 0;
 	};
+	//攻撃力
+	struct  AttackPower {
+		//一段目の攻撃力
+		int32_t firstAttack = 5;
+		//二段目の攻撃力
+		int32_t secondAttack = 5;
+		//三段目の攻撃力
+		int32_t thirdAttack = 10;
+		//落下攻撃の攻撃力
+		int32_t fallingAttack = 10;
+		//溜め攻撃のの最大攻撃力
+		int32_t chargeAttack = 20;
+	};
+
+	AttackPower basePower_;
 
 	WorkAttack workAttack_;
 	//現時点でのコンボが終了したかどうか
@@ -236,6 +299,17 @@ private:
 	float yRadian_;
 
 	float fallingEaseT_;
+	//攻撃時のコライダー
+	Sphere attackCollider_;
+
+	float attackRadius_ = 0.5f;
+
+	//反射判定のコライダー
+	Sphere reflectionCollider_;
+
+	float reflectionRadius_ = 0.5f;
+
+	bool isTitle_ = false;
 
 private:
 	/*行動関連の変数*/

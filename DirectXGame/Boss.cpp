@@ -20,7 +20,7 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	collider_[AttackMode::kHigh] = { Vector3(0.0f,1.0f,0.0f),4.0f };
 	collider_[AttackMode::kMiddle] = { Vector3(0.0f,-10.0f,0.0f),15.0f };
-	collider_[AttackMode::kUnder] = { Vector3(0.0f,-22.0f,0.0f),23.0f };
+	collider_[AttackMode::kUnder] = { Vector3(0.0f,-22.0f,0.0f),25.0f };
 
 	MeteorManager::GetInstance()->SetTargetPos(collider_[AttackMode::kHigh].center);
 	CannonManager::GetInstance()->SetTargetPos(collider_[AttackMode::kMiddle].center);
@@ -56,8 +56,14 @@ void Boss::Draw(const Camera& camera) {
 
 #endif // _DEBUG
 
+	if (hp_ > 0) {
+		obj_->Draw(camera);
+	}
+	
+}
 
-	obj_->Draw(camera);
+void Boss::HitPlayerAttackCollision(const int32_t power){
+	hp_ -= power;
 }
 
 void Boss::DrawUI() {
