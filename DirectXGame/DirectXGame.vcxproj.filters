@@ -237,6 +237,9 @@
     <ClCompile Include="Game\Character\Sandbag\Sandbag.cpp">
       <Filter>Game\Character</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Audio\AudioManager.cpp">
+      <Filter>Engine\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\DirectXCommon.h">
@@ -420,6 +423,9 @@
     </ClInclude>
     <ClInclude Include="Game\Character\Sandbag\Sandbag.h">
       <Filter>Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Audio\AudioManager.h">
+      <Filter>Engine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
