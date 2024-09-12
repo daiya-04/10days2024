@@ -32,7 +32,7 @@ void TitleScene::Init(){
 
 	stage_ = std::make_unique<Stage>();
 	stage_->Initialize(levelData_);
-
+	//stage_->Update();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
@@ -43,12 +43,14 @@ void TitleScene::Init(){
 	followCamera_->SetScene(true);
 
 	player_->SetCameraRotate(&followCamera_->GetCameraRotate());
+	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(26.2f, 37.0f));
 
 	modelManager_ = ModelManager::GetInstance();
 
 	sandbag_ = std::make_unique<Sandbag>();
 
 	sandbag_->Initialize();
+	sandbag_->Update();
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->TitleInitialize(player_.get(), sandbag_.get());
@@ -59,11 +61,20 @@ void TitleScene::Init(){
 
 	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, 20.0f };
 	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
+	shelfobj_->worldTransform_.UpdateMatrix();
 
+	titleobj_ = std::make_unique<Object3d>();
+
+	titleobj_->Initialize(modelManager_->LoadOBJ("title"));
+
+	titleobj_->worldTransform_.translation_ = { -12.0f,4.0f, 0.0f };
+	titleobj_->worldTransform_.rotation_.x = -1.57f;
+	titleobj_->worldTransform_.scale_ = { 6.0f,6.0f,6.0f };
+	titleobj_->worldTransform_.UpdateMatrix();
 	oldFallAttack_ = false;
 
 	killCount_ = 0;
-
+	Update();
 }
 
 void TitleScene::Update(){
@@ -77,14 +88,16 @@ void TitleScene::Update(){
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
 
+	DebugGUI();
+
 #endif // _DEBUG
 
 	// debugCamera
-	if (debugCamera_->Update()) {
+	/*if (debugCamera_->Update()) {
 		camera_.translation_ = debugCamera_->GetCameraTranslate();
 		camera_.rotation_ = debugCamera_->GetCameraRotate();
 	}
-	else {
+	else*/ {
 		followCamera_->Update();
 		camera_.translation_ = followCamera_->GetCameraTranslate();
 		camera_.rotation_ = followCamera_->GetCameraRotate();
@@ -150,6 +163,7 @@ void TitleScene::Update(){
 
 
 	shelfobj_->worldTransform_.UpdateMatrix();
+	titleobj_->worldTransform_.UpdateMatrix();
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
@@ -171,6 +185,8 @@ void TitleScene::DrawModel(){
 	player_->Draw(camera_);
 
 	shelfobj_->Draw(camera_);
+
+	titleobj_->Draw(camera_);
 
 }
 
@@ -207,9 +223,11 @@ void TitleScene::DrawRenderTexture() {
 void TitleScene::DebugGUI(){
 #ifdef _DEBUG
 
+	ImGui::Begin("title");
+	ImGui::DragFloat3("transform", &titleobj_->worldTransform_.translation_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &titleobj_->worldTransform_.rotation_.x, 0.01f);
 
-
-
+	ImGui::End();
 #endif // _DEBUG
 }
 

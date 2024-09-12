@@ -87,7 +87,7 @@ void GameScene::Init(){
 	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
 	floor_->worldTransform_.translation_.y = -2.0f;
 	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
-
+	Update();
 }
 
 void GameScene::Update() {

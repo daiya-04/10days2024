@@ -69,6 +69,9 @@ private:
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
 
+	//鏡餅置くよう用
+	std::unique_ptr<Object3d> titleobj_;
+
 	bool oldFallAttack_ = false;
 
 	int32_t killCount_ = 0;
