@@ -81,6 +81,8 @@ public:
 	void AttackStart(const Vector3& startPos,const Vector3& direction);
 
 	bool IsLife() const { return isLife_; }
+	bool HitFlag() const { return !isLife_ && preIsLife_; }
+	uint32_t GetDamage() const { return damage_; }
 	Shapes::OBB GetCollider() { return collider_; }
 
 private:
@@ -96,5 +98,5 @@ private:
 	bool isLife_ = false;
 	bool preIsLife_ = false;
 
-
+	int32_t damage_ = 10;
 };

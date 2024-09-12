@@ -101,6 +101,7 @@ public:
 
 	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
 	Shapes::Sphere GetCollider() { return collider_; }
+	const uint32_t& GetDamage() const { return damage_; }
 
 private:
 
@@ -115,6 +116,8 @@ private:
 
 	Vector3 targetPos_{};
 	Vector3 reflectDict_{};
+
+	uint32_t damage_ = 10;
 
 };
 

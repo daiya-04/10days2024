@@ -27,6 +27,7 @@ void Cannon::Init(const std::shared_ptr<Model>& model) {
 }
 
 void Cannon::Update() {
+	preIsLife_ = isLife_;
 
 	if (phaseRequest_) {
 

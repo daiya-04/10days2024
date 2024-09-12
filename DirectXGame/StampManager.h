@@ -27,6 +27,9 @@ public:
 
 	Shapes::OBB GetCollider(uint32_t index) { return stamps_[index]->GetCollider(); }
 	bool IsLife(uint32_t index) { return stamps_[index]->IsLife(); }
+	bool GetIsHit(uint32_t index) const { return stamps_[index]->HitFlag(); } // 当たった瞬間
+	uint32_t GetDamage(uint32_t index) const { return stamps_[index]->GetDamage(); }
+
 
 private:
 
