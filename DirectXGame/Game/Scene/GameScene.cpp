@@ -184,7 +184,7 @@ void GameScene::Update() {
 		else if (meteor_->GetIsHit(index)) {
 			if (stage_->IsCollision(meteor_->GetCollider(index).center, meteor_->GetDamage(index))) {
 				// メテオのAttackUpdate内で消えているから正直意味はない
-				//meteor_->Hit(index);
+				meteor_->Hit(index);
 			}
 		}
 		else if (IsCollision(player_->GetCollider(), meteor_->GetCollider(index))) {
@@ -272,6 +272,7 @@ void GameScene::DrawParticle(){
 	meteor_->DrawParticle(camera_);
 	cannon_->DrawParticle(camera_);
 	stamp_->DrawParticle(camera_);
+	player_->ParticleDraw(camera_);
 
 }
 

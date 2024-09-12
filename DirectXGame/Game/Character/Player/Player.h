@@ -3,7 +3,7 @@
 #include"Model/ModelManager.h"
 #include"Hit.h"
 #include"imgui.h"
-#include"Particle/Particle.h"
+#include"Particle/GPUParticle.h"
 #include"AnimationManager.h"
 #include"Input.h"
 #include"Engine/Easing/Easing.h"
@@ -60,6 +60,8 @@ public:
 	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
 
 	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
+
+	void HitEffectInit();
 
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
@@ -166,7 +168,9 @@ private:
 	//キー入力
 	Input* input_;
 
-	std::unique_ptr<Particle> diveParticle_;
+	std::unique_ptr<GPUParticle> trail_;
+	std::unique_ptr<GPUParticle> hitEff_;
+
 	//プレイヤーの基本となる回転軸
 	const Vector3 baseAxis_ = { 0.0f,1.0f,0.0f };
 

@@ -92,6 +92,7 @@ public:
 		Vector4 color;
 		float lifeTime;
 		float speed;
+		int32_t isHalf;
 	};
 
 	struct PerFrame {

@@ -89,6 +89,8 @@ public:
 
 	void Hit();
 
+	void Reset();
+
 	void Reflection();
 
 	void AttackStart(const Vector3& pos, const Vector3& direction);

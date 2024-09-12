@@ -58,6 +58,7 @@ struct EmitterSphere {
     float32_t4 color;
     float32_t lifeTime;
     float32_t speed;
+    uint32_t isHalf;
 };
 
 ConstantBuffer<EmitterSphere> gEmitter : register(b0);
@@ -110,7 +111,15 @@ float32_t3 ShotDirection(RandomGenerator generator) {
 
     float32_t4x4 rotateMat = mul(mul(MakeRotateXMat(radians(angleX)),MakeRotateYMat(radians(angleY))), MakeRotateZMat(radians(angleZ)));
 
-    return normalize(mul(float32_t4(gEmitter.direction, 1.0f), rotateMat).xyz);
+    float32_t3 direction = normalize(mul(float32_t4(gEmitter.direction, 1.0f), rotateMat).xyz);
+
+    if(gEmitter.isHalf == 1){
+        if(direction.y < 0.0f){
+            direction.y *= -1;
+        }
+    }
+
+    return direction;
 
     //Vector3 a = { std::cosf(lat) * std::cosf(lon),std::sinf(lat),std::cosf(lat) * std::sinf(lon) };
     //lon = theta;
@@ -140,7 +149,8 @@ void main(uint32_t3 DTid : SV_DispatchThreadID) {
                 gParticles[particleIndex].translate = gEmitter.translate + normalize((generator.Generate3d() - 0.5f) * (gEmitter.size.x)) * (generator.Generate1d() * gEmitter.size.x);
                 gParticles[particleIndex].scale = float32_t3(gEmitter.scale, gEmitter.scale, gEmitter.scale);
                 gParticles[particleIndex].color = gEmitter.color;
-                gParticles[particleIndex].velocity = ShotDirection(generator) * (generator.Generate1d() * gEmitter.speed);
+                float32_t3 dict = ShotDirection(generator);
+                gParticles[particleIndex].velocity = dict * (generator.Generate1d() * gEmitter.speed);
                 gParticles[particleIndex].lifeTime = generator.Generate1d() * gEmitter.lifeTime;
                 gParticles[particleIndex].currentTime = 0.0f;
             }else {

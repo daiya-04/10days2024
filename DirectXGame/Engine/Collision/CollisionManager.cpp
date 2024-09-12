@@ -20,6 +20,7 @@ void CollisionManager::AllCollision(){
 			//接触履歴に登録
 			player_->AddRecord(0);
 			boss_->HitPlayerAttackCollision(player_->GetAttackPower());
+			player_->HitEffectInit();
 		}
 	}
 	else if (sandbag_){
@@ -31,6 +32,7 @@ void CollisionManager::AllCollision(){
 			//接触履歴に登録
 			player_->AddRecord(1);
 			sandbag_->OnCollision(player_->GetAttackPower());
+			player_->HitEffectInit();
 		}
 	}
 }

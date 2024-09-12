@@ -59,6 +59,8 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	void Reset();
+
 	void Hit();
 
 	void Reflection();

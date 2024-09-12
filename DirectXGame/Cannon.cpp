@@ -27,6 +27,7 @@ void Cannon::Init(const std::shared_ptr<Model>& model) {
 }
 
 void Cannon::Update() {
+	preIsLife_ = isLife_;
 
 	if (phaseRequest_) {
 
@@ -66,6 +67,12 @@ void Cannon::Hit() {
 
 }
 
+void Cannon::Reset() {
+	isLife_ = false;
+	preIsLife_ = false;
+	phaseRequest_ = Phase::kRoot;
+}
+
 void Cannon::Reflection() {
 
 	phaseRequest_ = Phase::kReflected;
@@ -90,7 +97,7 @@ void Cannon::AttackStart(const Vector3& pos, const Vector3& direction) {
 	warningZone_->worldTransform_.translation_.y += 0.01f;
 	warningZone_->worldTransform_.scale_ = {};
 
-	collider_.radius = 1.0f;
+	collider_.radius = 1.5f;
 
 	phaseRequest_ = Phase::kCharge;
 
@@ -123,7 +130,7 @@ void Cannon::ChargeUpdate() {
 	chargeData_.param_ = std::clamp(chargeData_.param_, 0.0f, 1.0f);
 
 	obj_->worldTransform_.scale_ = Lerp(chargeData_.param_, chargeData_.minScale_, chargeData_.maxScale_);
-	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f) * 1.5f);
+	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f) * 2.0f);
 
 	if (chargeData_.param_ >= 1.0f) {
 		phaseRequest_ = Phase::kShoot;
@@ -134,7 +141,7 @@ void Cannon::ChargeUpdate() {
 void Cannon::ShootInit() {
 
 	shootData_.param_ = 0.0f;
-	obj_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 	trail_->isLoop_ = true;
 
 }
