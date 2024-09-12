@@ -43,7 +43,6 @@ void GroundPiece::Draw(const Camera& camera) {
 		return;
 	}
 	for (auto& model : models_) {
-		model->utilsParam_->cUtilsParam_->color_ = Vector4(1.0f, 0.8f, 1.0f, 1.0f);
 		model->Draw(camera);
 	}
 }
