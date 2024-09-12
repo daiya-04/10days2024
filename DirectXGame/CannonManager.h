@@ -33,6 +33,8 @@ public:
 	bool IsAttack() const { return isAttack_; }
 	bool IsBossHit(uint32_t index) const { return cannons_[index]->IsBossHit(); }
 	bool IsLife(uint32_t index) const { return cannons_[index]->IsLife(); }
+	bool GetIsHit(uint32_t index) const { return cannons_[index]->HitFlag(); } // 当たった瞬間
+	const uint32_t& GetDamage(uint32_t index) const { return cannons_[index]->GetDamage(); }
 
 	Shapes::Sphere GetCollider(uint32_t index) { return cannons_[index]->GetCollider(); }
 

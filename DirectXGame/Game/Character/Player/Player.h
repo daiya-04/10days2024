@@ -57,6 +57,8 @@ public:
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
 
+	void SetShadowDraw(const bool& flag) { isShadowDraw_ = flag; }
+
 	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
 
 	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
@@ -112,6 +114,7 @@ private:
 	void BehaviorHitCollosionInitialize();
 	//ダッシュ行動更新
 	void BehaviorHitCollisionUpdate();
+
 
 private:
 	/*攻撃処理の初期化、更新*/
@@ -325,8 +328,20 @@ private:
 	//Behaviorで操作する右手のトランスフォーム
 	WorldTransform RHandTransform_;
 
+	Vector3 baseRHandPos_;
+
+	Vector3 nowRHandPos_;
+
 	//Behaviorで操作する左手のトランスフォーム
 	WorldTransform LHandTransform_;
+
+	Vector3 baseLHandPos_;
+
+	Vector3 nowLHandPos_;
+
+	float handT_ = 0.0f;
+
+	float addHandT_ = 0.1f;
 
 	//溜め攻撃をするときの右手のトランスフォーム
 	WorldTransform RRotateHandTransform_;
@@ -369,6 +384,10 @@ private:
 	float hitRotateX_;
 	// 地面に攻撃した瞬間を取るフラグ
 	bool isFallingAttacked_ = false;
+
+	bool isShadowDraw_ = true;
+
+	bool isSkyDash_ = true;
 };
 
 

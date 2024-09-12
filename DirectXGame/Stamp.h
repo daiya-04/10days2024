@@ -84,6 +84,9 @@ public:
 
 	bool IsLife() const { return isLife_; }
 	bool HitFlag() const { return isHit_ && !preIsHit_; }
+
+	uint32_t GetDamage() const { return damage_; }
+
 	Shapes::OBB GetCollider() { return collider_; }
 	Vector3 GetWorldPos() const { return obj_->GetWorldPos(); }
 
@@ -102,5 +105,7 @@ private:
 
 	bool isHit_ = false;
 	bool preIsHit_ = false;
+
+	int32_t damage_ = 10;
 
 };

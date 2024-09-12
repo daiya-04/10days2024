@@ -88,6 +88,9 @@ void GameScene::Init(){
 	floor_->worldTransform_.translation_.y = -2.0f;
 	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
+	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
+
+	Update();
 }
 
 void GameScene::Update() {
@@ -143,6 +146,12 @@ void GameScene::Update() {
 	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
 		// 床がなかった場合
 		player_->SetFloorPosition(stage_->GetNextGroundPosition().y);
+		if (stage_->GetIsEnd()) {
+			player_->SetShadowDraw(false);
+		}
+		else {
+			player_->SetShadowDraw(true);
+		}
 		player_->SetFall(true);
 		// playerが下層より下に行った場合
 		if (stage_->ResetCheck(player_->GetTransform().GetWorldPosition())) {
@@ -197,7 +206,7 @@ void GameScene::Update() {
 	}
 	//餅弾とボスの衝突判定
 	for (uint32_t index = 0; index < 16; index++) {
-		if (!cannon_->IsLife(index)) { continue; }
+		if (!cannon_->IsLife(index) && !cannon_->GetIsHit(index)) { continue; }
 		if (IsCollision(player_->GetReflectionCollider(), cannon_->GetCollider(index))) {
 			if (player_->IsCharge()) {
 				cannon_->Reflection(index);
@@ -213,6 +222,13 @@ void GameScene::Update() {
 				cannon_->Hit(index);
 			}
 		}
+		// そのまま床に当たった時の衝突判定
+		else if (cannon_->GetIsHit(index)) {
+			if (stage_->IsCollision(cannon_->GetCollider(index).center, cannon_->GetDamage(index))) {
+				// メテオのAttackUpdate内で消えているから正直意味はない
+				//cannon_->Hit(index);
+			}
+		}
 		if (!cannon_->IsBossHit(index)) { continue; }
 		if (IsCollision(boss_->GetCollider(Boss::AttackMode::kMiddle), cannon_->GetCollider(index))) {
 			boss_->AttackHit();
@@ -221,11 +237,23 @@ void GameScene::Update() {
 	}
 
 	for (uint32_t index = 0; index < 16; index++) {
-		if (!stamp_->IsLife(index)) { continue; }
+		if (!stamp_->IsLife(index) && !stamp_->GetIsHit(index)) { continue; }
 		if (IsCollision(stamp_->GetCollider(index), player_->GetCollider())) {
 			player_->HitEnemyAttackCollision();
 			stamp_->Hit(index);
 		}
+		// そのまま床に当たった時の衝突判定
+		else if (stamp_->GetIsHit(index)) {
+			if (stage_->IsCollision(stamp_->GetCollider(index).center, stamp_->GetDamage(index))) {
+				// メテオのAttackUpdate内で消えているから正直意味はない
+				//stamp_->Hit(index);
+			}
+		}
+	}
+
+	// stageのlayerが切り替わった時に全て初期化する
+	if (stage_->GetChangeLayer()) {
+		
 	}
 
 
@@ -257,6 +285,8 @@ void GameScene::DrawModel(){
 	stage_->Draw(camera_);
 	//floor_->Draw(camera_);
 	player_->Draw(camera_);
+
+	skyBox_->Draw(camera_);
 
 }
 

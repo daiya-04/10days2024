@@ -123,6 +123,10 @@ void Player::Initialize(){
 	RHandTransform_.translation_.x = 2.0f;
 	RHandTransform_.parent_ = &bodyObj_->worldTransform_;
 
+	baseRHandPos_ = { 2.0f,0.0f,0.0f };
+
+	nowRHandPos_;
+
 	RRotateHandTransform_.Init();
 
 	RRotateHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
@@ -135,6 +139,10 @@ void Player::Initialize(){
 	LHandTransform_.translation_.x = -2.0f;
 	LHandTransform_.parent_ = &bodyObj_->worldTransform_;
 
+	baseLHandPos_ = { -2.0f,0.0f,0.0f };
+
+	nowLHandPos_;
+
 	ShadowTransform_.Init();
 	ShadowTransform_.scale_ = { 0.5f,0.005f,0.5f };
 
@@ -142,6 +150,7 @@ void Player::Initialize(){
 	frontVec_ = { 0.0f,0.0f,1.0f };
 
 	isDown_ = true;
+	isShadowDraw_ = true;
 
 	trail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 10000));
 	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 30000));
@@ -307,14 +316,19 @@ void Player::Draw(const Camera& camera) {
 	bodyObj_->Draw(camera);
 	rightHandObj_->Draw(camera);
 	leftHandObj_->Draw(camera);
-	shadowObj_->Draw(camera);
+	if (isShadowDraw_){
+		shadowObj_->Draw(camera);
+	}
 }
 
 void Player::Reset(){
 	PLTransform_.translation_ = { -1.0f,8.0f,-30.0f };
+	PLTransform_.UpdateMatrix();
 	playerRotateMatY_ = MakeRotateYMatrix(0.0f);
 	postureVec_ = { 0.0f,0.0f,1.0f };
 	frontVec_ = { 0.0f,0.0f,1.0f };
+
+	isShadowDraw_ = true;
 
 	behaviorRequest_ = Behavior::kRoot;
 
@@ -377,8 +391,9 @@ void Player::SetFloorPosition(const float& positionY) {
 void Player::BehaviorRootInitialize(){
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	nowRHandPos_ = RHandTransform_.translation_;
+	nowLHandPos_ = LHandTransform_.translation_;
+	handT_ = 0.0f;
 
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
@@ -389,6 +404,8 @@ void Player::BehaviorRootInitialize(){
 	ColliderReset(attackCollider_);
 	ColliderReset(reflectionCollider_);
 	
+
+
 	attackPower_ = 0;
 }
 
@@ -457,7 +474,15 @@ void Player::BehaviorRootUpdate(){
 	if (!StageClampCollision(PLTransfromNext)){
 		PLTransform_.translation_ += move_;
 	}	
+	handT_ += addHandT_;
+
+	if (handT_ > 1.0f) {
+		handT_ = 1.0f;
+	}
+	RHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowRHandPos_, baseRHandPos_, handT_);
+	LHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowLHandPos_, baseLHandPos_, handT_);
 	
+
 	//Aボタンでジャンプ
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
@@ -477,9 +502,14 @@ void Player::BehaviorRootUpdate(){
 	}
 
 	//RBボタンで回避ダッシュ
-	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_){
-		behaviorRequest_ = Behavior::kAvoid;
-
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER)){
+		if (!isDown_){
+			behaviorRequest_ = Behavior::kAvoid;
+		}
+		else if (isSkyDash_){
+			behaviorRequest_ = Behavior::kAvoid;
+			isSkyDash_ = false;
+		}
 	}
 
 }
@@ -597,9 +627,9 @@ void Player::BehaviorAttackUpdate(){
 
 void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
-
+	RHandTransform_.translation_ = { 2.0f,0.0f,-2.0f };
+	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
+	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
 
 }
@@ -638,8 +668,9 @@ void Player::BehaviorAvoidUpdate(){
 void Player::BehaviorDashInitialize(){
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
-	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
-	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	nowRHandPos_ = RHandTransform_.translation_;
+	nowLHandPos_ = LHandTransform_.translation_;
+	handT_ = 0.0f;
 
 	isCharge_ = false;
 	workAttack_.chargeAttackNext_ = false;
@@ -721,6 +752,15 @@ void Player::BehaviorDashUpdate(){
 		PLTransform_.translation_ += move_;
 	}
 
+	handT_ += addHandT_;
+
+	if (handT_ > 1.0f) {
+		handT_ = 1.0f;
+	}
+	RHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowRHandPos_, baseRHandPos_, handT_);
+	LHandTransform_.translation_ = Easing::Ease(Easing::EaseName::EaseInSine, nowLHandPos_, baseLHandPos_, handT_);
+
+
 	if (input_->TriggerButton(Input::Button::A) and !isDown_) {
 		downVector_.y += jumpPower_;
 		isDown_ = true;
@@ -733,9 +773,14 @@ void Player::BehaviorDashUpdate(){
 		behaviorRequest_ = Behavior::kAttack;
 	}
 
-	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER) and !isDown_) {
-		behaviorRequest_ = Behavior::kAvoid;
-
+	if (input_->TriggerButton(Input::Button::RIGHT_SHOULDER)) {
+		if (!isDown_) {
+			behaviorRequest_ = Behavior::kAvoid;
+		}
+		else if (isSkyDash_) {
+			behaviorRequest_ = Behavior::kAvoid;
+			isSkyDash_ = false;
+		}
 	}
 }
 
@@ -786,6 +831,7 @@ void Player::BehaviorFallingAttackUpdate(){
 
 	if (PLTransform_.translation_.y <= floorPositionY_) {
 		OnFloorCollision();
+		isSkyDash_ = true;
 		isFallingAttacked_ = true;
 		waitTime_--;
 		
@@ -1068,6 +1114,7 @@ void Player::Gravity(){
 	PLTransform_.translation_.y += downVector_.y;
 
 	if (PLTransform_.translation_.y < floorPositionY_){
+		isSkyDash_ = true;
 		OnFloorCollision();
 	}
 }

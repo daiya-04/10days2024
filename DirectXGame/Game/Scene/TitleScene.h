@@ -2,6 +2,7 @@
 #include "IScene.h"
 #include <memory>
 #include <list>
+#include "Stage/Stage.h"
 
 #include "Sprite.h"
 #include "Object3d.h"
@@ -13,7 +14,6 @@
 #include"Camera/FollowCamera.h"
 #include"CollisionManager.h"
 #include"Character/Sandbag/Sandbag.h"
-
 
 class TitleScene : public IScene {
 public:
@@ -54,10 +54,12 @@ private:
 	//モデルマネージャー
 	ModelManager* modelManager_;
 
+	LevelData* levelData_;
+
+	std::unique_ptr<Stage> stage_;
+
 	//コリジョンマネージャー
 	std::unique_ptr<CollisionManager> collisionManager_;
-	//体のモデル
-	std::unique_ptr<Object3d> floor_;
 	//プレイヤー
 	std::unique_ptr<Player> player_;
 
@@ -66,5 +68,11 @@ private:
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
 
+	//鏡餅置くよう用
+	std::unique_ptr<Object3d> titleobj_;
+
+	bool oldFallAttack_ = false;
+
+	int32_t killCount_ = 0;
 };
 
