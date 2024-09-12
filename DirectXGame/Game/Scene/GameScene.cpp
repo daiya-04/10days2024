@@ -177,6 +177,13 @@ void GameScene::Update() {
 			}
 
 		}
+		else if (IsCollision(player_->GetCollider(), meteor_->GetCollider(index))) {
+			 {
+				meteor_->Hit(index);
+				player_->HitEnemyAttackCollision();
+			}
+
+		}
 	}
 	//餅弾とボスの衝突判定
 	for (uint32_t index = 0; index < 16; index++) {
@@ -186,6 +193,12 @@ void GameScene::Update() {
 				cannon_->Reflection(index);
 			}
 			else {
+				player_->HitEnemyAttackCollision();
+				cannon_->Hit(index);
+			}
+		}
+		else if (IsCollision(player_->GetCollider(), cannon_->GetCollider(index))) {
+			 {
 				player_->HitEnemyAttackCollision();
 				cannon_->Hit(index);
 			}
