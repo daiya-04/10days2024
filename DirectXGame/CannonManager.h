@@ -5,6 +5,7 @@
 #include "GPUParticle.h"
 
 #include <array>
+#include "Stage/Stage.h"
 
 
 class CannonManager {
@@ -52,9 +53,11 @@ private:
 	int32_t cannonIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 60;
+	int32_t attackTime_ = 30;
 
 	int32_t indexCount_ = 0;
+
+	Stage* stage_ = nullptr;
 
 };
 

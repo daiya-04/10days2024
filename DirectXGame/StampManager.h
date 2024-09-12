@@ -48,7 +48,7 @@ private:
 	int32_t stampIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 60;
+	int32_t attackTime_ = 20;
 
 	int32_t indexCount_ = 0;
 

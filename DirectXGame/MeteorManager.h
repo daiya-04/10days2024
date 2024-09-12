@@ -52,7 +52,7 @@ private:
 	int32_t meteorIndex_ = 0;
 
 	int32_t count_ = 0;
-	int32_t attackTime_ = 20;
+	int32_t attackTime_ = 35;
 
 	int32_t indexCount_ = 0;
 

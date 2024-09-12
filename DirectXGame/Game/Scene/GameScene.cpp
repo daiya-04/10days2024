@@ -253,7 +253,9 @@ void GameScene::Update() {
 
 	// stageのlayerが切り替わった時に全て初期化する
 	if (stage_->GetChangeLayer()) {
-		
+		meteor_->Reset();
+		cannon_->Reset();
+		stamp_->Reset();
 	}
 
 
