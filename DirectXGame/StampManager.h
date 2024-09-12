@@ -20,6 +20,8 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
+	void Reset();
+
 	void Hit(uint32_t index) { stamps_[index]->Hit(); }
 
 	void AttackStart(const Vector3& basePos);
@@ -34,6 +36,7 @@ public:
 private:
 
 	std::array<std::unique_ptr<Stamp>, 16> stamps_;
+	std::unique_ptr<GPUParticle> hitEff_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;

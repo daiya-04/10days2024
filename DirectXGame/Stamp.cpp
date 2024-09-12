@@ -17,6 +17,7 @@ void Stamp::Init(const std::shared_ptr<Model>& model) {
 
 void Stamp::Update() {
 	preIsLife_ = isLife_;
+	preIsHit_ = isHit_;
 
 	if (phaseRequest_) {
 
@@ -59,6 +60,15 @@ void Stamp::DrawParticle(const Camera& camera) {
 void Stamp::Hit() {
 	phaseRequest_ = Phase::kRoot;
 	isLife_ = false;
+	isHit_ = false;
+}
+
+void Stamp::Reset() {
+	isLife_ = false;
+	preIsLife_ = false;
+	isHit_ = false;
+	preIsHit_ = false;
+	phaseRequest_ = Phase::kRoot;
 }
 
 void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
@@ -78,6 +88,7 @@ void Stamp::AttackStart(const Vector3& startPos, const Vector3& direction) {
 	rotateMat_ = DirectionToDirection(Vector3(0.0f, 0.0f, 1.0f), direction_);
 
 	obj_->worldTransform_.UpdateMatrixRotate(rotateMat_);
+	warningZone_->worldTransform_.UpdateMatrixRotate(rotateMat_);
 	UpdateCollider();
 }
 
@@ -127,6 +138,7 @@ void Stamp::AttackUpdate() {
 	obj_->worldTransform_.translation_ = Lerp(attackData_.param_, attackData_.startPos_, attackData_.impactPoint_);
 
 	if (attackData_.param_ >= 1.0f) {
+		isHit_ = true;
 		if (++attackData_.count_ >= attackData_.coolTime_) {
 			Hit();
 		}

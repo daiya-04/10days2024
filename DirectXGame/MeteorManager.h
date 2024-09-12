@@ -19,8 +19,10 @@ public:
 
 	void DrawParticle(const Camera& camera);
 
-	void Hit(uint32_t index) { meteors_[index]->Hit(); }
+	void Hit(uint32_t index);
 	void Reflection(uint32_t index) { return meteors_[index]->Reflection(); }
+
+	void Reset();
 
 	void AttackStart(const Vector3& basePos);
 	void AttackFinish();

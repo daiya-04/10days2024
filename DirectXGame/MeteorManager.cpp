@@ -34,13 +34,14 @@ void MeteorManager::Init(const std::shared_ptr<Model>& model) {
 
 	hitEff_->emitter_.count = 10000;
 	hitEff_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);
-	hitEff_->emitter_.angle = 180.0f;
+	hitEff_->emitter_.angle = 360.0f;
 	hitEff_->emitter_.color = Vector4(0.89f, 0.27f, 0.03f, 1.0f);
 	hitEff_->emitter_.emit = 0;
-	hitEff_->emitter_.lifeTime = 1.0f;
-	hitEff_->emitter_.speed = 10.0f;
+	hitEff_->emitter_.lifeTime = 0.4f;
+	hitEff_->emitter_.speed = 50.0f;
 	hitEff_->emitter_.scale = 0.5f;
 	hitEff_->emitter_.size = { 0.01f,0.01f,0.01f };
+	hitEff_->emitter_.isHalf = 1;
 	
 
 	isAttack_ = false;
@@ -54,17 +55,15 @@ void MeteorManager::Update() {
 	preIsAttack_ = isAttack_;
 
 	for (auto& meteor : meteors_) {
-		meteor->Update();
 		if (meteor->HitFlag()) {
 			hitEff_->emitter_.emit = 1;
 			hitEff_->emitter_.translate = meteor->GetWorldPos();
+			hitEff_->emitter_.translate.y = -2.0f;
 		}
+		meteor->Update();
 	}
 
 	hitEff_->Update();
-
-
-
 
 	if (!isAttack_) { return; }
 
@@ -100,8 +99,18 @@ void MeteorManager::DrawParticle(const Camera& camera) {
 	for (auto& meteor : meteors_) {
 		meteor->DrawParticle(camera);
 	}
-	//hitEff_->Draw(camera);
+	hitEff_->Draw(camera);
 
+}
+
+void MeteorManager::Hit(uint32_t index) {
+	meteors_[index]->Hit();
+}
+
+void MeteorManager::Reset() {
+	for (auto& meteor : meteors_) {
+		meteor->Reset();
+	}
 }
 
 void MeteorManager::AttackStart(const Vector3& basePos) {

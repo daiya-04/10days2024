@@ -2,6 +2,7 @@
 #include "Cannon.h"
 #include "Camera.h"
 #include "ModelManager.h"
+#include "GPUParticle.h"
 
 #include <array>
 
@@ -25,6 +26,8 @@ public:
 	void Hit(uint32_t index) { cannons_[index]->Hit(); }
 	void Reflection(uint32_t index) { cannons_[index]->Reflection(); }
 
+	void Reset();
+
 	void SetTargetPos(const Vector3& targetPos);
 
 	bool IsAttack() const { return isAttack_; }
@@ -38,6 +41,7 @@ public:
 private:
 
 	std::array<std::unique_ptr<Cannon>, 16> cannons_;
+	std::unique_ptr<GPUParticle> hitEff_;
 
 	bool isAttack_ = false;
 	bool preIsAttack_ = false;

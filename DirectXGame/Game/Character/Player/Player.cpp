@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "ShapesDraw.h"
+#include "TextureManager.h"
 
 void Player::SetGlobalVariables(){
 	GlobalVariables* global = GlobalVariables::GetInstance();
@@ -151,6 +152,36 @@ void Player::Initialize(){
 	isDown_ = true;
 	isShadowDraw_ = true;
 
+	trail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 10000));
+	hitEff_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 30000));
+
+	trail_->isLoop_ = false;
+
+	trail_->emitter_.count = 500;
+	trail_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);
+	trail_->emitter_.angle = 360.0f;
+	trail_->emitter_.color = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+	trail_->emitter_.frequency = 1.0f / 60.0f;
+	trail_->emitter_.lifeTime = 60.0f / 60.0f;
+	trail_->emitter_.scale = 0.4f;
+	trail_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 0.2f;
+	trail_->emitter_.speed = 0.0f;
+	trail_->emitter_.isHalf = 0;
+
+	hitEff_->isLoop_ = false;
+
+	hitEff_->emitter_.count = 10000;
+	hitEff_->emitter_.direction = Vector3(0.0f, 1.0f, 0.0f);
+	hitEff_->emitter_.angle = 360.0f;
+	hitEff_->emitter_.color = Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+	hitEff_->emitter_.lifeTime = 20.0f / 60.0f;
+	hitEff_->emitter_.scale = 0.2f;
+	hitEff_->emitter_.size = Vector3(1.0f, 1.0f, 1.0f) * 0.01f;
+	hitEff_->emitter_.speed = 30.0f;
+	hitEff_->emitter_.isHalf = 0;
+	hitEff_->emitter_.emit = 0;
+
+
 }
 
 void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
@@ -259,6 +290,10 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 		leftHandObj_->worldTransform_.UpdateMatrixRotate(playerRotateMatX_.Inverse());
 	}
 	
+	trail_->Update();
+	hitEff_->Update();
+
+	hitEff_->emitter_.isHalf = 0;
 
 	Shadow();
 
@@ -304,7 +339,8 @@ void Player::HitEnemyAttackCollision(){
 }
 
 void Player::ParticleDraw(const Camera& camera){
-
+	trail_->Draw(camera);
+	hitEff_->Draw(camera);
 }
 
 void Player::Imgui(){
@@ -338,6 +374,14 @@ void Player::Imgui(){
 bool Player::GetFallingAttack() const {
 	if (behavior_ != Behavior::kFallingAttack) { return false; }
 	return isFallingAttacked_;
+}
+
+void Player::HitEffectInit() {
+
+	hitEff_->emitter_.emit = 1;
+	hitEff_->emitter_.translate = RHandTransform_.GetWorldPosition();
+	hitEff_->emitter_.isHalf = 0;
+
 }
 
 void Player::SetFloorPosition(const float& positionY) {
@@ -765,6 +809,7 @@ void Player::BehaviorFallingAttackUpdate(){
 		fallingEaseT_ += 0.1f;
 		attackCollider_.radius = colliderRange_.fallingAttack;
 		attackCollider_.center = (bodyObj_->worldTransform_.GetWorldPosition() + RHandTransform_.GetWorldPosition()) / 2.0f;
+		trail_->isLoop_ = true;
 
 	}
 
@@ -789,11 +834,21 @@ void Player::BehaviorFallingAttackUpdate(){
 		isSkyDash_ = true;
 		isFallingAttacked_ = true;
 		waitTime_--;
+		
 	}
+
+	if (waitTime_ == (waitTimeBase_ - 1)) {
+		hitEff_->emitter_.emit = 1;
+		hitEff_->emitter_.isHalf = 1;
+		hitEff_->emitter_.translate = RHandTransform_.GetWorldPosition();
+	}
+
+	trail_->emitter_.translate = RHandTransform_.GetWorldPosition();
 
 	if (waitTime_ < 0) {
 		behaviorRequest_ = Behavior::kRoot;
 		playerRotateMatY_ = basePlayerRotateMatY_;
+		trail_->isLoop_ = false;
 	}
 }
 
