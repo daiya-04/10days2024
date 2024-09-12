@@ -5,7 +5,6 @@
 #include "GPUParticle.h"
 
 #include <array>
-#include "Stage/Stage.h"
 
 
 class CannonManager {
@@ -30,6 +29,8 @@ public:
 	void Reset();
 
 	void SetTargetPos(const Vector3& targetPos);
+
+	
 
 	bool IsAttack() const { return isAttack_; }
 	bool IsBossHit(uint32_t index) const { return cannons_[index]->IsBossHit(); }
@@ -57,7 +58,7 @@ private:
 
 	int32_t indexCount_ = 0;
 
-	Stage* stage_ = nullptr;
+	
 
 };
 

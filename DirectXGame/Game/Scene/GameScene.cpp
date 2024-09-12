@@ -139,6 +139,8 @@ void GameScene::Update() {
 
 	stage_->Update();
 
+	meteor_->SetPieceAlives(stage_->GetPieceAlive());
+
 	boss_->Update();
 	meteor_->Update();
 	cannon_->Update();

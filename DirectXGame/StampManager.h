@@ -6,7 +6,6 @@
 
 #include <array>
 
-
 class StampManager {
 public:
 
@@ -26,6 +25,8 @@ public:
 
 	void AttackStart(const Vector3& basePos);
 	void AttackFinish();
+
+	
 
 	Shapes::OBB GetCollider(uint32_t index) { return stamps_[index]->GetCollider(); }
 	bool IsLife(uint32_t index) { return stamps_[index]->IsLife(); }
@@ -51,6 +52,8 @@ private:
 	int32_t attackTime_ = 20;
 
 	int32_t indexCount_ = 0;
+
+
 
 };
 

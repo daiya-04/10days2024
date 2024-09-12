@@ -67,18 +67,49 @@ void MeteorManager::Update() {
 
 	if (!isAttack_) { return; }
 
+	for (int32_t index : indexList_) {
+		if (!pieceAlives_[index]) {
+			indexList_.remove(index);
+			break;
+		}
+	}
+
 	if (++count_ >= attackTime_) {
 		while (true) {
-			int32_t nextIndex = RandomEngine::GetIntRandom(0, 15);
-			if (nextIndex != meteorIndex_ && !meteors_[nextIndex]->IsLife()) {
-				meteorIndex_ = nextIndex;
+			if (indexList_.empty()) { break; }
+
+			int32_t itNum = RandomEngine::GetIntRandom(0, (int)indexList_.size() - 1);
+			indexIt_ = indexList_.begin();
+			std::advance(indexIt_, itNum);
+			int32_t nextIndex = *indexIt_;
+
+			if (!meteors_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
+				meteors_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex]);
 				indexCount_ = 0;
 				break;
 			}
+			
+			/*if (num_ == 8 || num_ == 9) {
+				int a = 0;
+			}
+
+			if (!meteors_[num_]->IsLife() && pieceAlives_[num_]) {
+				meteors_[num_]->AttackStart(basePos_ + offsets_[num_]);
+				indexCount_ = 0;
+				num_++;
+				num_ = std::clamp(num_, 0, 15);
+				break;
+			}*/
+			/*if (nextIndex != meteorIndex_ && !meteors_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
+				meteorIndex_ = nextIndex;
+				indexCount_ = 0;
+				meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
+				break;
+			}*/
 			indexCount_++;
-			if (indexCount_ >= 16) { break; }
+			if (indexCount_ >= 32) { break; }
 		}
-		meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
+		//meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
 		count_ = 0;
 	}
 	
@@ -119,8 +150,10 @@ void MeteorManager::AttackStart(const Vector3& basePos) {
 	basePos_ = basePos;
 	basePos_.y += startHight_;
 
-	meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
-	meteorIndex_ = (meteorIndex_ + 1) % 16;
+	/*meteors_[meteorIndex_]->AttackStart(basePos_ + offsets_[meteorIndex_]);
+	meteorIndex_ = (meteorIndex_ + 1) % 16;*/
+
+	indexList_.assign({ 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 });
 
 }
 
