@@ -68,7 +68,7 @@ void Cannon::Hit() {
 
 void Cannon::Reflection() {
 
-
+	phaseRequest_ = Phase::kReflected;
 
 }
 

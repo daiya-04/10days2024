@@ -167,7 +167,7 @@ void GameScene::Update() {
 			boss_->AttackHit();
 			meteor_->Hit(index);
 		}
-		else if (IsCollision(player_->GetCollider(), meteor_->GetCollider(index))) {
+		else if (IsCollision(player_->GetReflectionCollider(), meteor_->GetCollider(index))) {
 			if (player_->IsCharge()) {
 				meteor_->Reflection(index);
 			}
@@ -181,7 +181,7 @@ void GameScene::Update() {
 	//餅弾とボスの衝突判定
 	for (uint32_t index = 0; index < 16; index++) {
 		if (!cannon_->IsLife(index)) { continue; }
-		if (IsCollision(player_->GetCollider(), cannon_->GetCollider(index))) {
+		if (IsCollision(player_->GetReflectionCollider(), cannon_->GetCollider(index))) {
 			if (player_->IsCharge()) {
 				cannon_->Reflection(index);
 			}

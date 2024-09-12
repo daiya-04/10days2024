@@ -8,7 +8,7 @@ void Stamp::Init(const std::shared_ptr<Model>& model) {
 	obj_.reset(Object3d::Create(model));
 	warningZone_.reset(Object3d::Create(ModelManager::LoadOBJ("SquareWarningZone")));
 
-	collider_.size = { 3.0f,0.5f,2.0f };
+	collider_.size = { 2.0f,0.5f,3.0f };
 
 	isLife_ = false;
 	preIsLife_ = false;
@@ -105,7 +105,7 @@ void Stamp::ChargeUpdate() {
 	chargeData_.param_ = std::clamp(chargeData_.param_, 0.0f, 1.0f);
 
 	obj_->worldTransform_.scale_ = Lerp(chargeData_.param_, chargeData_.minScale_, chargeData_.maxScale_);
-	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(3.0f, 1.0f, 2.0f));
+	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(2.2f, 1.0f, 3.2f));
 
 	if (chargeData_.param_ >= 1.0f) {
 		phaseRequest_ = Phase::kAttack;
