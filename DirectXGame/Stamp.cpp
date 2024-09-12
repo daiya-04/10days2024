@@ -6,7 +6,7 @@
 void Stamp::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
-	warningZone_.reset(Object3d::Create(ModelManager::LoadOBJ("WarningZone")));
+	warningZone_.reset(Object3d::Create(ModelManager::LoadOBJ("SquareWarningZone")));
 
 	collider_.size = { 3.0f,0.5f,2.0f };
 
