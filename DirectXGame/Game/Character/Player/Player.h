@@ -12,6 +12,7 @@
 #include"HitRecord/HitRecord.h"
 #include"TextureManager.h"
 #include"Sprite.h"
+#include "AudioManager.h"
 
 class Player {
 public:
@@ -72,6 +73,8 @@ public:
 	bool RecordCheck(uint32_t number) { return hitRecord_.RecordCheck(number); }
 
 	void HitEffectInit();
+
+	void PlayingHitSE();
 
 	// ゲッター
 	const WorldTransform& GetTransform() const { return PLTransform_; }
@@ -423,6 +426,21 @@ private:
 	float scale_ = 10.0f;
 
 	float alpha_ = 0.3f;
+
+private:
+
+	Audio* damageSE_ = nullptr;
+	Audio* avoidSE_ = nullptr;
+	Audio* landingSE_ = nullptr;
+	Audio* fallAttackSE_ = nullptr;
+	Audio* attackHitSE_ = nullptr;
+	Audio* chargeAttackHitSE_ = nullptr;
+	Audio* chargeSE_ = nullptr;
+
+	int32_t seCount_ = 0;
+
+	bool isHit_ = false;
+
 };
 
 

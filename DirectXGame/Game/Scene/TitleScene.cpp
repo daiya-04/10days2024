@@ -6,7 +6,9 @@
 #include "SceneManager.h"
 #include "Input.h"
 
-TitleScene::~TitleScene() {}
+TitleScene::~TitleScene() {
+	bgm_->StopSound();
+}
 
 void TitleScene::Init(){
 	camera_.Init();
@@ -23,6 +25,10 @@ void TitleScene::Init(){
 	Object3d::SetSpotLight(&spotLight_);
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
+
+	bgm_ = AudioManager::Load("BGM/titleBGM.mp3");
+	bgm_->SetUniqueVolume(0.3f);
+	bgm_->Play();
 
 #ifdef _DEBUG
 	debugCamera_ = std::make_unique<DebugCamera>();

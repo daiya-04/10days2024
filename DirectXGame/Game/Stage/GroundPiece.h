@@ -7,6 +7,7 @@
 #include "ModelManager.h"
 #include "Object3d.h"
 #include "LevelLoader.h"
+#include "AudioManager.h"
 
 class GroundPiece {
 public:
@@ -37,5 +38,7 @@ private:
 	WorldTransform transform_;
 	bool isAlive_ = true; // 生存フラグ
 	int32_t hp_ = 10; // 耐久力
+
+	Audio* breakSE_ = nullptr;
 
 };

@@ -13,6 +13,7 @@
 #include"Camera/FollowCamera.h"
 #include"CollisionManager.h"
 #include"Character/Sandbag/Sandbag.h"
+#include "AudioManager.h"
 
 class ResultScene : public IScene {
 public:
@@ -58,6 +59,9 @@ private:
 	std::unique_ptr<Sandbag> sandbag_;
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
+
+	Audio* bgm_ = nullptr;
+	Audio* loseSE_ = nullptr;
 
 };
 

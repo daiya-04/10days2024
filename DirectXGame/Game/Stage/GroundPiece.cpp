@@ -25,6 +25,8 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::strin
 		model->worldTransform_.UpdateMatrix();
 	}
 
+	breakSE_ = AudioManager::Load("SE/firldBreak.mp3");
+
 }
 
 void GroundPiece::Initialize() {
@@ -51,6 +53,7 @@ void GroundPiece::OnCollision(const int32_t& damage) {
 	hp_ -= damage;
 	if (hp_ <= 0) {
 		isAlive_ = false;
+		breakSE_->Play();
 	}
 }
 

@@ -21,6 +21,7 @@
 #include "SkyBox.h"
 #include "Character/Player/Player.h"
 #include"controlUI.h"
+#include "AudioManager.h"
 
 #include "Boss.h"
 #include "MeteorManager.h"
@@ -102,5 +103,10 @@ private:
 	Vector2 lifeTexBasePos_ = { 530,640 };
 
 	float lifeTexLength_ = 43.0f;
+
+private:
+
+	Audio* bgm_ = nullptr;
+
 };
 

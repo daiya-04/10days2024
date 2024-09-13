@@ -84,6 +84,7 @@ void MeteorManager::Update() {
 			if (!meteors_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
 				meteors_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex]);
 				indexCount_ = 0;
+				//attackTime_ = RandomEngine::GetIntRandom(30, 40);
 				break;
 			}
 
