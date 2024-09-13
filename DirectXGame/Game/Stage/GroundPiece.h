@@ -37,7 +37,7 @@ private:
 	std::vector<std::shared_ptr<Object3d>> models_;
 	WorldTransform transform_;
 	bool isAlive_ = true; // 生存フラグ
-	int32_t hp_ = 10; // 耐久力
+	int32_t hp_ = 50; // 耐久力
 
 	Audio* breakSE_ = nullptr;
 

@@ -26,12 +26,12 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::strin
 	}
 
 	breakSE_ = AudioManager::Load("SE/firldBreak.mp3");
-
+	hp_ = 50;
 }
 
 void GroundPiece::Initialize() {
 	isAlive_ = true;
-	hp_ = 10;
+	hp_ = 50;
 }
 
 void GroundPiece::Update() {
