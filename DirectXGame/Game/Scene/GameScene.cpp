@@ -252,6 +252,7 @@ void GameScene::Update() {
 		stamp_->Reset();
 	}
 	if (boss_->GetIsDead()){
+		ResultScene::isLose_ = false;
 		SceneManager::GetInstance()->ChangeScene("Result");
 	}
 
