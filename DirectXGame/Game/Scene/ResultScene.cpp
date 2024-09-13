@@ -9,6 +9,59 @@ bool ResultScene::isLose_ = false;
 
 ResultScene::~ResultScene() {}
 
+void ResultScene::LoseInitialize(){
+
+	fade_.reset(Sprite::Create(texManager_->Load("Black.png"), {640.0f,360.0f}));
+	fade_->SetSize({ 1280.0f,720.0f });
+	fade_->color_ = Vector4(1.0f, 1.0f, 1.0f, alpha_);
+
+	loseTex_.reset(Sprite::Create(texManager_->Load("Lose.png"), { 640.0f,200.0f }));
+	loseTex_->SetSize({ 22.5f,15.0f });
+}
+
+void ResultScene::LoseUpdate(){
+
+}
+
+void ResultScene::LoseDrawModel(){
+
+}
+
+void ResultScene::LoseDrawUI(){
+	loseTex_->Draw();
+	fade_->Draw();
+
+}
+
+void ResultScene::WinInitialize(){
+	sandbag_ = std::make_unique<Sandbag>();
+
+	sandbag_->Initialize();
+
+	shelfobj_ = std::make_unique<Object3d>();
+
+	shelfobj_->Initialize(modelManager_->LoadGLTF("shelf"));
+
+	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, -20.0f };
+	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
+}
+
+void ResultScene::WinUpdate(){
+	sandbag_->Update();
+
+
+	shelfobj_->worldTransform_.UpdateMatrix();
+}
+
+void ResultScene::WinDrawModel(){
+	sandbag_->Draw(camera_);
+	shelfobj_->Draw(camera_);
+}
+
+void ResultScene::WinDrawUI(){
+
+}
+
 void ResultScene::Init() {
 	camera_.Init();
 	camera_.translation_.y = 3.5f;
@@ -30,23 +83,21 @@ void ResultScene::Init() {
 
 	modelManager_ = ModelManager::GetInstance();
 
-	sandbag_ = std::make_unique<Sandbag>();
+	texManager_ = TextureManager::GetInstance();
 
-	sandbag_->Initialize();
-
-	shelfobj_ = std::make_unique<Object3d>();
-
-	shelfobj_->Initialize(modelManager_->LoadGLTF("shelf"));
-
-	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, -20.0f };
-	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
+	
+	LoseInitialize();	
+	
+	WinInitialize();
+	
 
 	Update();
+	
 
 }
 
 void ResultScene::Update() {
-
+	DebugGUI();
 #ifdef _DEBUG
 
 	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_2)) {
@@ -58,16 +109,20 @@ void ResultScene::Update() {
 
 #endif // _DEBUG
 
-	//followCamera_->Update();
-	//camera_.translation_ = followCamera_->GetCameraTranslate();
-	//camera_.rotation_ = followCamera_->GetCameraRotate();
+	auto input_ = Input::GetInstance();
 
-	sandbag_->Update();
-	if (sandbag_->GetIsDead()) {
-		SceneManager::GetInstance()->ChangeScene("Game");
+	if (isLose_){
+		LoseUpdate();
 	}
-
-	shelfobj_->worldTransform_.UpdateMatrix();
+	else {
+		WinUpdate();
+	}
+	//どれかのボタンを押したら遷移
+	if (input_->TriggerButton(Input::Button::A)|| input_->TriggerButton(Input::Button::B)|| input_->TriggerButton(Input::Button::Y)|| input_->TriggerButton(Input::Button::X)
+		|| input_->TriggerButton(Input::Button::RIGHT_SHOULDER)|| input_->TriggerButton(Input::Button::RIGHT_THUMB)|| input_->TriggerButton(Input::Button::LEFT_SHOULDER)|| input_->TriggerButton(Input::Button::LEFT_THUMB)
+		|| input_->TriggerButton(Input::Button::BACK)|| input_->TriggerButton(Input::Button::START)){
+		SceneManager::GetInstance()->ChangeScene("Title");
+	}
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
@@ -83,9 +138,11 @@ void ResultScene::DrawBackGround() {
 }
 
 void ResultScene::DrawModel() {
-	if (!isLose_) {
-		sandbag_->Draw(camera_);
-		shelfobj_->Draw(camera_);
+	if (isLose_) {
+		LoseDrawModel();
+	}
+	else {
+		WinDrawModel();
 	}
 }
 
@@ -102,7 +159,12 @@ void ResultScene::DrawParticle() {
 }
 
 void ResultScene::DrawUI() {
-
+	if (isLose_) {
+		LoseDrawUI();
+	}
+	else {
+		WinDrawUI();
+	}
 
 
 }
@@ -122,8 +184,8 @@ void ResultScene::DrawRenderTexture() {
 void ResultScene::DebugGUI() {
 #ifdef _DEBUG
 
-
-
-
+	ImGui::Begin("Result");
+	ImGui::Checkbox("isLose", &isLose_);
+	ImGui::End();
 #endif // _DEBUG
 }

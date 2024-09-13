@@ -113,6 +113,9 @@ void GameScene::Update() {
 	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_3)) {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
+	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_4)) {
+		SceneManager::GetInstance()->ChangeScene("Result");
+	}
 
 	// debugCamera
 	if (debugCamera_->Update()) {
