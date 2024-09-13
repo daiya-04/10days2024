@@ -28,6 +28,8 @@ public:
 
 	Vector3 GetRotation() const { return transform_.rotation_; }
 	bool GetIsAlive() const { return isAlive_; }
+	void SetTextureHandle(const int32_t& handle) { handle_ = handle; }
+
 
 private:
 	void UpdateTrans(); // 座標更新用関数
@@ -40,5 +42,6 @@ private:
 	int32_t hp_ = 50; // 耐久力
 
 	Audio* breakSE_ = nullptr;
+	uint32_t handle_ = 0u;
 
 };

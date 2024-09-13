@@ -36,6 +36,9 @@ void TitleScene::Init(){
 
 	levelData_ = LevelLoader::LoadFile("stageTest");
 
+	TextureManager::GetInstance()->LoadTextureMap("white", "white.png");
+	TextureManager::GetInstance()->LoadTextureMap("Groundoutline", "groundPieceOutline.png");
+
 	stage_ = std::make_unique<Stage>();
 	stage_->Initialize(levelData_);
 	stage_->TitleInitialize();

@@ -45,7 +45,7 @@ void GroundPiece::Draw(const Camera& camera) {
 		return;
 	}
 	for (auto& model : models_) {
-		model->Draw(camera);
+		model->Draw(camera, handle_);
 	}
 }
 

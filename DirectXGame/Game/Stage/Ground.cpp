@@ -126,10 +126,14 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 		tag = "LeftDown";
 	}
 
+	uint32_t outline = TextureManager::GetInstance()->FindTextureHandle("Groundoutline");
+	for (auto& ground : pieces_) {
+		ground->SetTextureHandle(0u);
+	}
+
 	for (auto& ground : pieces_) {
 		// 床が壊れている場合は早期リターン
 		if (!ground->GetIsAlive()) { continue; }
-		
 		// tagの確認
 		if (ground->GetTag() == tag) {
 			Vector3 rot = ground->GetRotation();
@@ -144,6 +148,7 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 					if (damage != 0) {
 						ground->OnCollision(damage);
 					}
+					ground->SetTextureHandle(outline);
 					return true;
 				}
 			}
@@ -152,6 +157,7 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 				if (damage != 0) {
 					ground->OnCollision(damage);
 				}
+				ground->SetTextureHandle(outline);
 				return true;
 			}
 		}
