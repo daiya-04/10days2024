@@ -45,6 +45,8 @@ void GameScene::Init(){
 	bgm_ = AudioManager::Load("BGM/Game3.mp3");
 	bgm_->SetUniqueVolume(0.3f);
 	bgm_->Play();
+
+	reflectionSE_ = AudioManager::Load("SE/居合抜き1.mp3");
 	
 
 	meteor_ = MeteorManager::GetInstance();
@@ -179,6 +181,7 @@ void GameScene::Update() {
 			// playerと当たって跳ね返した瞬間
 			if (player_->IsCharge()) {
 				meteor_->Reflection(index);
+				reflectionSE_->Play();
 			}
 			else {
 				meteor_->Hit(index);
@@ -206,6 +209,7 @@ void GameScene::Update() {
 		if (IsCollision(player_->GetReflectionCollider(), cannon_->GetCollider(index))) {
 			if (player_->IsCharge()) {
 				cannon_->Reflection(index);
+				reflectionSE_->Play();
 			}
 			else {
 				player_->HitEnemyAttackCollision();

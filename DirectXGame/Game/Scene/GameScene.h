@@ -106,6 +106,7 @@ private:
 private:
 
 	Audio* bgm_ = nullptr;
+	Audio* reflectionSE_ = nullptr;
 
 };
 
