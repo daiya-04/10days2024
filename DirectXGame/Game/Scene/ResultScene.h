@@ -12,6 +12,8 @@
 #include"Camera/DebugCamera.h"
 #include"Camera/FollowCamera.h"
 #include"CollisionManager.h"
+#include "SkyBox.h"
+
 #include"Character/Sandbag/Sandbag.h"
 
 class ResultScene : public IScene {
@@ -80,6 +82,8 @@ private:
 	std::unique_ptr<Sandbag> sandbag_;
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
+
+	std::unique_ptr<SkyBox> skyBox_;
 
 	std::unique_ptr<Sprite> fade_;
 	float alpha_ = 0.6f;

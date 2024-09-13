@@ -85,6 +85,8 @@ void ResultScene::Init() {
 
 	texManager_ = TextureManager::GetInstance();
 
+	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
+
 	
 	LoseInitialize();	
 	
@@ -144,6 +146,8 @@ void ResultScene::DrawModel() {
 	else {
 		WinDrawModel();
 	}
+
+	skyBox_->Draw(camera_);
 }
 
 void ResultScene::DrawParticleModel() {

@@ -75,6 +75,8 @@ void TitleScene::Init(){
 
 	killCount_ = 0;
 
+	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
+
 	controlUI_ = std::make_unique<ControlUI>();
 	controlUI_->Initialize();
 
@@ -193,6 +195,7 @@ void TitleScene::DrawModel(){
 
 	titleobj_->Draw(camera_);
 
+	skyBox_->Draw(camera_);
 }
 
 void TitleScene::DrawParticleModel(){
