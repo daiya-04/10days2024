@@ -121,7 +121,7 @@ private:
 	Matrix4x4 rotateMat_ = MakeIdentity44();
 
 	int32_t count_ = 0;
-	int32_t coolTime_ = 120;
+	int32_t coolTime_ = 60;
 
 	Vector3 shakePos_{};
 	Vector3 basePos_{};

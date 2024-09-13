@@ -94,7 +94,7 @@ private:
 
 	float zoneParam_ = 0.0f;
 
-	uint32_t damage_ = 10;
+	uint32_t damage_ = 20;
 
 };
 
