@@ -173,6 +173,7 @@ void GameScene::Update() {
 			// playerと当たって跳ね返した瞬間
 			if (player_->IsCharge()) {
 				meteor_->Reflection(index);
+				player_->SetReflect();
 				reflectionSE_->Play();
 			}
 			else {
@@ -201,6 +202,7 @@ void GameScene::Update() {
 		if (IsCollision(player_->GetReflectionCollider(), cannon_->GetCollider(index))) {
 			if (player_->IsCharge()) {
 				cannon_->Reflection(index);
+				player_->SetReflect();
 				reflectionSE_->Play();
 			}
 			else {

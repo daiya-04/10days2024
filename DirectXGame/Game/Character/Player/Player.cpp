@@ -1187,14 +1187,14 @@ void Player::BehaviorChargeAttackInitialize(){
 	chargeTime_ = 0;
 	seCount_ = 0;
 	ColliderReset(attackCollider_);
-
+	isReflect_ = false;
 	waitTime_ = waitTimeBaseCharge_;
 	isEndAttack_ = false;
 	hitRecord_.Clear();
 }
 
 void Player::BehaviorChargeAttackUpdate(){
-	if (input_->PushButton(Input::Button::X)){
+	if (input_->PushButton(Input::Button::X) && !isReflect_) {
 		chargeRotateSpeed_ = (chargeTime_ / 30) + 1;
 		chargeRotate_ += beseRotateSpeed_ * chargeRotateSpeed_;
 		reflectionCollider_.center = bodyObj_->worldTransform_.GetWorldPosition();
