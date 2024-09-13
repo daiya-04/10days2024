@@ -111,6 +111,7 @@ void Ground::Draw(const Camera& camera) {
 }
 
 bool Ground::IsCollision(const float& angle, const int32_t& damage) {
+	if (!isAlive_) { return false; }
 
 	std::string tag;
 	float oneRad = std::numbers::pi_v<float> / 2.0f; // 90度
