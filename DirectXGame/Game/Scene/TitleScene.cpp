@@ -38,6 +38,8 @@ void TitleScene::Init(){
 
 	TextureManager::GetInstance()->LoadTextureMap("white", "white.png");
 	TextureManager::GetInstance()->LoadTextureMap("Groundoutline", "groundPieceOutline.png");
+	TextureManager::GetInstance()->LoadTextureMap("GroundoutlineDamage", "groundPieceOutline_ver1.png");
+	TextureManager::GetInstance()->LoadTextureMap("GroundDamage", "groundPiece_ver1.png");
 	TextureManager::GetInstance()->LoadTextureMap("UpElectricBoard", "UpperElectricBoard.png");
 	TextureManager::GetInstance()->LoadTextureMap("CenterElectricBoard", "CenterElectricBoard.png");
 	TextureManager::GetInstance()->LoadTextureMap("DownElectricBoard", "LowerElectricBoard.png");

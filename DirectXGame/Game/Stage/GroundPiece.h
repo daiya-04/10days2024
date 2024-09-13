@@ -43,5 +43,7 @@ private:
 
 	Audio* breakSE_ = nullptr;
 	uint32_t handle_ = 0u;
+public:
+	bool IsDamaged_ = false; // hpが半分以下ならtrueになる
 
 };

@@ -27,15 +27,23 @@ void GroundPiece::Initialize(const LevelData::ObjectData& data, const std::strin
 
 	breakSE_ = AudioManager::Load("SE/firldBreak.mp3");
 	hp_ = 50;
+	IsDamaged_ = false;
 }
 
 void GroundPiece::Initialize() {
 	isAlive_ = true;
+	IsDamaged_ = false;
 	hp_ = 50;
 }
 
 void GroundPiece::Update() {
-
+	// hpが半分を切ったら
+	if (hp_ <= 25) {
+		IsDamaged_ = true;
+	}
+	else {
+		IsDamaged_ = false;
+	}
 	UpdateTrans();
 }
 

@@ -86,6 +86,14 @@ void Ground::Update() {
 	}
 	CheckAlive();
 
+	uint32_t groundDamage = TextureManager::GetInstance()->FindTextureHandle("GroundDamage");
+	for (auto& ground : pieces_) {
+		ground->SetTextureHandle(0u);
+		if (ground->IsDamaged_) {
+			ground->SetTextureHandle(groundDamage);
+		}
+	}
+
 	electricBoard_->worldTransform_.rotation_.y += 0.5f * (std::numbers::pi_v<float> / 180.0f);
 	electricBoard_->worldTransform_.UpdateMatrix();
 }
@@ -96,18 +104,17 @@ void Ground::Draw(const Camera& camera) {
 	for (auto& piece : pieces_) {
 		piece->Draw(camera);
 	}
-	
+	uint32_t handle = 0u;
 	if (layer_ == "Center") {
-		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("CenterElectricBoard");
-		electricBoard_->Draw(camera, handle);
+		handle = TextureManager::GetInstance()->FindTextureHandle("CenterElectricBoard");
+		
 	}else if (layer_ == "Down") {
-		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("DownElectricBoard");
-		electricBoard_->Draw(camera, handle);
+		handle = TextureManager::GetInstance()->FindTextureHandle("DownElectricBoard");
 	}
 	else if (layer_ == "Up") {
-		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("UpElectricBoard");
-		electricBoard_->Draw(camera, handle);
+		handle = TextureManager::GetInstance()->FindTextureHandle("UpElectricBoard");
 	}
+	electricBoard_->Draw(camera, handle);
 }
 
 bool Ground::IsCollision(const float& angle, const int32_t& damage) {
@@ -130,13 +137,12 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 	}
 
 	uint32_t outline = TextureManager::GetInstance()->FindTextureHandle("Groundoutline");
-	for (auto& ground : pieces_) {
-		ground->SetTextureHandle(0u);
-	}
-
+	uint32_t outlineDamage = TextureManager::GetInstance()->FindTextureHandle("GroundoutlineDamage");
+	
 	for (auto& ground : pieces_) {
 		// 床が壊れている場合は早期リターン
 		if (!ground->GetIsAlive()) { continue; }
+
 		// tagの確認
 		if (ground->GetTag() == tag) {
 			Vector3 rot = ground->GetRotation();
@@ -151,7 +157,12 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 					if (damage != 0) {
 						ground->OnCollision(damage);
 					}
-					ground->SetTextureHandle(outline);
+					if (ground->IsDamaged_) {
+						ground->SetTextureHandle(outlineDamage);
+					}
+					else {
+						ground->SetTextureHandle(outline);
+					}
 					return true;
 				}
 			}
@@ -160,7 +171,12 @@ bool Ground::IsCollision(const float& angle, const int32_t& damage) {
 				if (damage != 0) {
 					ground->OnCollision(damage);
 				}
-				ground->SetTextureHandle(outline);
+				if (ground->IsDamaged_) {
+					ground->SetTextureHandle(outlineDamage);
+				}
+				else {
+					ground->SetTextureHandle(outline);
+				}
 				return true;
 			}
 		}
