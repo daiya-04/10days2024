@@ -74,6 +74,8 @@ public:
 
 	const Shapes::Sphere& GetCollider() { return collider_[attackMode_]; }
 
+	bool GetIsDead() const { return isDead_; }
+
 	void SetAttackMode(uint32_t layer_) {
 		if (layer_ == 0) {
 			attackMode_ = AttackMode::kHigh;

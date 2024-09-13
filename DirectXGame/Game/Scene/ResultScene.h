@@ -88,5 +88,7 @@ private:
 	std::unique_ptr<Sprite> fade_;
 	float alpha_ = 0.6f;
 	std::unique_ptr<Sprite> loseTex_;
+
+	std::unique_ptr<Sprite> winTex_;
 };
 

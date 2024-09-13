@@ -44,6 +44,9 @@ void ResultScene::WinInitialize(){
 
 	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, -20.0f };
 	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
+
+	winTex_.reset(Sprite::Create(texManager_->Load("Win.png"), { 640.0f,200.0f }));
+	winTex_->SetSize({ 22.5f,15.0f });
 }
 
 void ResultScene::WinUpdate(){
@@ -59,7 +62,7 @@ void ResultScene::WinDrawModel(){
 }
 
 void ResultScene::WinDrawUI(){
-
+	winTex_->Draw();
 }
 
 void ResultScene::Init() {
