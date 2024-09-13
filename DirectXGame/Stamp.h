@@ -106,6 +106,6 @@ private:
 	bool isHit_ = false;
 	bool preIsHit_ = false;
 
-	int32_t damage_ = 10;
+	int32_t damage_ = 30;
 
 };

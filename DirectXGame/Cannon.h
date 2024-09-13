@@ -125,7 +125,7 @@ private:
 	Vector3 targetPos_{};
 	Vector3 reflectDict_{};
 
-	uint32_t damage_ = 10;
+	uint32_t damage_ = 20;
 
 };
 

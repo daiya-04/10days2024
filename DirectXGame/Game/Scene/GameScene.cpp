@@ -163,7 +163,7 @@ void GameScene::Update() {
 
 		bool nowFallAttack = player_->GetFallingAttack();
 		if (nowFallAttack && !oldFallAttack_) {
-			stage_->IsCollision(player_->GetTransform().GetWorldPosition(), player_->GetAttackPower());
+			stage_->IsCollision(player_->GetTransform().GetWorldPosition(), (player_->GetAttackPower() * (stage_->GetLayerNumber() + 1)));
 		}
 	}
 
