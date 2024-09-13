@@ -29,7 +29,7 @@ public:
 	void SetPosition(const Vector3& position) { 
 		bodyObj_->worldTransform_.translation_ = position;
 		isDead_ = false;
-		hp_ = 25;
+		hp_ = 6;
 	}
 	void SetRotate(const Vector3& rotate) {
 		bodyObj_->worldTransform_.rotation_ = rotate;
@@ -59,7 +59,7 @@ private:
 	//Behaviorで操作する本体のトランスフォーム
 	WorldTransform PLTransform_;
 
-	int32_t hp_ = 25;
+	int32_t hp_ = 6;
 
 	bool isDead_ = false;
 

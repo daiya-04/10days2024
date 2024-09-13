@@ -17,7 +17,7 @@ void Sandbag::Initialize(){
 }
 
 void Sandbag::Update(){
-	if (hp_ < 0) {
+	if (hp_ <= 0) {
 		isDead_ = true;
 	}
 	collider_.center = bodyObj_->worldTransform_.translation_;
