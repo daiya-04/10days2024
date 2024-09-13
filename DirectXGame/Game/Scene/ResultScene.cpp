@@ -7,7 +7,9 @@
 
 bool ResultScene::isLose_ = false;
 
-ResultScene::~ResultScene() {}
+ResultScene::~ResultScene() {
+	bgm_->StopSound();
+}
 
 void ResultScene::Init() {
 	camera_.Init();
@@ -24,6 +26,19 @@ void ResultScene::Init() {
 	Object3d::SetSpotLight(&spotLight_);
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
+
+	bgm_ = AudioManager::Load("BGM/Result3.mp3");
+	bgm_->SetUniqueVolume(0.3f);
+	if (!isLose_) {
+		bgm_->Play();
+	}
+
+	loseSE_ = AudioManager::Load("SE/playerLose.mp3");
+	if (isLose_) {
+		loseSE_->Play();
+	}
+	
+	
 
 #ifdef _DEBUG
 #endif // _DEBUG

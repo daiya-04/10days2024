@@ -85,6 +85,14 @@ void Player::ApplyGlobalVariables(){
 void Player::Initialize(){
 	SetGlobalVariables();
 
+	damageSE_ = AudioManager::Load("SE/PlayerHit.mp3");
+	avoidSE_ = AudioManager::Load("SE/ナイフを投げる.mp3");
+	landingSE_ = AudioManager::Load("SE/tyakuchiNormal.mp3");
+	fallAttackSE_ = AudioManager::Load("SE/打撃4.mp3");
+	attackHitSE_ = AudioManager::Load("SE/小キック.mp3");
+	chargeAttackHitSE_ = AudioManager::Load("SE/中パンチ.mp3");
+	chargeSE_ = AudioManager::Load("SE/パンチ素振り.mp3");
+
 	modelManager_ = ModelManager::GetInstance();
 
 	bodyObj_ = std::make_unique<Object3d>();
@@ -438,6 +446,7 @@ void Player::Reset(){
 
 void Player::HitEnemyAttackCollision(){
 	behaviorRequest_ = Behavior::kHitCollision;
+	damageSE_->Play();
 }
 
 void Player::ParticleDraw(const Camera& camera){
@@ -486,6 +495,15 @@ void Player::HitEffectInit() {
 
 }
 
+void Player::PlayingHitSE() {
+	if (isHit_) {
+		chargeAttackHitSE_->Play();
+	}
+	else {
+		attackHitSE_->Play();
+	}
+}
+
 void Player::SetFloorPosition(const float& positionY) {
 	floorPositionY_ = positionY;
 }
@@ -501,7 +519,7 @@ void Player::BehaviorRootInitialize(){
 	isOnCollision_ = false;
 	isAvoid_ = false;
 	isAttack_ = false;
-
+	isHit_ = false;
 
 	workAttack_.chargeAttackNext_ = false;
 	workAttack_.chargeFlugTime_ = 0;
@@ -738,6 +756,7 @@ void Player::BehaviorAvoidInitialize(){
 	downVector_ = { 0.0f,0.0f,0.0f };
 	ColliderReset(collider_);
 	isAvoid_ = true;
+	avoidSE_->Play();
 }
 
 void Player::BehaviorAvoidUpdate(){
@@ -1133,8 +1152,10 @@ void Player::BehaviorChargeAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 	isCharge_ = true;
+	isHit_ = true;
 	chargeRotateSpeed_ = 0;
 	chargeTime_ = 0;
+	seCount_ = 0;
 	ColliderReset(attackCollider_);
 
 	waitTime_ = waitTimeBaseCharge_;
@@ -1153,6 +1174,11 @@ void Player::BehaviorChargeAttackUpdate(){
 		chargeTime_++;
 		if (chargeTime_ >= 180) {
 			chargeTime_ = 180;
+			seCount_++;
+			if (seCount_ >= 10) {
+				chargeSE_->Play();
+				seCount_ = 0;
+			}
 
 			if (isChargeMax_){
 				chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
@@ -1167,6 +1193,11 @@ void Player::BehaviorChargeAttackUpdate(){
 		else {
 			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
 			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
+
+			if (chargeTime_ == 50 || chargeTime_ == 100 || chargeTime_ == 130 || chargeTime_ == 150 || chargeTime_ == 170 ) {
+				chargeSE_->Play();
+			}
+
 		}
 		attackPower_ = 5 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
 	}
@@ -1249,6 +1280,12 @@ void Player::OnFloorCollision(){
 	PLTransform_.translation_.y = floorPositionY_;
 	downVector_ = { 0.0f,0.0f,0.0f };
 	isDown_ = false;
+	if (behavior_ == Behavior::kFallingAttack) {
+		fallAttackSE_->Play();
+	}
+	else {
+		landingSE_->Play();
+	}
 }
 
 void Player::ColliderReset(Sphere& collider){

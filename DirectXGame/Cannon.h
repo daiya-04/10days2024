@@ -47,11 +47,17 @@ public:
 
 	struct ShootData {
 		float param_ = 0.0f;
+		//開始点
 		Vector3 startPoint_{};
+		//制御店
 		Vector3 controlPoint_{};
+		//着弾点
 		Vector3 impactPoint_{};
+		//着弾地点までの距離
 		float impactPointRange_ = 16.0f;
+		//制御点の高さ
 		float controlPointHeight_ = 12.0f;
+		//着弾点の高さ
 		float impactPointHeight_ = -3.0f;
 	};
 

@@ -15,6 +15,7 @@
 #include"CollisionManager.h"
 #include"ControlUI.h"
 #include"Character/Sandbag/Sandbag.h"
+#include "AudioManager.h"
 
 class TitleScene : public IScene {
 public:
@@ -77,5 +78,7 @@ private:
 	int32_t killCount_ = 0;
 
 	std::unique_ptr<ControlUI> controlUI_;
+
+	Audio* bgm_ = nullptr;
 };
 

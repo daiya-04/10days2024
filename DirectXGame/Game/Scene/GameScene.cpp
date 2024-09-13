@@ -17,7 +17,7 @@ GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
-	
+	bgm_->StopSound();
 }
 
 void GameScene::Init(){
@@ -41,6 +41,11 @@ void GameScene::Init(){
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
 	TextureManager::GetInstance()->LoadTextureMap("CenterElectricBoard", "CenterElectricBoard.png");
+
+	bgm_ = AudioManager::Load("BGM/Game3.mp3");
+	bgm_->SetUniqueVolume(0.3f);
+	bgm_->Play();
+	
 
 	meteor_ = MeteorManager::GetInstance();
 	meteor_->Init(meteorModel);

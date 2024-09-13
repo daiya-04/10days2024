@@ -139,7 +139,7 @@ void Meteor::AttackUpdate() {
 
 	warningZone_->worldTransform_.scale_ = Lerp(zoneParam_, Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f) * 2.5f);
 
-	if (obj_->worldTransform_.translation_.y <= 0.0f) {
+	if (obj_->worldTransform_.translation_.y <= -0.5f) {
 		Hit();
 	}
 

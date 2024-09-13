@@ -78,6 +78,7 @@ void CannonManager::Update() {
 			if (!cannons_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
 				cannons_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex], offsets_[nextIndex].Normalize());
 				indexCount_ = 0;
+				//attackTime_ = RandomEngine::GetIntRandom(30, 40);
 				break;
 			}
 

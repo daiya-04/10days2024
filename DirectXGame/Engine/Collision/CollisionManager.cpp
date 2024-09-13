@@ -21,6 +21,7 @@ void CollisionManager::AllCollision(){
 			player_->AddRecord(0);
 			boss_->HitPlayerAttackCollision(player_->GetAttackPower());
 			player_->HitEffectInit();
+			player_->PlayingHitSE();
 		}
 	}
 	else if (sandbag_){
@@ -33,6 +34,7 @@ void CollisionManager::AllCollision(){
 			player_->AddRecord(1);
 			sandbag_->OnCollision(player_->GetAttackPower());
 			player_->HitEffectInit();
+			player_->PlayingHitSE();
 		}
 	}
 }

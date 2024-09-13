@@ -79,6 +79,7 @@ void StampManager::Update() {
 			if (!stamps_[nextIndex]->IsLife() && pieceAlives_[nextIndex]) {
 				stamps_[nextIndex]->AttackStart(basePos_ + offsets_[nextIndex], offsets_[nextIndex].Normalize());
 				indexCount_ = 0;
+				//attackTime_ = RandomEngine::GetIntRandom(30, 40);
 				break;
 			}
 
