@@ -34,6 +34,7 @@ public:
 
 	bool GetIsEnd()const { return isEnd_; }
 	Vector3 GetGroundPosition() const;
+	Vector3 GetGroundPosition(int32_t index) const;
 	Vector3 GetNextGroundPosition() ;
 	uint32_t GetLayerNumber() const { return nowLayerNumber_; } // 現在の階層番号の取得 012 = 上中下
 	std::array<bool, 16u> GetPieceAlive() const { return pieceAlives_; } // 現在のLayerのpieceの生存状況をフラグで取得

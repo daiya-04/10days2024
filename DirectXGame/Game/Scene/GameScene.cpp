@@ -114,26 +114,7 @@ void GameScene::Update() {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
 
-	// debugCamera
-	if (debugCamera_->Update()) {
-		camera_.translation_ = debugCamera_->GetCameraTranslate();
-		camera_.rotation_ = debugCamera_->GetCameraRotate();
-	}
-	else {
-		followCamera_->Update();
-		camera_.translation_ = followCamera_->GetCameraTranslate();
-		camera_.rotation_ = followCamera_->GetCameraRotate();
-
-	}
-
 #endif // _DEBUG
-
-#ifdef NDEBUG
-	followCamera_->Update();
-	camera_.translation_ = followCamera_->GetCameraTranslate();
-	camera_.rotation_ = followCamera_->GetCameraRotate();
-#endif // NDEBUG
-
 
 	floor_->worldTransform_.UpdateMatrix();
 
@@ -143,11 +124,8 @@ void GameScene::Update() {
 	meteor_->Update();
 	cannon_->Update();
 	stamp_->Update();
-	static Vector2 minmax = Vector2(26.2f, 37.0f);
-#ifdef _DEBUG
-	ImGui::DragFloat2("TestMinMax", &minmax.x, 0.1f);
-#endif // _DEBUG
-	player_->Update(Vector3(0.0f, 0.0f, 0.0f), minmax);
+
+	player_->Update(Vector3(0.0f, 0.0f, 0.0f), Vector2(26.2f, 37.0f));
 	
 	// playerとstageの当たり判定
 	if (!stage_->IsPlayerCollision(player_->GetTransform().GetWorldPosition())) {
@@ -273,6 +251,21 @@ void GameScene::Update() {
 	collisionManager_->AllCollision();
 	oldFallAttack_ = player_->GetFallingAttack();
 
+	// Camera
+	if (debugCamera_->Update()) {
+		camera_.translation_ = debugCamera_->GetCameraTranslate();
+		camera_.rotation_ = debugCamera_->GetCameraRotate();
+	}
+	else {
+
+		int32_t index = stage_->GetLayerNumber() - 1;
+		if (index <= 0) { index = 0; }
+		Vector3 pos = stage_->GetGroundPosition(index);
+
+		followCamera_->Update();
+		camera_.translation_ = followCamera_->GetCameraTranslate();
+		camera_.rotation_ = followCamera_->GetCameraRotate();
+	}
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();
