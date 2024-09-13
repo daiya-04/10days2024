@@ -1,6 +1,7 @@
 #include "Stage.h"
 #include "ImGuiManager.h"
 #include <GlobalVariables.h>
+#include "TextureManager.h"
 
 void Stage::Initialize(const LevelData* data) {
 
@@ -173,7 +174,20 @@ void Stage::SaveGlobalVariables() const {
 
 void Stage::TitleInitialize() {
 	SetGlobalVariables();
-	
+	auto texManager = TextureManager::GetInstance();
+	std::vector<std::string> texturePaths = {
+		"boardTexture/dashMove.png",
+		"boardTexture/success.png",
+		"boardTexture/success.png",
+		"boardTexture/success.png",
+	};
+	for (uint32_t index = 0u; index < texturePaths.size(); index++) {
+		TextureManager::GetInstance()->LoadTextureMap(("Board" + std::to_string(index)).c_str(), texturePaths.at(index));
+	}
+	boards_.at(0)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::DashMove)).c_str()));
+	boards_.at(1)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::DashMove)).c_str()));
+	boards_.at(2)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::DashMove)).c_str()));
+	boards_.at(3)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::DashMove)).c_str()));
 
 }
 
@@ -186,6 +200,11 @@ void Stage::TitleUpdate() {
 		board->Update();
 	}
 
+}
+
+void Stage::BoardAnimation(const int32_t& index) {
+	boards_.at(index)->StartAnimation(true);
+	boards_.at(index)->SetTextureHandle(TextureManager::GetInstance()->FindTextureHandle(("Board" + std::to_string(BoardType::Attack)).c_str()));
 }
 
 void Stage::ImGuiProc() {

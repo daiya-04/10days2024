@@ -52,6 +52,8 @@ public: // title用
 
 	void TitleUpdate();
 
+	void BoardAnimation(const int32_t& index);
+
 private:
 	void ImGuiProc();
 
@@ -75,5 +77,14 @@ private:
 	BoardParam boardParam_;
 	std::string groupName_ = "boards";
 	std::shared_ptr<Model> boardModel_;
+
+	enum BoardType {
+		DashMove,
+		Attack,
+		DownAttack,
+		Success,
+
+		kMaxNum
+	};
 
 };
