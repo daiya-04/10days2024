@@ -6,7 +6,7 @@
 #include "Animation.h"
 #include "CollisionShapes.h"
 #include "Sprite.h"
-
+#include"AudioManager.h"
 #include <map>
 #include <functional>
 #include <memory>
@@ -127,6 +127,8 @@ private:
 	Vector3 basePos_{};
 	int32_t shakeCount_ = 0;
 	int32_t shakeTime_ = 10;
+
+	Audio* reflectAttackHitSE_ = nullptr;
 
 	bool isShake_ = false;
 

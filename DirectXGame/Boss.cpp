@@ -8,6 +8,7 @@
 #include "TextureManager.h"
 #include "RandomEngine.h"
 
+
 void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	obj_.reset(Object3d::Create(model));
@@ -34,6 +35,8 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
 
 	basePos_ = obj_->worldTransform_.translation_;
+
+	reflectAttackHitSE_ = AudioManager::Load("SE/中パンチ.mp3");
 
 	isDead_ = false;
 
@@ -94,6 +97,7 @@ void Boss::DrawUI() {
 
 void Boss::AttackHit() {
 	hp_ -= 15;
+	reflectAttackHitSE_->Play();
 	hp_ = std::clamp(hp_, 0, maxHp_);
 	ShakeInit();
 }
