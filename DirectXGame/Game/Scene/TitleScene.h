@@ -3,6 +3,7 @@
 #include <memory>
 #include <list>
 #include "Stage/Stage.h"
+#include "SkyBox.h"
 
 #include "Sprite.h"
 #include "Object3d.h"
@@ -69,6 +70,8 @@ private:
 	std::unique_ptr<Sandbag> sandbag_;
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> shelfobj_;
+
+	std::unique_ptr<SkyBox> skyBox_;
 
 	//鏡餅置くよう用
 	std::unique_ptr<Object3d> titleobj_;

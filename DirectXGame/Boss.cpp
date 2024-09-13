@@ -35,6 +35,8 @@ void Boss::Init(const std::shared_ptr<Model>& model) {
 
 	basePos_ = obj_->worldTransform_.translation_;
 
+	isDead_ = false;
+
 }
 
 void Boss::Update() {
@@ -55,6 +57,7 @@ void Boss::Update() {
 	Shakeing();
 	
 	if (hp_ <= 0) {
+		isDead_ = true;
 		behaviorRequest_ = Behavior::kDead;
 	}
 

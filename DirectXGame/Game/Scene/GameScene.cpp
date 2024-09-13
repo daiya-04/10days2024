@@ -118,6 +118,9 @@ void GameScene::Update() {
 	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_3)) {
 		SceneManager::GetInstance()->ChangeScene("Debug");
 	}
+	if (Input::GetInstance()->PushKey(DIK_LCONTROL) && Input::GetInstance()->TriggerKey(DIK_4)) {
+		SceneManager::GetInstance()->ChangeScene("Result");
+	}
 
 	// debugCamera
 	if (debugCamera_->Update()) {
@@ -272,6 +275,9 @@ void GameScene::Update() {
 		meteor_->Reset();
 		cannon_->Reset();
 		stamp_->Reset();
+	}
+	if (boss_->GetIsDead()){
+		SceneManager::GetInstance()->ChangeScene("Result");
 	}
 
 	if (player_->GetIsDead()){
