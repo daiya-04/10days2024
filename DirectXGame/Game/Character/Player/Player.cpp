@@ -511,6 +511,9 @@ void Player::SetFloorPosition(const float& positionY) {
 void Player::BehaviorRootInitialize(){
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
 	nowRHandPos_ = RHandTransform_.translation_;
 	nowLHandPos_ = LHandTransform_.translation_;
 	handT_ = 0.0f;
@@ -644,6 +647,9 @@ void Player::BehaviorAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
+	RHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 
@@ -751,6 +757,9 @@ void Player::BehaviorAttackUpdate(){
 
 void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
 	RHandTransform_.translation_ = { 2.0f,0.0f,-2.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
 	downVector_ = { 0.0f,0.0f,0.0f };
@@ -792,6 +801,9 @@ void Player::BehaviorAvoidUpdate(){
 }
 
 void Player::BehaviorDashInitialize(){
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
 	workAttack_.comboIndex_ = 0;
 	workAttack_.comboNext_ = false;
 	nowRHandPos_ = RHandTransform_.translation_;
@@ -914,6 +926,10 @@ void Player::BehaviorFallingAttackInitialize(){
 	downVector_ = { 0.0f,jumpPowerAttack_,0.0f };
 	basePlayerRotateMatY_ = playerRotateMatY_;
 
+	RHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
+
 	xRadian_ = 0;
 	yRadian_ = 0;
 	fallingEaseT_ = 0.0f;
@@ -1028,6 +1044,9 @@ void Player::BehaviorSecondAttackInitialize(){
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
+
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
 	isAttack_ = true;
@@ -1045,6 +1064,9 @@ void Player::BehaviorThirdAttackInitialize(){
 	easeT_ = 0;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+
+	RHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
+	LHandTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
 	waitTime_ = waitTimeBase_;
 	isEndAttack_ = false;
@@ -1129,11 +1151,11 @@ void Player::thirdAttackMotion(){
 
 	playerRotateMatX_ = MakeRotateXMatrix(radian);
 
-	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.0f, easeT_);
+	RHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, 2.0f, 1.5f, easeT_);
 	RHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
 	RHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
 
-	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.0f, easeT_);
+	LHandTransform_.translation_.x = Easing::Ease(Easing::EaseName::EaseInBack, -2.0f, -1.5f, easeT_);
 	LHandTransform_.translation_.y = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 3.0f, easeT_);
 	LHandTransform_.translation_.z = Easing::Ease(Easing::EaseName::EaseInBack, 0.0f, 5.0f, easeT_);
 
@@ -1149,6 +1171,10 @@ void Player::BehaviorChargeAttackInitialize(){
 	workAttack_.comboNext_ = false;
 	workAttack_.attackParameter_ = 0;
 	easeT_ = 0;
+	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
+
+
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
 	isCharge_ = true;
@@ -1172,8 +1198,8 @@ void Player::BehaviorChargeAttackUpdate(){
 		
 
 		chargeTime_++;
-		if (chargeTime_ >= 180) {
-			chargeTime_ = 180;
+		if (chargeTime_ >= chargeTimeMax_) {
+			chargeTime_ = chargeTimeMax_;
 			seCount_++;
 			if (seCount_ >= 10) {
 				chargeSE_->Play();
@@ -1191,17 +1217,19 @@ void Player::BehaviorChargeAttackUpdate(){
 			
 		}
 		else {
-			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
-			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / 180.0f);
+			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / float(chargeTimeMax_));
+			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / float(chargeTimeMax_));
 
 			if (chargeTime_ == 50 || chargeTime_ == 100 || chargeTime_ == 130 || chargeTime_ == 150 || chargeTime_ == 170 ) {
 				chargeSE_->Play();
 			}
 
 		}
-		attackPower_ = 5 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
+		attackPower_ = 10 + (int32_t)(basePower_.chargeAttack * (float)((float)(chargeTime_) / 180.0f));
 	}
 	else {
+		RHandTransform_.scale_ = { 1.5f,1.5f,1.5f };
+
 		chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 		ColliderReset(reflectionCollider_);
 		isCharge_ = false;

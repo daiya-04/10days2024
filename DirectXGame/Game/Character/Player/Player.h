@@ -311,6 +311,8 @@ private:
 	float chargeRotate_ = 0.0f;
 	//チャージ攻撃している時間
 	int32_t chargeTime_ = 0;
+
+	int32_t chargeTimeMax_ = 90;
 	//チャージ攻撃中か
 	bool isCharge_ = false;
 
