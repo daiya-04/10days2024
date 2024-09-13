@@ -106,7 +106,7 @@ void Ground::Draw(const Camera& camera) {
 	}
 	else if (layer_ == "Up") {
 		uint32_t handle = TextureManager::GetInstance()->FindTextureHandle("UpElectricBoard");
-		electricBoard_->Draw(camera);
+		electricBoard_->Draw(camera, handle);
 	}
 }
 
