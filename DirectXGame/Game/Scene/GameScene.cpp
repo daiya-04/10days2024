@@ -40,10 +40,6 @@ void GameScene::Init(){
 	std::shared_ptr<Model> cannonModel = ModelManager::LoadOBJ("CannonBall");
 	std::shared_ptr<Model> stampModel = ModelManager::LoadOBJ("Stamp");
 
-	TextureManager::GetInstance()->LoadTextureMap("UpElectricBoard", "UpperElectricBoard.png");
-	TextureManager::GetInstance()->LoadTextureMap("CenterElectricBoard", "CenterElectricBoard.png");
-	TextureManager::GetInstance()->LoadTextureMap("DownElectricBoard", "LowerElectricBoard.png");
-
 	bgm_ = AudioManager::Load("BGM/Game3.mp3");
 	bgm_->SetUniqueVolume(0.3f);
 	bgm_->Play();
