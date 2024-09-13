@@ -66,6 +66,8 @@ public:
 
 	void SetFall(const bool& flag) { isDown_ = flag; }
 
+	void SetReflect() { isReflect_ = true; }
+
 	void SetShadowDraw(const bool& flag) { isShadowDraw_ = flag; }
 
 	void AddRecord(uint32_t number) { hitRecord_.AddRecord(number); }
@@ -443,6 +445,8 @@ private:
 	int32_t seCount_ = 0;
 
 	bool isHit_ = false;
+
+	bool isReflect_ = false;
 
 };
 

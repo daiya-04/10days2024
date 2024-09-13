@@ -20,10 +20,13 @@ void SceneManager::Init() {
 
 	fadeTex_ = TextureManager::Load("Black.png");
 
+
 	fade_.reset(Sprite::Create(fadeTex_, { 640.0f,360.0f }));
 	fade_->SetSize({ 1280.0f,720.0f });
 	fade_->color_ = Vector4(1.0f, 1.0f, 1.0f, alpha_);
-
+	fade2_.reset(Sprite::Create(fadeTex_, { 640.0f,360.0f }));
+	fade2_->SetSize({ 1280.0f,720.0f });
+	fade2_->color_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	
 
 }
@@ -39,13 +42,17 @@ void SceneManager::Update(){
 		}
 
 		if (alpha_ >= 1.0f) {
+			isBlack_ = true;
 			scene_ = std::move(nextScene_);
 			scene_->Init();
 		}
 	}else {
 		alpha_ -= 0.04f;
 	}
-	if (alpha_ >= 1.0f) { alpha_ = 1.0f; }
+	if (alpha_ >= 0.96f&&!isBlack_) { alpha_ = 1.0f; isBlack_ = true; }
+	else{
+		isBlack_ = false;
+	}
 	if (alpha_ <= 0.0f) { alpha_ = 0.0f; }
 
 	if (!nextScene_ && alpha_ <= 0.0f) {
@@ -118,6 +125,10 @@ void SceneManager::Draw(ID3D12GraphicsCommandList* commandList) {
 
 	scene_->DrawUI();
 	fade_->Draw();
+	if (isBlack_){
+		fade2_->Draw();
+		
+	}
 	
 	Sprite::postDraw();
 

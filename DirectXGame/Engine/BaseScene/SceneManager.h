@@ -15,8 +15,9 @@ private:
 
 	uint32_t fadeTex_ = 0;
 	std::unique_ptr<Sprite> fade_;
+	std::unique_ptr<Sprite> fade2_;
 	float alpha_ = 0.0f;
-
+	bool isBlack_ = false;
 public:
 
 	static SceneManager* GetInstance();
