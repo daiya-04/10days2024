@@ -86,7 +86,7 @@ void Ground::Update() {
 	}
 	CheckAlive();
 
-	electricBoard_->worldTransform_.rotation_.y += 0.005f;
+	electricBoard_->worldTransform_.rotation_.y += 0.5f * (std::numbers::pi_v<float> / 180.0f);
 	electricBoard_->worldTransform_.UpdateMatrix();
 }
 
