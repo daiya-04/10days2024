@@ -64,12 +64,6 @@ void GameScene::Init(){
 
 	camera_.translation_ = { 0.0f,5.0f,-20.0f };
 
-#ifdef _DEBUG
-	debugCamera_ = std::make_unique<DebugCamera>();
-#endif // _DEBUG
-
-	
-
 	levelData_ = LevelLoader::LoadFile("stageTest");
 
 	stage_ = std::make_unique<Stage>();
@@ -270,20 +264,14 @@ void GameScene::Update() {
 	oldFallAttack_ = player_->GetFallingAttack();
 
 	// Camera
-	if (debugCamera_->Update()) {
-		camera_.translation_ = debugCamera_->GetCameraTranslate();
-		camera_.rotation_ = debugCamera_->GetCameraRotate();
-	}
-	else {
+	int32_t index = stage_->GetLayerNumber() - 1;
+	if (index <= 0) { index = 0; }
+	Vector3 pos = stage_->GetGroundPosition(index);
 
-		int32_t index = stage_->GetLayerNumber() - 1;
-		if (index <= 0) { index = 0; }
-		Vector3 pos = stage_->GetGroundPosition(index);
+	followCamera_->Update();
+	camera_.translation_ = followCamera_->GetCameraTranslate();
+	camera_.rotation_ = followCamera_->GetCameraRotate();
 
-		followCamera_->Update();
-		camera_.translation_ = followCamera_->GetCameraTranslate();
-		camera_.rotation_ = followCamera_->GetCameraRotate();
-	}
 
 	camera_.UpdateMatrix();
 	camera_.UpdateCameraPos();

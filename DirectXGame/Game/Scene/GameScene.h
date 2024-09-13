@@ -76,7 +76,6 @@ private:
 
 	LevelData* levelData_;
 	std::unique_ptr<Stage> stage_;
-	std::unique_ptr<DebugCamera> debugCamera_;
 	std::unique_ptr<FollowCamera> followCamera_;
 
 	std::unique_ptr<SkyBox> skyBox_;
