@@ -8,63 +8,75 @@
 #include <fstream>
 #include <vector>
 
+class AudioManager;
+
 class Audio{
 private:
 
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-public:
-	static const size_t kMaxNumPlayHandles = 256;
+	friend class AudioManager;
 
-	//音声データ
-	struct SoundData {
-		std::string filename;
-		//波形フォーマット
-		WAVEFORMATEX wfex;
-		//バッファの先頭アドレス
-		std::vector<BYTE> pBuffer;
-		//バッファのサイズ
-		uint32_t bufferSize;
+public:
+
+	enum class AudioType {
+		BGM,
+		SE,
 	};
-public:
-	static Audio* GetInstance();
-
-	static size_t Load(const std::string& filename);
-private:
-
-	size_t FindUnUsedPlayHandle();
-
-	void DestroyPlayHandle(size_t playHandle);
 
 public:
-	void Initialize();
+	static void Init();
+	static void DstoroyVoice();
 	void Update();
 	//音声データの解放
-	void SoundUnload(size_t soundHandle);
+	void SoundUnload();
 	//音声再生
-	size_t Play(size_t soundHandle, float volume = 1.0f,bool loop = false);
+	void Play();
 
-	void SoundPlayLoopEnd(size_t playhandle);
+	//ループ終了
+	void SoundPlayLoopEnd();
 	//音声ロード
+	//size_t LoadWaveInternal(const std::string& filename);
 
-	size_t LoadInternal(const std::string& filename);
+	//再生停止
+	void StopSound();
+	//ピッチの設定
+	void SetPitch(float pitch);
+	//音量設定
+	void SetVolume(float volume);
+	//インスタンス毎の音量設定
+	void SetUniqueVolume(float volume) { volume_ = volume; }
+	//再生しているか
+	bool IsValidPlayhandle();
 
-	void StopSound(size_t playhandle);
-	void SetPitch(size_t playHandle, float pitch);
-	void SetValume(size_t playHandle, float volume);
-	bool IsValidPlayhandle(size_t playHandle);
+	void DestroyPlayHandle();
+
+	bool IsStop()const { return isStop_; }
+
+public:
+
+	static float bgmVolume_;
+	static float seVolume_;
 
 private:
 
-	ComPtr<IXAudio2> xAudio2_;
-	IXAudio2MasteringVoice* masterVoice_ = nullptr;
-	std::vector<SoundData> soundData_;
-	IXAudio2SourceVoice* sourceVoices_[kMaxNumPlayHandles]{ nullptr };
+	static ComPtr<IXAudio2> xAudio2_;
+	static IXAudio2MasteringVoice* masterVoice_;
+	//std::vector<SoundData> soundData_;
+	IXAudio2SourceVoice* sourceVoices_ = nullptr;
 
-private:
-	Audio() = default;
-	Audio(const Audio&) = delete;
-	Audio& operator=(const Audio&) = delete;
-	~Audio();
+	std::string filename_;
+	//波形フォーマット
+	WAVEFORMATEX wfex_;
+	//バッファの先頭アドレス
+	std::vector<BYTE> buffer_;
+	//バッファのサイズ
+	uint32_t bufferSize_;
+	AudioType audioType_{};
+
+	bool isStop_ = true;
+
+	float volume_ = 1.0f;
+
 };
 

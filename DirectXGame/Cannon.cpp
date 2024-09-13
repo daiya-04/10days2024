@@ -1,0 +1,173 @@
+#include "Cannon.h"
+
+#include "TextureManager.h"
+#include "ModelManager.h"
+
+
+void Cannon::Init(const std::shared_ptr<Model>& model) {
+
+	obj_.reset(Object3d::Create(model));
+	warningZone_.reset(Object3d::Create(ModelManager::LoadOBJ("WarningZone")));
+	trail_.reset(GPUParticle::Create(TextureManager::Load("circle.png"), 5000));
+
+	trail_->isLoop_ = true;
+
+	trail_->emitter_.count = 100;
+	trail_->emitter_.color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	trail_->emitter_.direction = Vector3(0.0f, 1.0f, 1.0f);
+	trail_->emitter_.angle = 360.0f;
+	trail_->emitter_.frequency = 1.0f / 60.0f;
+	trail_->emitter_.lifeTime = 40.0f / 60.0f;
+	trail_->emitter_.scale = 0.5f;
+	trail_->emitter_.size = Vector3(0.3f, 0.3f, 0.3f);
+	trail_->emitter_.speed = 0.0f;
+
+
+	isLife_ = false;
+}
+
+void Cannon::Update() {
+	preIsLife_ = isLife_;
+
+	if (phaseRequest_) {
+
+		phase_ = phaseRequest_.value();
+
+		phaseInitTable_[phase_]();
+
+		phaseRequest_ = std::nullopt;
+	}
+
+	phaseUpdateTable_[phase_]();
+
+	trail_->Update();
+
+	obj_->worldTransform_.UpdateMatrix();
+	warningZone_->worldTransform_.UpdateMatrix();
+	trail_->emitter_.translate = obj_->GetWorldPos();
+	UpdateCollider();
+}
+
+void Cannon::Draw(const Camera& camera) {
+	if (!isLife_) { return; }
+	obj_->Draw(camera);
+	warningZone_->Draw(camera);
+}
+
+void Cannon::DrawParticle(const Camera& camera) {
+
+	trail_->Draw(camera);
+
+}
+
+void Cannon::Hit() {
+
+	phaseRequest_ = Phase::kRoot;
+	isLife_ = false;
+
+}
+
+void Cannon::Reset() {
+	isLife_ = false;
+	preIsLife_ = false;
+	phaseRequest_ = Phase::kRoot;
+}
+
+void Cannon::Reflection() {
+
+	phaseRequest_ = Phase::kReflected;
+
+}
+
+void Cannon::AttackStart(const Vector3& pos, const Vector3& direction) {
+
+	obj_->worldTransform_.translation_ = pos;
+	obj_->worldTransform_.scale_ = {};
+	isLife_ = true;
+
+	shootData_.startPoint_ = pos;
+	shootData_.impactPoint_ = pos;
+	shootData_.impactPoint_ += direction * shootData_.impactPointRange_;
+	shootData_.impactPoint_.y += shootData_.impactPointHeight_;
+	shootData_.controlPoint_ = pos;
+	shootData_.controlPoint_ += direction * 8.0f;
+	shootData_.controlPoint_.y += shootData_.controlPointHeight_;
+
+	warningZone_->worldTransform_.translation_ = shootData_.impactPoint_;
+	warningZone_->worldTransform_.translation_.y += 0.01f;
+	warningZone_->worldTransform_.scale_ = {};
+
+	collider_.radius = 1.5f;
+
+	phaseRequest_ = Phase::kCharge;
+
+	obj_->worldTransform_.UpdateMatrix();
+	warningZone_->worldTransform_.UpdateMatrix();
+	UpdateCollider();
+}
+
+void Cannon::RootInit() {
+
+	trail_->isLoop_ = false;
+
+}
+
+void Cannon::RootUpdate() {
+
+
+
+}
+
+void Cannon::ChargeInit() {
+
+	chargeData_.param_ = 0.0f;
+
+}
+
+void Cannon::ChargeUpdate() {
+
+	chargeData_.param_ += 0.01f;
+	chargeData_.param_ = std::clamp(chargeData_.param_, 0.0f, 1.0f);
+
+	obj_->worldTransform_.scale_ = Lerp(chargeData_.param_, chargeData_.minScale_, chargeData_.maxScale_);
+	warningZone_->worldTransform_.scale_ = Lerp(chargeData_.param_, Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f) * 2.0f);
+
+	if (chargeData_.param_ >= 1.0f) {
+		phaseRequest_ = Phase::kShoot;
+	}
+
+}
+
+void Cannon::ShootInit() {
+
+	shootData_.param_ = 0.0f;
+	obj_->worldTransform_.scale_ = Vector3(1.0f, 1.0f, 1.0f) * 1.5f;
+	trail_->isLoop_ = true;
+
+}
+
+void Cannon::ShootUpdate() {
+
+	shootData_.param_ += 0.01f;
+	shootData_.param_ = std::clamp(shootData_.param_, 0.0f, 1.0f);
+
+	obj_->worldTransform_.translation_ = Bazier(shootData_.startPoint_, shootData_.controlPoint_, shootData_.impactPoint_,shootData_.param_);
+
+	if (shootData_.param_ >= 1.0f) {
+		Hit();
+	}
+
+}
+
+void Cannon::ReflectedInit() {
+
+	reflectDict_ = (targetPos_ - obj_->worldTransform_.translation_).Normalize();
+
+}
+
+void Cannon::ReflectedUpdate() {
+	float speed = 0.7f;
+
+	obj_->worldTransform_.translation_ += reflectDict_ * speed;
+
+}

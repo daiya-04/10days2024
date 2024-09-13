@@ -1,0 +1,9 @@
+{
+    "PlayerAttackDamege": {
+        "chargeAttack": 20,
+        "fallingAttack": 10,
+        "firstAttack": 1,
+        "secondAttack": 1,
+        "thirdAttack": 4
+    }
+}

@@ -102,6 +102,16 @@ void GlobalVariables::SetValue(const std::string& groupName, const std::string& 
 
 }
 
+void GlobalVariables::SetValue(const std::string& groupName, const std::string& key, const Vector2& value) {
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+	// 新しい項目のデータを設定
+	Item newItem{};
+	newItem.value = value;
+	// 設定した項目をstd::mapに追加
+	group.items[key] = newItem;
+}
+
 void GlobalVariables::SetValue(const std::string& groupName, const std::string& key, const Vector3& value) {
 	// グループの参照を取得
 	Group& group = datas_[groupName];
@@ -111,6 +121,16 @@ void GlobalVariables::SetValue(const std::string& groupName, const std::string& 
 	// 設定した項目をstd::mapに追加
 	group.items[key] = newItem;
 
+}
+
+void GlobalVariables::SetValue(const std::string& groupName, const std::string& key, const std::string& value) {
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+	// 新しい項目のデータを設定
+	Item newItem{};
+	newItem.value = value;
+	// 設定した項目をstd::mapに追加
+	group.items[key] = newItem;
 }
 
 void GlobalVariables::SaveFile(const std::string& groupName) {
@@ -285,6 +305,18 @@ void GlobalVariables::AddItem(const std::string& groupName, const std::string& k
 	}
 }
 
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, const Vector2& value) {
+	auto group = datas_.find(groupName);
+
+	if (group == datas_.end()) {
+		return;
+	}
+
+	if (group->second.items.find(key) == group->second.items.end()) {
+		SetValue(groupName, key, value);
+	}
+}
+
 void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, const Vector3& value) {
 	auto group = datas_.find(groupName);
 
@@ -294,6 +326,51 @@ void GlobalVariables::AddItem(const std::string& groupName, const std::string& k
 
 	if (group->second.items.find(key) == group->second.items.end()) {
 		SetValue(groupName, key, value);
+	}
+}
+
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, const std::string& value) {
+	auto group = datas_.find(groupName);
+
+	if (group == datas_.end()) {
+		return;
+	}
+
+	if (group->second.items.find(key) == group->second.items.end()) {
+		SetValue(groupName, key, value);
+	}
+}
+
+void GlobalVariables::ChackFiles(std::vector<std::string>& fileName) {
+	if (!std::filesystem::exists(kDirectoryPath)) {
+		//std::string message = "Failed open data file for write.";
+		//MessageBoxA(nullptr, message.c_str(), "Element", 0);
+		assert(0);
+		return;
+	}
+
+	std::filesystem::directory_iterator dir_it(kDirectoryPath);
+
+	for (const std::filesystem::directory_entry& entry : dir_it) {
+		//ファイルパスを取得
+		const std::filesystem::path& filePath = entry.path();
+
+		//ファイル拡張子を取得
+		std::string extension = filePath.extension().string();
+		//.jsonファイル以外はスキップ
+		if (extension.compare(".json") != 0) {
+			continue;
+		}
+
+		bool flag = false;
+		for (auto& i : fileName) {
+			if (i.c_str() == filePath.stem().string()) {
+				flag = true;
+			}
+		}
+		if (!flag) {
+			fileName.push_back(filePath.stem().string());
+		}
 	}
 }
 
@@ -321,8 +398,18 @@ float GlobalVariables::GetFloatValue(const std::string& groupName, const std::st
 	return std::get<float>(group.items.find(key)->second.value);
 }
 
-Vector3 GlobalVariables::GetVec3Value(const std::string& groupName, const std::string& key) const {
+Vector2 GlobalVariables::GetVec2Value(const std::string& groupName, const std::string& key) const {
 
+	assert(datas_.find(groupName) != datas_.end());
+
+	const Group& group = datas_.at(groupName);
+
+	assert(group.items.find(key) != group.items.end());
+
+	return std::get<Vector2>(group.items.find(key)->second.value);
+}
+
+Vector3 GlobalVariables::GetVec3Value(const std::string& groupName, const std::string& key) const {
 
 	assert(datas_.find(groupName) != datas_.end());
 
@@ -331,4 +418,14 @@ Vector3 GlobalVariables::GetVec3Value(const std::string& groupName, const std::s
 	assert(group.items.find(key) != group.items.end());
 
 	return std::get<Vector3>(group.items.find(key)->second.value);
+}
+
+std::string GlobalVariables::GetStringValue(const std::string& groupName, const std::string& key) const {
+	assert(datas_.find(groupName) != datas_.end());
+
+	const Group& group = datas_.at(groupName);
+
+	assert(group.items.find(key) != group.items.end());
+
+	return std::get<std::string>(group.items.find(key)->second.value);
 }

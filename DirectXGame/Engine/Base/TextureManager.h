@@ -5,6 +5,7 @@
 #include <array>
 #include <d3dx12.h>
 #include <DirectXTex.h>
+#include <unordered_map>
 
 class TextureManager{
 private:
@@ -46,6 +47,20 @@ public:
 	//リソースの生成
 	static ComPtr<ID3D12Resource> CreateBufferResource(ComPtr<ID3D12Device> device, size_t sizeInBytes);
 
+	/// <summary>
+	/// TextureのLoad
+	/// </summary>
+	/// <param name="name">handle名前 キー</param>
+	/// <param name="textureName">LoadするTextureFilePath</param>
+	void LoadTextureMap(std::string name, std::string textureName);
+
+	/// <summary>
+	/// TextureのHandleを取得
+	/// </summary>
+	/// <param name="name">handleのキーの名前</param>
+	/// <returns>Handle</returns>
+	uint32_t FindTextureHandle(const std::string& name) const;
+
 private:
 
 	uint32_t LoadInternal(const std::string& fileName);
@@ -66,5 +81,7 @@ private:
 	TextureManager(const TextureManager&) = delete;
 	TextureManager& operator=(const TextureManager&) = delete;
 
-};
+	// textureHandle格納用コンテナ
+	std::unordered_map<std::string, uint32_t> handleContainer_;
 
+};

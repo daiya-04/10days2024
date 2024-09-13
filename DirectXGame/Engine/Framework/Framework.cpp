@@ -11,21 +11,21 @@
 #include "Particle.h"
 #include "Line.h"
 #include "GlobalVariables.h"
-#include "Audio.h"
+#include "AudioManager.h"
 #include "SkyBox.h"
 #include "GPUParticle.h"
 
 
 void DSFramework::Init(){
 	
-	WinApp::GetInstance()->CreateGameWindow(L"LE2A_12_セト_ダイヤ");
+	WinApp::GetInstance()->CreateGameWindow(L"3008_おちもち");
 
 	
 	DirectXCommon::GetInstance()->Initialize();
 	ImGuiManager::GetInstance()->Initialize();
 	
 	Input::GetInstance()->Initialize();
-	Audio::GetInstance()->Initialize();
+	AudioManager::GetInstance()->Init();
 
 	TextureManager::GetInstance()->Initialize();
 
@@ -54,7 +54,7 @@ void DSFramework::Update(){
 	ImGuiManager::GetInstance()->Begin();
 
 	Input::GetInstance()->Update();
-	Audio::GetInstance()->Update();
+	AudioManager::GetInstance()->Update();
 
 	GlobalVariables::GetInstance()->Update();
 

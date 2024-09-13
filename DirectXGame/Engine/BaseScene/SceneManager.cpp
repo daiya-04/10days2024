@@ -22,7 +22,7 @@ void SceneManager::Init() {
 
 	fade_.reset(Sprite::Create(fadeTex_, { 640.0f,360.0f }));
 	fade_->SetSize({ 1280.0f,720.0f });
-	fade_->SetColor({ 1.0f,1.0f,1.0f,alpha_ });
+	fade_->color_ = Vector4(1.0f, 1.0f, 1.0f, alpha_);
 
 	
 
@@ -32,7 +32,7 @@ void SceneManager::Update(){
 
 	if (nextScene_) {
 		if (scene_) {
-			alpha_ += 0.03f;
+			alpha_ += 0.04f;
 		}else {
 			scene_ = std::move(nextScene_);
 			scene_->Init();
@@ -43,16 +43,17 @@ void SceneManager::Update(){
 			scene_->Init();
 		}
 	}else {
-		alpha_ -= 0.03f;
+		alpha_ -= 0.04f;
 	}
-
+	if (alpha_ >= 1.0f) { alpha_ = 1.0f; }
 	if (alpha_ <= 0.0f) { alpha_ = 0.0f; }
 
 	if (!nextScene_ && alpha_ <= 0.0f) {
+		alpha_ = 0.0f;
 		scene_->Update();
 	}
   
-  fade_->SetColor({ 1.0f,1.0f,1.0f,alpha_ });
+	fade_->color_ = Vector4(1.0f, 1.0f, 1.0f, alpha_);
 
 #ifdef _DEBUG
 
@@ -72,7 +73,7 @@ void SceneManager::Update(){
 
 }
 
-void SceneManager::Draw(ID3D12GraphicsCommandList* commandList){
+void SceneManager::Draw(ID3D12GraphicsCommandList* commandList) {
 
 	DirectXCommon::GetInstance()->ClearDepthBaffer();
 
@@ -117,7 +118,7 @@ void SceneManager::Draw(ID3D12GraphicsCommandList* commandList){
 
 	scene_->DrawUI();
 	fade_->Draw();
-
+	
 	Sprite::postDraw();
 
 	ImGuiManager::GetInstance()->Draw();

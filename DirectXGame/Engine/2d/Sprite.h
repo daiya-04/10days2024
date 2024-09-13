@@ -48,6 +48,8 @@ public: //静的メンバ関数
 
 	static void Finalize();
 
+
+
 	//static uint32_t LoadTexture(const std::string& fileName);
 
 	/// <summary>
@@ -63,7 +65,7 @@ public: //静的メンバ関数
 
 protected: //メンバ変数
 
-
+	
 
 	ComPtr<ID3D12Resource> matrialResource_;
 	ComPtr<ID3D12Resource> wvpResource_;
@@ -72,16 +74,11 @@ protected: //メンバ変数
 	ComPtr<ID3D12Resource> indexResource_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView{};
 	D3D12_RESOURCE_DESC resourceDesc_;
-	//座標
-	Vector2 position_{};
-	//サイズ
-	Vector2 size_ = { 100.0f,100.0f };
+	
 	//回転
 	float rotate_{};
 	//アンカーポイント
 	Vector2 anchorpoint_{};
-	//色(RGBA)
-	Vector4 color_{ 1.0f,1.0f,1.0f,1.0f };
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
@@ -90,6 +87,13 @@ protected: //メンバ変数
 	Vector2 texSize_ = { 100.0f,100.0f };
 
 public: //メンバ関数
+
+	//座標
+	Vector2 position_{};
+	//サイズ
+	Vector2 size_ = { 100.0f,100.0f };
+	//色(RGBA)
+	Vector4 color_{ 1.0f,1.0f,1.0f,1.0f };
 	
 	Sprite(uint32_t textureHandle, Vector2 position, float scale = 1.0f, Vector2 anchorpoint = {0.5f,0.5f}, Vector4 color = {1.0f,1.0f,1.0f,1.0f}, float rotate = 0.0f);
 
@@ -108,8 +112,6 @@ public: //メンバ関数
 	void SetRotate(float rotate);
 	//アンカーポイントの設定
 	void SetAnchorpoint(const Vector2& anchorpoint);
-	//色の設定
-	void SetColor(const Vector4& color);
 	//
 	void SetTextureArea(const Vector2& texBase, const Vector2& texSize);
 	//
@@ -128,6 +130,9 @@ public: //メンバ関数
 	
 
 private:
+	//色の設定
+	void SetColor(const Vector4& color);
+
 
 	void TransferVertex();
 

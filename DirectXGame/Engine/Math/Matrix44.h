@@ -305,6 +305,9 @@ public:
 
 
 		result.m[0][0] = std::powf(axis.x, 2) * (1.0f - cos) + cos;
+		if (std::isnan(result.m[0][0])) {
+			return MakeIdentity44();
+		}
 		result.m[0][1] = axis.x * axis.y * (1.0f - cos) + axis.z * sin;
 		result.m[0][2] = axis.x * axis.z * (1.0f - cos) - axis.y * sin;
 
@@ -319,6 +322,7 @@ public:
 		return result;
 	}
 
+
 	inline Vector3 MakeScale(const Matrix4x4& matrix) {
 
 		Vector3 scaleX = { matrix.m[0][0],matrix.m[0][1] ,matrix.m[0][2] };
@@ -331,4 +335,13 @@ public:
 		result.z = scaleZ.Length();
 
 		return result;
+	}
+
+	inline float RotateAngleYFromMatrix(const Matrix4x4& m) {
+		float angle = std::acos(m.m[0][0]);
+		if (m.m[2][0] < 0) {
+			angle = -angle;  // acosの結果だけでは回転の向きがわからないので符号を調整
+		}
+
+		return angle;
 	}

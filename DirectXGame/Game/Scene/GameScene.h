@@ -19,7 +19,18 @@
 #include "OutLine.h"
 #include "HSVFilter.h"
 #include "SkyBox.h"
+#include "Character/Player/Player.h"
+#include"controlUI.h"
+#include "AudioManager.h"
 
+#include "Boss.h"
+#include "MeteorManager.h"
+#include "CannonManager.h"
+#include "StampManager.h"
+#include "Stage/Stage.h"
+#include "Camera/DebugCamera.h"
+#include "Camera/FollowCamera.h"
+#include "CollisionManager.h"
 
 class GameScene : public IScene {
 public:
@@ -57,7 +68,44 @@ private:
 
 private:
 
+	std::unique_ptr<Boss> boss_;
 
+	MeteorManager* meteor_ = nullptr;
+	CannonManager* cannon_ = nullptr;
+	StampManager* stamp_ = nullptr;
+
+	LevelData* levelData_;
+	std::unique_ptr<Stage> stage_;
+	std::unique_ptr<FollowCamera> followCamera_;
+
+	std::unique_ptr<SkyBox> skyBox_;
+
+private:
+	//モデルマネージャー
+	ModelManager* modelManager_;
+
+	//コリジョンマネージャー
+	std::unique_ptr<CollisionManager> collisionManager_;
+
+	//プレイヤー
+	std::unique_ptr<Player> player_;
+
+	bool oldFallAttack_ = false;
+
+	TextureManager* texManager_;
+
+	std::array<Sprite*, 6> playerLifeTex_;
+
+	float lifeScale_ = 0.7f;
+
+	Vector2 lifeTexBasePos_ = { 530,640 };
+
+	float lifeTexLength_ = 43.0f;
+
+private:
+
+	Audio* bgm_ = nullptr;
+	Audio* reflectionSE_ = nullptr;
 
 };
 
