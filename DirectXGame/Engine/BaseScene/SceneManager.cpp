@@ -32,7 +32,7 @@ void SceneManager::Update(){
 
 	if (nextScene_) {
 		if (scene_) {
-			alpha_ += 0.03f;
+			alpha_ += 0.04f;
 		}else {
 			scene_ = std::move(nextScene_);
 			scene_->Init();
@@ -43,9 +43,9 @@ void SceneManager::Update(){
 			scene_->Init();
 		}
 	}else {
-		alpha_ -= 0.03f;
+		alpha_ -= 0.04f;
 	}
-
+	if (alpha_ >= 1.0f) { alpha_ = 1.0f; }
 	if (alpha_ <= 0.0f) { alpha_ = 0.0f; }
 
 	if (!nextScene_ && alpha_ <= 0.0f) {
@@ -117,9 +117,8 @@ void SceneManager::Draw(ID3D12GraphicsCommandList* commandList) {
 	Sprite::preDraw(commandList);
 
 	scene_->DrawUI();
-	if (alpha_ > 0.0f) {
-		fade_->Draw();
-	}
+	fade_->Draw();
+	
 	Sprite::postDraw();
 
 	ImGuiManager::GetInstance()->Draw();

@@ -75,10 +75,40 @@ private:
 private:
 	//モデルマネージャー
 	ModelManager* modelManager_;
+	//体のモデル
+	std::unique_ptr<Object3d> bodyObj_;
+
+	//右手のモデル
+	std::unique_ptr<Object3d> rightHandObj_;
+
+	//左手のモデル
+	std::unique_ptr<Object3d> leftHandObj_;
+
+	//影のモデル
+	std::unique_ptr<Object3d> shadowObj_;
+
+	//Behaviorで操作する本体のトランスフォーム
+	WorldTransform PLTransform_;
+
+	//Behaviorで操作する右手のトランスフォーム
+	WorldTransform RHandTransform_;
+
+	//Behaviorで操作する左手のトランスフォーム
+	WorldTransform LHandTransform_;
+
+	//影用のトランスフォーム
+	WorldTransform ShadowTransform_;
+
+	//代入する回転行列Y軸
+	Matrix4x4 playerRotateMatY_;
+
+	//代入する回転行列X軸
+	Matrix4x4 playerRotateMatX_;
 
 	TextureManager* texManager_;
 
-
+	//体のモデル
+	std::unique_ptr<Object3d> floor_;
 	//鏡餅
 	std::unique_ptr<Sandbag> sandbag_;
 	//鏡餅置くよう用

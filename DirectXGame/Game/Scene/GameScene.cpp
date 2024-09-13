@@ -88,11 +88,6 @@ void GameScene::Init(){
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->Initialize(player_.get(), boss_.get());
 
-	floor_ = std::make_unique<Object3d>();
-
-	floor_->Initialize(modelManager_->LoadOBJ("Floor"));
-	floor_->worldTransform_.translation_.y = -2.0f;
-	floor_->worldTransform_.scale_ = { 1.0f,1.0f,1.0f };
 
 	skyBox_.reset(SkyBox::Create(TextureManager::Load("output_image.dds")));
 
@@ -143,7 +138,6 @@ void GameScene::Update() {
 #endif // NDEBUG
 
 
-	floor_->worldTransform_.UpdateMatrix();
 
 	stage_->Update();
 
@@ -311,7 +305,6 @@ void GameScene::DrawModel(){
 	stamp_->Draw(camera_);
 
 	stage_->Draw(camera_);
-	//floor_->Draw(camera_);
 	player_->Draw(camera_);
 
 	skyBox_->Draw(camera_);

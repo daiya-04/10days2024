@@ -36,3 +36,15 @@ void Sandbag::Draw(const Camera& camera){
 void Sandbag::OnCollision(const int32_t power){
 	hp_ -= power;
 }
+
+void Sandbag::DrawGUI(){
+#ifdef _DEBUG
+
+	ImGui::Begin("moti");
+	ImGui::DragFloat3("transform", &bodyObj_->worldTransform_.translation_.x, 0.1f);
+	ImGui::DragFloat3("rotate", &bodyObj_->worldTransform_.rotation_.x, 0.1f);
+	ImGui::DragFloat3("scale", &bodyObj_->worldTransform_.scale_.x, 0.1f);
+	ImGui::End();
+#endif // _DEBUG
+
+}

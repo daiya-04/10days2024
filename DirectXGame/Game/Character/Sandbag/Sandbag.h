@@ -31,6 +31,11 @@ public:
 		isDead_ = false;
 		hp_ = 25;
 	}
+	void SetRotate(const Vector3& rotate) {
+		bodyObj_->worldTransform_.rotation_ = rotate;
+	}
+
+	void DrawGUI();
 
 	const Sphere& GetCollider() const { return collider_; }
 
