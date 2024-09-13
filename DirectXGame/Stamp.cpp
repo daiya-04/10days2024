@@ -112,7 +112,7 @@ void Stamp::ChargeInit() {
 
 void Stamp::ChargeUpdate() {
 
-	chargeData_.param_ += 0.03f;
+	chargeData_.param_ += 0.025f;
 	chargeData_.param_ = std::clamp(chargeData_.param_, 0.0f, 1.5f);
 
 	obj_->worldTransform_.scale_ = Lerp(chargeData_.param_, chargeData_.minScale_, chargeData_.maxScale_);
