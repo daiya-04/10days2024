@@ -110,7 +110,7 @@ private:
 	AttackMode attackMode_ = AttackMode::kHigh;
 	AttackMode preAttackMode_ = AttackMode::kHigh;
 
-	int32_t maxHp_ = 300;
+	int32_t maxHp_ = 200;
 	int32_t hp_ = maxHp_;
 
 	bool isDead_ = false;
