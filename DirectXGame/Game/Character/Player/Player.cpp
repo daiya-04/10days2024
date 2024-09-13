@@ -92,6 +92,7 @@ void Player::Initialize(){
 	attackHitSE_ = AudioManager::Load("SE/小キック.mp3");
 	chargeAttackHitSE_ = AudioManager::Load("SE/中パンチ.mp3");
 	chargeSE_ = AudioManager::Load("SE/パンチ素振り.mp3");
+	armSwingSE_ = AudioManager::Load("SE/Motion.mp3");
 
 	modelManager_ = ModelManager::GetInstance();
 
@@ -662,6 +663,7 @@ void Player::BehaviorAttackInitialize(){
 	yRadian_ = 0;
 	isAttack_ = true;
 	hitRecord_.Clear();
+	armSwingSE_->Play();
 }
 
 void Player::BehaviorAttackUpdate(){
@@ -1055,6 +1057,7 @@ void Player::BehaviorSecondAttackInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 	hitRecord_.Clear();
 	attackPower_ = basePower_.secondAttack;
+	armSwingSE_->Play();
 
 }
 
@@ -1076,6 +1079,7 @@ void Player::BehaviorThirdAttackInitialize(){
 	workAttack_.chargeFlugTime_ = 0;
 	hitRecord_.Clear();
 	attackPower_ = basePower_.thirdAttack;
+	armSwingSE_->Play();
 
 }
 
@@ -1220,7 +1224,7 @@ void Player::BehaviorChargeAttackUpdate(){
 			chargeColor_.y = 1.0f - 0.8f * (float)((float)(chargeTime_) / float(chargeTimeMax_));
 			chargeColor_.z = 1.0f - 0.8f * (float)((float)(chargeTime_) / float(chargeTimeMax_));
 
-			if (chargeTime_ == 50 || chargeTime_ == 100 || chargeTime_ == 130 || chargeTime_ == 150 || chargeTime_ == 170 ) {
+			if (chargeTime_ == 25 || chargeTime_ == 50 || chargeTime_ == 65 || chargeTime_ == 75 || chargeTime_ == 85 ) {
 				chargeSE_->Play();
 			}
 
@@ -1229,7 +1233,7 @@ void Player::BehaviorChargeAttackUpdate(){
 	}
 	else {
 		RHandTransform_.scale_ = { 1.5f,1.5f,1.5f };
-
+		
 		chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 		ColliderReset(reflectionCollider_);
 		isCharge_ = false;
@@ -1256,6 +1260,9 @@ void Player::BehaviorChargeAttackUpdate(){
 		}
 
 		
+	}
+	if (input_->ReleaseButton(Input::Button::X)) {
+		armSwingSE_->Play();
 	}
 	Gravity();
 }

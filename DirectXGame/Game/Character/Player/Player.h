@@ -438,6 +438,7 @@ private:
 	Audio* attackHitSE_ = nullptr;
 	Audio* chargeAttackHitSE_ = nullptr;
 	Audio* chargeSE_ = nullptr;
+	Audio* armSwingSE_ = nullptr;
 
 	int32_t seCount_ = 0;
 
