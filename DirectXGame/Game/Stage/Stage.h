@@ -82,7 +82,7 @@ private:
 		DashMove,
 		Attack,
 		DownAttack,
-		Success,
+		ChargeAttack,
 
 		kMaxNum
 	};

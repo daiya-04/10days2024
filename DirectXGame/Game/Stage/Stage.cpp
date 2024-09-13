@@ -179,7 +179,7 @@ void Stage::TitleInitialize() {
 		"boardTexture/dashMove.png",
 		"boardTexture/attack.png",
 		"boardTexture/jumpAttack.png",
-		"boardTexture/success.png",
+		"boardTexture/chargeAttack.png",
 	};
 	for (uint32_t index = 0u; index < texturePaths.size(); index++) {
 		TextureManager::GetInstance()->LoadTextureMap(("Board" + std::to_string(index)).c_str(), texturePaths.at(index));
@@ -187,7 +187,7 @@ void Stage::TitleInitialize() {
 	boards_.at(0)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::DashMove)).c_str()));
 	boards_.at(1)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::Attack)).c_str()));
 	boards_.at(2)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::Attack)).c_str()));
-	boards_.at(3)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::Attack)).c_str()));
+	boards_.at(3)->SetTextureHandle(texManager->FindTextureHandle(("Board" + std::to_string(BoardType::ChargeAttack)).c_str()));
 
 }
 
