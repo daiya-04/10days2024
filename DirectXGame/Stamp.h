@@ -39,7 +39,7 @@ public:
 	struct ChargeData {
 		float param_ = 0.0f;
 		Vector3 minScale_ = {};
-		Vector3 maxScale_ = { 1.0f,1.0f,1.0f };
+		Vector3 maxScale_ = { 1.0f,1.0f,1.3f };
 	};
 
 	struct AttackData {
