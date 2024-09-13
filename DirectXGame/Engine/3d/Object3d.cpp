@@ -353,7 +353,7 @@ void Object3d::Draw(const Camera& camera) {
 
 		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, (UINT)RootParameter::kTexture, material.GetUVHandle());
 
-		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, (UINT)RootParameter::kEnvironmentTex, TextureManager::Load("skyBox.dds"));
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, (UINT)RootParameter::kEnvironmentTex, TextureManager::Load("output_image.dds"));
 
 		commandList_->SetGraphicsRootConstantBufferView((UINT)RootParameter::kDirectionLight, DirectionalLight::GetInstance()->GetGPUVirtualAddress());
 
