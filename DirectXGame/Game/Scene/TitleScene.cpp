@@ -166,14 +166,12 @@ void TitleScene::Update(){
 		stage_->BoardAnimation(killCount_); // 要素1番目の
 	}
 	else if (sandbag_->GetIsDead() and killCount_ == 1) {
-		sandbag_->SetPosition(Vector3(0.0f, -22.5f, 20.0f));
-		shelfobj_->worldTransform_.translation_ = { 0.0f,-23.0f, 20.0f };
+		sandbag_->SetPosition(Vector3(0.0f, -22.5f, 17.0f));
+		shelfobj_->worldTransform_.translation_ = { 0.0f,-23.0f, 17.0f };
 		killCount_++;
 		stage_->BoardAnimation(killCount_); // 要素2番目の
 	}
 	else if (sandbag_->GetIsDead() and killCount_ == 2) {
-		//sandbag_->SetPosition(Vector3(0.0f, -22.5f, 20.0f));
-		//shelfobj_->worldTransform_.translation_ = { 0.0f,-23.0f, 20.0f };
 		killCount_++;
 		stage_->BoardAnimation(killCount_); // 要素3番目の
 	}

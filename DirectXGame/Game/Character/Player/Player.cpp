@@ -338,11 +338,11 @@ void Player::Update(const Vector3& centerTarget, const Vector2& minAndMax){
 void Player::Draw(const Camera& camera) {
 #ifdef _DEBUG
 
-	//ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+	ShapesDraw::DrawSphere(collider_, camera, Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-	//ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+	ShapesDraw::DrawSphere(attackCollider_, camera, Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-	//ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
+	ShapesDraw::DrawSphere(reflectionCollider_, camera, Vector4(0.0f, 1.0f, 1.0f, 1.0f));
 
 
 #endif // _DEBUG
