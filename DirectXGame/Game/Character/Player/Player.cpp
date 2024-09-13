@@ -514,7 +514,7 @@ void Player::BehaviorRootInitialize(){
 	workAttack_.comboNext_ = false;
 	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
-
+	chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 	nowRHandPos_ = RHandTransform_.translation_;
 	nowLHandPos_ = LHandTransform_.translation_;
 	handT_ = 0.0f;
@@ -761,7 +761,7 @@ void Player::BehaviorAvoidInitialize(){
 	avoidTime_ = 0;
 	RHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
 	LHandTransform_.scale_ = { 0.5f,0.5f,0.5f };
-
+	chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 	RHandTransform_.translation_ = { 2.0f,0.0f,-2.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,-2.0f };
 	downVector_ = { 0.0f,0.0f,0.0f };
@@ -1000,6 +1000,7 @@ void Player::BehaviorHitCollosionInitialize(){
 	avoidTime_ = 0;
 	RHandTransform_.translation_ = { 2.0f,0.0f,0.0f };
 	LHandTransform_.translation_ = { -2.0f,0.0f,0.0f };
+	chargeColor_ = { 1.0f,1.0f,1.0f,1.0f };
 	downVector_.y += jumpPower_ / 2.0f;
 	hitRotateX_ = 0;
 	hp_--;
