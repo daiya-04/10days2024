@@ -106,6 +106,10 @@ Vector3 Stage::GetGroundPosition() const {
 	return grounds_.at(nowLayerNumber_)->GetTransform().GetWorldPosition();
 }
 
+Vector3 Stage::GetGroundPosition(int32_t index) const {
+	return grounds_.at(index)->GetTransform().GetWorldPosition();
+}
+
 Vector3 Stage::GetNextGroundPosition()  {
 	uint32_t index = nowLayerNumber_ + 1u;
 	if (index >= layer.size()) {
