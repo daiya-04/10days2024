@@ -8,7 +8,7 @@ void Sandbag::Initialize(){
 
 	bodyObj_->Initialize(modelManager_->LoadOBJ("Kagamimochi"));
 
-	bodyObj_->worldTransform_.translation_ = { 0.0f,-0.5f, 20.0f };
+	bodyObj_->worldTransform_.translation_ = { 0.0f,-2.5f, 20.0f };
 	bodyObj_->worldTransform_.scale_ = { 0.1f,0.1f,0.1f };
 	bodyObj_->worldTransform_.UpdateMatrix();
 	collider_.center = bodyObj_->worldTransform_.translation_;

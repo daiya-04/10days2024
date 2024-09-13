@@ -354,15 +354,23 @@ void Player::DrawUI(){
 	if (isDown_){
 		Atex_->color_.w = alpha_;
 		jumptex_->color_.w = alpha_;
-		Xtex_->color_.w = 1.0f;
-		attacktex_->color_.w = 1.0f;
 		if (isSkyDash_) {
 			RBtex_->color_.w = 1.0f;
 			dashtex_->color_.w = 1.0f;
 		}
 		else {
+			
 			RBtex_->color_.w = alpha_;
 			dashtex_->color_.w = alpha_;
+		}
+		if (isAvoid_){
+			Xtex_->color_.w = alpha_;
+			attacktex_->color_.w = alpha_;
+		}
+		else {
+			Xtex_->color_.w = 1.0f;
+			attacktex_->color_.w = 1.0f;
+
 		}
 	}
 	else if (isCharge_) {

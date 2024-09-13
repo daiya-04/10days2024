@@ -59,7 +59,7 @@ void TitleScene::Init(){
 
 	shelfobj_->Initialize(modelManager_->LoadGLTF("shelf"));
 
-	shelfobj_->worldTransform_.translation_ = { 0.0f,-1.0f, 20.0f };
+	shelfobj_->worldTransform_.translation_ = { 0.0f,-3.0f, 20.0f };
 	shelfobj_->worldTransform_.scale_ = { 1.5f,1.0f,1.5f };
 	shelfobj_->worldTransform_.UpdateMatrix();
 
